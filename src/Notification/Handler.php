@@ -1,6 +1,8 @@
 <?php
 
-class Webgriffe_LibQuiPago_Notification_Handler
+namespace Webgriffe\LibQuiPago\Notification;
+
+class Handler
 {
     /**
      * @var string
@@ -28,7 +30,7 @@ class Webgriffe_LibQuiPago_Notification_Handler
     private $transactionCode;
 
     /**
-     * @var DateTime
+     * @var \DateTime
      */
     private $transactionDate;
 
@@ -78,15 +80,14 @@ class Webgriffe_LibQuiPago_Notification_Handler
     private $pan;
 
     /**
-     * @var DateTime|null
+     * @var \DateTime|null
      */
     private $panExpiration;
 
     /**
-     * Webgriffe_LibQuiPago_Notification_Handler constructor.
+     * Handler constructor.
      * @param string $secretKey Secret key for MAC calculation
      * @param array $rawParams Raw notification POST request params (e.g. $_POST array)
-     * @throws Webgriffe_LibQuiPago_Notification_InvalidMacException
      */
     public function __construct($secretKey, array $rawParams)
     {
@@ -135,7 +136,7 @@ class Webgriffe_LibQuiPago_Notification_Handler
     }
 
     /**
-     * @return DateTime
+     * @return \DateTime
      */
     public function getTransactionDate()
     {
@@ -215,7 +216,7 @@ class Webgriffe_LibQuiPago_Notification_Handler
     }
 
     /**
-     * @return DateTime|null
+     * @return \DateTime|null
      */
     public function getPanExpiration()
     {
@@ -230,7 +231,7 @@ class Webgriffe_LibQuiPago_Notification_Handler
         $this->currency = $rawParams['divisa'];
         $this->sessionId = $rawParams['session_id'];
         $this->transactionCode = $rawParams['codTrans'];
-        $this->transactionDate = new DateTime($rawParams['data'] . ' ' . $rawParams['orario']);
+        $this->transactionDate = new \DateTime($rawParams['data'] . ' ' . $rawParams['orario']);
         $this->authCode = $rawParams['codAut'];
         $this->transactionResult = $rawParams['esito'] === 'OK' ? true : false;
         $this->cardBrand = $rawParams['$BRAND'];
@@ -240,7 +241,7 @@ class Webgriffe_LibQuiPago_Notification_Handler
         $this->macFromRequest = $rawParams['mac'];
         $this->cardCountry = isset($rawParams['nazionalita']) ? $rawParams['nazionalita'] : null;
         $this->pan = isset($rawParams['Pan']) ? $rawParams['Pan'] : null;
-        $this->panExpiration = isset($rawParams['Scadenza_pan']) ? new DateTime($rawParams['Scadenza_pan']) : null;
+        $this->panExpiration = isset($rawParams['Scadenza_pan']) ? new \DateTime($rawParams['Scadenza_pan']) : null;
     }
 
     /**
@@ -271,7 +272,7 @@ class Webgriffe_LibQuiPago_Notification_Handler
             }
         }
         if (!empty($missingParams)) {
-            throw new InvalidArgumentException(
+            throw new \InvalidArgumentException(
                 sprintf(
                     'Invalid payment notification request. Required parameter(s) missing: "%s"',
                     implode(', ', $missingParams)
@@ -292,7 +293,7 @@ class Webgriffe_LibQuiPago_Notification_Handler
         if ($calculatedMac === $this->macFromRequest) {
             return;
         }
-        throw new Webgriffe_LibQuiPago_Notification_InvalidMacException(
+        throw new InvalidMacException(
             sprintf(
                 'Invalid MAC from notification request. It is "%s", but should be "%s" (the SHA1 hash of "%s").',
                 $this->macFromRequest,

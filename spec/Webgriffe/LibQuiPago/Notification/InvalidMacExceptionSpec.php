@@ -1,15 +1,15 @@
 <?php
 
-namespace spec;
+namespace spec\Webgriffe\LibQuiPago\Notification;
 
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 
-class Webgriffe_LibQuiPago_Notification_InvalidMacExceptionSpec extends ObjectBehavior
+class InvalidMacExceptionSpec extends ObjectBehavior
 {
     function it_is_initializable_and_extends_exception()
     {
-        $this->shouldHaveType('Webgriffe_LibQuiPago_Notification_InvalidMacException');
+        $this->shouldHaveType('Webgriffe\\LibQuiPago\\Notification\\InvalidMacException');
         $this->shouldHaveType(\Exception::class);
     }
 }

@@ -1,11 +1,12 @@
 <?php
 
-namespace spec;
+namespace spec\Webgriffe\LibQuiPago\Notification;
 
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
+use Webgriffe\LibQuiPago\Notification\InvalidMacException;
 
-class Webgriffe_LibQuiPago_Notification_HandlerSpec extends ObjectBehavior
+class HandlerSpec extends ObjectBehavior
 {
     function it_throws_an_exception_if_some_parameter_is_missing()
     {
@@ -20,13 +21,13 @@ class Webgriffe_LibQuiPago_Notification_HandlerSpec extends ObjectBehavior
         $requestRawParams = $this->getRequestRawParams();
         $requestRawParams['mac'] = 'invalid-mac';
         $this->beConstructedWith('secret_key', $requestRawParams);
-        $this->shouldThrow(\Webgriffe_LibQuiPago_Notification_InvalidMacException::class)->duringInstantiation();
+        $this->shouldThrow(InvalidMacException::class)->duringInstantiation();
     }
 
     function it_returns_mapped_params()
     {
         $this->beConstructedWith('secret_key', $this->getRequestRawParams());
-        $this->shouldHaveType('Webgriffe_LibQuiPago_Notification_Handler');
+        $this->shouldHaveType('Webgriffe\\LibQuiPago\\Notification\\Handler');
         $this->getTransactionCode()->shouldReturn('1200123');
         $this->isTransactionResultPositive()->shouldReturn(true);
         $this->getAmount()->shouldReturn(50.50);
@@ -49,7 +50,7 @@ class Webgriffe_LibQuiPago_Notification_HandlerSpec extends ObjectBehavior
         $requestRawParams['esito'] = 'KO';
         $requestRawParams['mac'] = 'ed80e2807c8eb110fcf90a50b8c99a2f3bb21f95';
         $this->beConstructedWith('secret_key', $requestRawParams);
-        $this->shouldHaveType('Webgriffe_LibQuiPago_Notification_Handler');
+        $this->shouldHaveType('Webgriffe\\LibQuiPago\\Notification\\Handler');
         $this->isTransactionResultPositive()->shouldReturn(false);
     }
 

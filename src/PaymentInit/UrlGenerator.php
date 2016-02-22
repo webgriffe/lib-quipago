@@ -1,6 +1,8 @@
 <?php
 
-class Webgriffe_LibQuiPago_PaymentInit_UrlGenerator
+namespace Webgriffe\LibQuiPago\PaymentInit;
+
+class UrlGenerator
 {
     /**
      * Virtual POS gateway URL it should be https://ecommerce.keyclient.it/ecomm/ecomm/DispatcherServlet

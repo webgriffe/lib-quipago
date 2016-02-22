@@ -1,11 +1,11 @@
 <?php
 
-namespace spec;
+namespace spec\Webgriffe\LibQuiPago\PaymentInit;
 
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 
-class Webgriffe_LibQuiPago_PaymentInit_UrlGeneratorSpec extends ObjectBehavior
+class UrlGeneratorSpec extends ObjectBehavior
 {
     function it_is_initializable_and_generates_correct_url()
     {
@@ -23,7 +23,7 @@ class Webgriffe_LibQuiPago_PaymentInit_UrlGeneratorSpec extends ObjectBehavior
             'ITA',
             'http-post-url'
         );
-        $this->shouldHaveType('Webgriffe_LibQuiPago_PaymentInit_UrlGenerator');
+        $this->shouldHaveType('Webgriffe\\LibQuiPago\\PaymentInit\\UrlGenerator');
         $this->generate()->shouldReturn(
             'https://ecommerce.keyclient.it/ecomm/ecomm/DispatcherServlet' .
             '?alias=merchant_alias&importo=5050&divisa=EUR&codTrans=1200123&url_back=http-cancel-url' .

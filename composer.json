@@ -13,8 +13,8 @@
         "phpspec/phpspec": "^2.4"
     },
     "autoload": {
-        "classmap": [
-            "src/"
-        ]
+        "psr-4": {
+            "Webgriffe\\LibQuiPago\\": "src/"
+        }
     }
 }

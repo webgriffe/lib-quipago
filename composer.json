@@ -7,7 +7,9 @@
             "email": "support@webgriffe.com"
         }
     ],
-    "require": {},
+    "require": {
+        "psr/log": "^1.0"
+    },
     "require-dev": {
         "squizlabs/php_codesniffer": "^2.5",
         "phpspec/phpspec": "^2.4"

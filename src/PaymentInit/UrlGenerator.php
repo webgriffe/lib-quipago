@@ -2,6 +2,8 @@
 
 namespace Webgriffe\LibQuiPago\PaymentInit;
 
+use Psr\Log\LoggerInterface;
+
 class UrlGenerator
 {
     /**
@@ -76,6 +78,11 @@ class UrlGenerator
      */
     private $notifyUrl;
 
+    /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
     public function __construct(
         $gatewayUrl,
         $merchantAlias,
@@ -104,11 +111,22 @@ class UrlGenerator
         $this->notifyUrl = $notifyUrl;
     }
 
+    public function setLogger(LoggerInterface $logger)
+    {
+        $this->logger = $logger;
+    }
+
     public function generate()
     {
+        if ($this->logger) {
+            $this->logger->debug(sprintf('%s method called', __METHOD__));
+        }
         $params = $this->mapMandatoryParameters();
         $params = $this->addOptionalParameters($params);
         $params['mac'] = $this->calculateMac($params);
+        if ($this->logger) {
+            $this->logger->debug(sprintf('Calculated MAC is "%s"', $params['mac']));
+        }
         return $this->gatewayUrl . '?' . http_build_query($params);
     }
 
@@ -148,6 +166,9 @@ class UrlGenerator
             $macString .= sprintf('%s=%s', $param, $params[$param]);
         }
         $macString .= $this->secretKey;
+        if ($this->logger) {
+            $this->logger->debug(sprintf('MAC calculation string is "%s"', $macString));
+        }
         return sha1($macString);
     }
 }

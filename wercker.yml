@@ -10,4 +10,4 @@ build:
         code: vendor/bin/phpspec run
     - script:
         name: PHPCS PSR2 checks
-        code: vendor/bin/phpcs --standard=PSR2
+        code: vendor/bin/phpcs --standard=PSR2 src/

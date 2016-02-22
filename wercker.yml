@@ -1,4 +1,4 @@
-box: boedy/wercker-php
+box: webgriffe/php-apache-base
 build:
   steps:    
     - script:

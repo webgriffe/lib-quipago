@@ -83,32 +83,27 @@ class UrlGenerator
      */
     private $logger;
 
-    public function __construct(
-        $gatewayUrl,
-        $merchantAlias,
-        $amount,
-        $currency,
-        $transactionCode,
-        $cancelUrl,
-        $secretKey,
-        $email = null,
-        $successUrl = null,
-        $sessionId = null,
-        $locale = null,
-        $notifyUrl = null
-    ) {
+    /**
+     * MAC calculation method it should be "sha1" or "md5"
+     * @var string
+     */
+    private $macMethod;
+
+    public function __construct($gatewayUrl, $merchantAlias, $secretKey, $macMethod = 'sha1')
+    {
         $this->gatewayUrl = $gatewayUrl;
         $this->merchantAlias = $merchantAlias;
-        $this->amount = $amount;
-        $this->currency = $currency;
-        $this->transactionCode = $transactionCode;
-        $this->cancelUrl = $cancelUrl;
         $this->secretKey = $secretKey;
-        $this->email = $email;
-        $this->successUrl = $successUrl;
-        $this->sessionId = $sessionId;
-        $this->locale = $locale;
-        $this->notifyUrl = $notifyUrl;
+        $this->macMethod = $macMethod;
+        if (!in_array($this->macMethod, $this->getAllowedMacCalculationMethods())) {
+            throw new \InvalidArgumentException(
+                sprintf(
+                    'Invalid MAC calculation method "%s" (only "%s" allowed).',
+                    $this->macMethod,
+                    implode(', ', $this->getAllowedMacCalculationMethods())
+                )
+            );
+        }
     }
 
     public function setLogger(LoggerInterface $logger)
@@ -116,11 +111,31 @@ class UrlGenerator
         $this->logger = $logger;
     }
 
-    public function generate()
-    {
+    public function generate(
+        $amount,
+        $currency,
+        $transactionCode,
+        $cancelUrl,
+        $email = null,
+        $successUrl = null,
+        $sessionId = null,
+        $locale = null,
+        $notifyUrl = null
+    ) {
         if ($this->logger) {
             $this->logger->debug(sprintf('%s method called', __METHOD__));
         }
+
+        $this->amount = $amount;
+        $this->currency = $currency;
+        $this->transactionCode = $transactionCode;
+        $this->cancelUrl = $cancelUrl;
+        $this->email = $email;
+        $this->successUrl = $successUrl;
+        $this->sessionId = $sessionId;
+        $this->locale = $locale;
+        $this->notifyUrl = $notifyUrl;
+
         $params = $this->mapMandatoryParameters();
         $params = $this->addOptionalParameters($params);
         $params['mac'] = $this->calculateMac($params);
@@ -166,9 +181,19 @@ class UrlGenerator
             $macString .= sprintf('%s=%s', $param, $params[$param]);
         }
         $macString .= $this->secretKey;
+        $method = $this->macMethod;
         if ($this->logger) {
             $this->logger->debug(sprintf('MAC calculation string is "%s"', $macString));
+            $this->logger->debug(sprintf('MAC calculation method is "%s"', $method));
         }
-        return sha1($macString);
+        return $method($macString);
+    }
+
+    /**
+     * @return array
+     */
+    private function getAllowedMacCalculationMethods()
+    {
+        return array('sha1', 'md5');
     }
 }

@@ -2,6 +2,8 @@
 
 namespace Webgriffe\LibQuiPago\Notification;
 
+use Psr\Log\LoggerInterface;
+
 class Handler
 {
     /**
@@ -85,12 +87,31 @@ class Handler
     private $panExpiration;
 
     /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
+    /**
+     * Handler constructor.
+     * @param LoggerInterface $logger
+     */
+    public function __construct(LoggerInterface $logger = null)
+    {
+        $this->logger = $logger;
+    }
+
+    /**
      * Handle notification request
      * @param string $secretKey Secret key for MAC calculation
      * @param array $rawParams Raw notification POST request params (e.g. $_POST array)
      */
     public function handle($secretKey, array $rawParams)
     {
+        if ($this->logger) {
+            $this->logger->debug(sprintf('%s method called', __METHOD__));
+            $this->logger->debug(sprintf('Secret key: "%s"', $secretKey));
+            $this->logger->debug(sprintf('Request params: %s', print_r($rawParams, true)));
+        }
         $this->mapNotificationParams($rawParams);
         $this->validateMac($secretKey, $rawParams);
     }
@@ -289,6 +310,9 @@ class Handler
             $macCalculationString .= sprintf('%s=%s', $macCalculationParam, $rawParams[$macCalculationParam]);
         }
         $macCalculationString .= $secretKey;
+        if ($this->logger) {
+            $this->logger->debug(sprintf('MAC calculation string is "%s"', $macCalculationString));
+        }
         $calculatedMac = sha1($macCalculationString);
         if ($calculatedMac === $this->macFromRequest) {
             return;

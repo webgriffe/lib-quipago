@@ -4,6 +4,7 @@ namespace spec\Webgriffe\LibQuiPago\Notification;
 
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
+use Psr\Log\LoggerInterface;
 use Webgriffe\LibQuiPago\Notification\InvalidMacException;
 
 class HandlerSpec extends ObjectBehavior
@@ -53,6 +54,18 @@ class HandlerSpec extends ObjectBehavior
         $requestRawParams['mac'] = 'ed80e2807c8eb110fcf90a50b8c99a2f3bb21f95';
         $this->handle('secret_key', $requestRawParams);
         $this->isTransactionResultPositive()->shouldReturn(false);
+    }
+
+    function it_should_log_if_logger_is_passed(LoggerInterface $logger)
+    {
+        $this->beConstructedWith($logger);
+        $this->shouldHaveType('Webgriffe\\LibQuiPago\\Notification\\Handler');
+        $logger->debug('Webgriffe\\LibQuiPago\\Notification\\Handler::handle method called')->shouldBeCalled();
+        $logger->debug('Secret key: "secret_key"')->shouldBeCalled();
+        $logger->debug(sprintf('Request params: %s', print_r($this->getRequestRawParams(), true)))->shouldBeCalled();
+        $str = 'codTrans=1200123esito=OKimporto=50.5divisa=EURdata=20160221orario=181854codAut=123abcsecret_key';
+        $logger->debug("MAC calculation string is \"$str\"")->shouldBeCalled();
+        $this->handle('secret_key', $this->getRequestRawParams());
     }
 
     /**

@@ -89,29 +89,16 @@ class UrlGenerator
      */
     private $macMethod;
 
-    public function __construct($gatewayUrl, $merchantAlias, $secretKey, $macMethod = 'sha1')
-    {
-        $this->gatewayUrl = $gatewayUrl;
-        $this->merchantAlias = $merchantAlias;
-        $this->secretKey = $secretKey;
-        $this->macMethod = $macMethod;
-        if (!in_array($this->macMethod, $this->getAllowedMacCalculationMethods())) {
-            throw new \InvalidArgumentException(
-                sprintf(
-                    'Invalid MAC calculation method "%s" (only "%s" allowed).',
-                    $this->macMethod,
-                    implode(', ', $this->getAllowedMacCalculationMethods())
-                )
-            );
-        }
-    }
-
-    public function setLogger(LoggerInterface $logger)
+    public function __construct(LoggerInterface $logger = null)
     {
         $this->logger = $logger;
     }
 
     public function generate(
+        $gatewayUrl,
+        $merchantAlias,
+        $secretKey,
+        $macMethod,
         $amount,
         $currency,
         $transactionCode,
@@ -126,6 +113,10 @@ class UrlGenerator
             $this->logger->debug(sprintf('%s method called', __METHOD__));
         }
 
+        $this->gatewayUrl = $gatewayUrl;
+        $this->merchantAlias = $merchantAlias;
+        $this->secretKey = $secretKey;
+        $this->macMethod = $macMethod;
         $this->amount = $amount;
         $this->currency = $currency;
         $this->transactionCode = $transactionCode;
@@ -136,6 +127,7 @@ class UrlGenerator
         $this->locale = $locale;
         $this->notifyUrl = $notifyUrl;
 
+        $this->checkMacMethod();
         $params = $this->mapMandatoryParameters();
         $params = $this->addOptionalParameters($params);
         $params['mac'] = $this->calculateMac($params);
@@ -195,5 +187,18 @@ class UrlGenerator
     private function getAllowedMacCalculationMethods()
     {
         return array('sha1', 'md5');
+    }
+
+    private function checkMacMethod()
+    {
+        if (!in_array($this->macMethod, $this->getAllowedMacCalculationMethods())) {
+            throw new \InvalidArgumentException(
+                sprintf(
+                    'Invalid MAC calculation method "%s" (only "%s" allowed).',
+                    $this->macMethod,
+                    implode(', ', $this->getAllowedMacCalculationMethods())
+                )
+            );
+        }
     }
 }

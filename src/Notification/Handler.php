@@ -83,25 +83,16 @@ class Handler
      * @var \DateTime|null
      */
     private $panExpiration;
-    /**
-     * @var string
-     */
-    private $secretKey;
 
     /**
-     * Handler constructor.
+     * Handle notification request
      * @param string $secretKey Secret key for MAC calculation
      * @param array $rawParams Raw notification POST request params (e.g. $_POST array)
      */
-    public function __construct($secretKey)
-    {
-        $this->secretKey = $secretKey;
-    }
-
-    public function handleRequestParams(array $rawParams)
+    public function handle($secretKey, array $rawParams)
     {
         $this->mapNotificationParams($rawParams);
-        $this->validateMac($this->secretKey, $rawParams);
+        $this->validateMac($secretKey, $rawParams);
     }
 
     /**

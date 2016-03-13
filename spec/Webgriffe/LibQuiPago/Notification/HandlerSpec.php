@@ -10,25 +10,24 @@ class HandlerSpec extends ObjectBehavior
 {
     function it_throws_an_exception_if_some_parameter_is_missing()
     {
+        $this->shouldHaveType('Webgriffe\\LibQuiPago\\Notification\\Handler');
         $requestRawParams = $this->getRequestRawParams();
         unset($requestRawParams['alias']);
-        $this->beConstructedWith('secret_key');
-        $this->shouldThrow(\InvalidArgumentException::class)->during('handleRequestParams', array($requestRawParams));
+        $this->shouldThrow(\InvalidArgumentException::class)->during('handle', array('secret_key', $requestRawParams));
     }
 
     function it_throws_an_exception_if_mac_is_wrong()
     {
+        $this->shouldHaveType('Webgriffe\\LibQuiPago\\Notification\\Handler');
         $requestRawParams = $this->getRequestRawParams();
         $requestRawParams['mac'] = 'invalid-mac';
-        $this->beConstructedWith('secret_key');
-        $this->shouldThrow(InvalidMacException::class)->during('handleRequestParams', array($requestRawParams));
+        $this->shouldThrow(InvalidMacException::class)->during('handle', array('secret_key', $requestRawParams));
     }
 
     function it_returns_mapped_params()
     {
-        $this->beConstructedWith('secret_key');
         $this->shouldHaveType('Webgriffe\\LibQuiPago\\Notification\\Handler');
-        $this->handleRequestParams($this->getRequestRawParams());
+        $this->handle('secret_key', $this->getRequestRawParams());
 
         $this->getTransactionCode()->shouldReturn('1200123');
         $this->isTransactionResultPositive()->shouldReturn(true);
@@ -48,12 +47,11 @@ class HandlerSpec extends ObjectBehavior
 
     function it_returns_negative_result_if_transaction_result_is_ko()
     {
+        $this->shouldHaveType('Webgriffe\\LibQuiPago\\Notification\\Handler');
         $requestRawParams = $this->getRequestRawParams();
         $requestRawParams['esito'] = 'KO';
         $requestRawParams['mac'] = 'ed80e2807c8eb110fcf90a50b8c99a2f3bb21f95';
-        $this->beConstructedWith('secret_key');
-        $this->shouldHaveType('Webgriffe\\LibQuiPago\\Notification\\Handler');
-        $this->handleRequestParams($requestRawParams);
+        $this->handle('secret_key', $requestRawParams);
         $this->isTransactionResultPositive()->shouldReturn(false);
     }
 

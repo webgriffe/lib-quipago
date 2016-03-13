@@ -92,6 +92,11 @@ class Handler
     private $logger;
 
     /**
+     * @var string
+     */
+    private $macMethod;
+
+    /**
      * Handler constructor.
      * @param LoggerInterface $logger
      */
@@ -103,15 +108,18 @@ class Handler
     /**
      * Handle notification request
      * @param string $secretKey Secret key for MAC calculation
+     * @param string $macMethod MAC calculation method. It should be 'sha1' or 'md5'
      * @param array $rawParams Raw notification POST request params (e.g. $_POST array)
+     * @throws InvalidMacException
      */
-    public function handle($secretKey, array $rawParams)
+    public function handle($secretKey, $macMethod, array $rawParams)
     {
         if ($this->logger) {
             $this->logger->debug(sprintf('%s method called', __METHOD__));
             $this->logger->debug(sprintf('Secret key: "%s"', $secretKey));
             $this->logger->debug(sprintf('Request params: %s', print_r($rawParams, true)));
         }
+        $this->macMethod = $macMethod;
         $this->mapNotificationParams($rawParams);
         $this->validateMac($secretKey, $rawParams);
     }
@@ -310,18 +318,21 @@ class Handler
             $macCalculationString .= sprintf('%s=%s', $macCalculationParam, $rawParams[$macCalculationParam]);
         }
         $macCalculationString .= $secretKey;
+        $macMethod = $this->macMethod;
         if ($this->logger) {
             $this->logger->debug(sprintf('MAC calculation string is "%s"', $macCalculationString));
+            $this->logger->debug(sprintf('MAC calculation method is "%s"', $macMethod));
         }
-        $calculatedMac = sha1($macCalculationString);
+        $calculatedMac = $macMethod($macCalculationString);
         if ($calculatedMac === $this->macFromRequest) {
             return;
         }
         throw new InvalidMacException(
             sprintf(
-                'Invalid MAC from notification request. It is "%s", but should be "%s" (the SHA1 hash of "%s").',
+                'Invalid MAC from notification request. It is "%s", but should be "%s" (the %s hash of "%s").',
                 $this->macFromRequest,
                 $calculatedMac,
+                $macMethod,
                 $macCalculationString
             )
         );

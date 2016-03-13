@@ -12,22 +12,24 @@ class HandlerSpec extends ObjectBehavior
     {
         $requestRawParams = $this->getRequestRawParams();
         unset($requestRawParams['alias']);
-        $this->beConstructedWith('secret_key', $requestRawParams);
-        $this->shouldThrow(\InvalidArgumentException::class)->duringInstantiation();
+        $this->beConstructedWith('secret_key');
+        $this->shouldThrow(\InvalidArgumentException::class)->during('handleRequestParams', array($requestRawParams));
     }
 
     function it_throws_an_exception_if_mac_is_wrong()
     {
         $requestRawParams = $this->getRequestRawParams();
         $requestRawParams['mac'] = 'invalid-mac';
-        $this->beConstructedWith('secret_key', $requestRawParams);
-        $this->shouldThrow(InvalidMacException::class)->duringInstantiation();
+        $this->beConstructedWith('secret_key');
+        $this->shouldThrow(InvalidMacException::class)->during('handleRequestParams', array($requestRawParams));
     }
 
     function it_returns_mapped_params()
     {
-        $this->beConstructedWith('secret_key', $this->getRequestRawParams());
+        $this->beConstructedWith('secret_key');
         $this->shouldHaveType('Webgriffe\\LibQuiPago\\Notification\\Handler');
+        $this->handleRequestParams($this->getRequestRawParams());
+
         $this->getTransactionCode()->shouldReturn('1200123');
         $this->isTransactionResultPositive()->shouldReturn(true);
         $this->getAmount()->shouldReturn(50.50);
@@ -49,8 +51,9 @@ class HandlerSpec extends ObjectBehavior
         $requestRawParams = $this->getRequestRawParams();
         $requestRawParams['esito'] = 'KO';
         $requestRawParams['mac'] = 'ed80e2807c8eb110fcf90a50b8c99a2f3bb21f95';
-        $this->beConstructedWith('secret_key', $requestRawParams);
+        $this->beConstructedWith('secret_key');
         $this->shouldHaveType('Webgriffe\\LibQuiPago\\Notification\\Handler');
+        $this->handleRequestParams($requestRawParams);
         $this->isTransactionResultPositive()->shouldReturn(false);
     }
 

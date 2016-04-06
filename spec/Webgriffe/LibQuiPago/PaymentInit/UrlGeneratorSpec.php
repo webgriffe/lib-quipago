@@ -106,9 +106,34 @@ class UrlGeneratorSpec extends ObjectBehavior
                     'https://ecommerce.keyclient.it/ecomm/ecomm/DispatcherServlet',
                     'merchant_alias',
                     'secret_key',
-                    'invalid',
+                    'invalid', // <- Invalid MAC method
                     50.50,
                     'EUR',
+                    '1200123',
+                    'http-cancel-url',
+                    'customer@mail.com',
+                    'http-succes-url',
+                    'SESSID123',
+                    'ITA',
+                    'http-post-url'
+                )
+            )
+        ;
+    }
+
+    function it_should_throw_an_invalid_argument_exception_if_currency_is_not_allowed()
+    {
+        $this
+            ->shouldThrow(\InvalidArgumentException::class)
+            ->during(
+                'generate',
+                array(
+                    'https://ecommerce.keyclient.it/ecomm/ecomm/DispatcherServlet',
+                    'merchant_alias',
+                    'secret_key',
+                    'sha1',
+                    50.50,
+                    'XXX', // <- Invalid currency
                     '1200123',
                     'http-cancel-url',
                     'customer@mail.com',

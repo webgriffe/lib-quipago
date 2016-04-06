@@ -138,6 +138,10 @@ class UrlGenerator
         return $this->gatewayUrl . '?' . http_build_query($params);
     }
 
+    /**
+     * Returns the list of allowed currencies
+     * @return array
+     */
     public function getAllowedCurrencies()
     {
         return array(
@@ -181,6 +185,15 @@ class UrlGenerator
             'MOP' => 'Macao (Macau) pataca',
             'DKK' => 'Corona Danese',
         );
+    }
+
+    /**
+     * Returns the list of the allowed MAC calculation methods.
+     * @return array
+     */
+    public function getAllowedMacCalculationMethods()
+    {
+        return array('sha1' => 'SHA1 Hash', 'md5' => 'MD5 Hash');
     }
 
     private function mapMandatoryParameters()
@@ -230,19 +243,19 @@ class UrlGenerator
     /**
      * @return array
      */
-    private function getAllowedMacCalculationMethods()
+    private function getAllowedMacCalculationMethodsCodes()
     {
-        return array('sha1', 'md5');
+        return array_keys($this->getAllowedMacCalculationMethods());
     }
 
     private function checkMacMethod()
     {
-        if (!in_array($this->macMethod, $this->getAllowedMacCalculationMethods())) {
+        if (!in_array($this->macMethod, $this->getAllowedMacCalculationMethodsCodes())) {
             throw new \InvalidArgumentException(
                 sprintf(
                     'Invalid MAC calculation method "%s" (only "%s" allowed).',
                     $this->macMethod,
-                    implode(', ', $this->getAllowedMacCalculationMethods())
+                    implode(', ', $this->getAllowedMacCalculationMethodsCodes())
                 )
             );
         }

@@ -282,17 +282,11 @@ class Handler
             'alias',
             'importo',
             'divisa',
-            'session_id',
             'codTrans',
+            'mac',
+            'esito',
             'data',
             'orario',
-            'esito',
-            'codAut',
-            '$BRAND',
-            'nome',
-            'cognome',
-            'email',
-            'mac',
         );
         $missingParams = array();
         foreach ($requiredParams as $param) {

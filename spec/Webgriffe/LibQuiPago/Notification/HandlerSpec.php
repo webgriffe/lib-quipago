@@ -20,6 +20,28 @@ class HandlerSpec extends ObjectBehavior
         );
     }
 
+    function it_throws_an_exception_if_amount_is_not_numeric()
+    {
+        $this->shouldHaveType('Webgriffe\\LibQuiPago\\Notification\\Handler');
+        $requestRawParams = $this->getRequestRawParams();
+        $requestRawParams['importo'] = 'ABC';
+        $this->shouldThrow(\InvalidArgumentException::class)->during(
+            'handle',
+            array('secret_key', 'sha1', $requestRawParams)
+        );
+    }
+
+    function it_throws_an_exception_if_amount_is_not_an_integer_number()
+    {
+        $this->shouldHaveType('Webgriffe\\LibQuiPago\\Notification\\Handler');
+        $requestRawParams = $this->getRequestRawParams();
+        $requestRawParams['importo'] = '100.10';
+        $this->shouldThrow(\InvalidArgumentException::class)->during(
+            'handle',
+            array('secret_key', 'sha1', $requestRawParams)
+        );
+    }
+
     function it_throws_an_exception_if_mac_is_wrong()
     {
         $this->shouldHaveType('Webgriffe\\LibQuiPago\\Notification\\Handler');
@@ -43,7 +65,7 @@ class HandlerSpec extends ObjectBehavior
         $this->getTransactionDate()->shouldHaveType(\DateTime::class);
         $this->getTransactionDate()->format('d/m/Y H:i:s')->shouldReturn('21/02/2016 18:18:54');
         $this->getAuthCode()->shouldReturn('123abc');
-        $this->getMacFromRequest()->shouldReturn('04fbcde788ac39d9760fa23802dbf7cfda5ced69');
+        $this->getMacFromRequest()->shouldReturn('c83cee2a5422189cab2b54ef685b29dc428741dc');
         $this->getMerchantAlias()->shouldReturn('merchant_123');
         $this->getSessionId()->shouldReturn('123123');
         $this->getCardBrand()->shouldReturn('Visa');
@@ -57,7 +79,7 @@ class HandlerSpec extends ObjectBehavior
         $this->shouldHaveType('Webgriffe\\LibQuiPago\\Notification\\Handler');
         $requestRawParams = $this->getRequestRawParams();
         $requestRawParams['esito'] = 'KO';
-        $requestRawParams['mac'] = 'ed80e2807c8eb110fcf90a50b8c99a2f3bb21f95';
+        $requestRawParams['mac'] = '5246a2f5d8dce9a0cabb4c4369cf69c4b567647e';
         $this->handle('secret_key', 'sha1', $requestRawParams);
         $this->isTransactionResultPositive()->shouldReturn(false);
     }
@@ -69,7 +91,7 @@ class HandlerSpec extends ObjectBehavior
         $logger->debug('Webgriffe\\LibQuiPago\\Notification\\Handler::handle method called')->shouldBeCalled();
         $logger->debug('Secret key: "secret_key"')->shouldBeCalled();
         $logger->debug(sprintf('Request params: %s', print_r($this->getRequestRawParams(), true)))->shouldBeCalled();
-        $str = 'codTrans=1200123esito=OKimporto=50.5divisa=EURdata=20160221orario=181854codAut=123abcsecret_key';
+        $str = 'codTrans=1200123esito=OKimporto=5050divisa=EURdata=20160221orario=181854codAut=123abcsecret_key';
         $logger->debug("MAC calculation string is \"$str\"")->shouldBeCalled();
         $logger->debug('MAC calculation method is "sha1"')->shouldBeCalled();
         $this->handle('secret_key', 'sha1', $this->getRequestRawParams());
@@ -79,7 +101,7 @@ class HandlerSpec extends ObjectBehavior
     {
         $this->shouldHaveType('Webgriffe\\LibQuiPago\\Notification\\Handler');
         $requestRawParams = $this->getRequestRawParams();
-        $requestRawParams['mac'] = '684f5e4f17736ad7a10f7922f676bba2';
+        $requestRawParams['mac'] = 'f349d37c0933a97cf922290b3afa34f2';
         $this->handle('secret_key', 'md5', $requestRawParams);
 
         $this->getTransactionCode()->shouldReturn('1200123');
@@ -89,7 +111,7 @@ class HandlerSpec extends ObjectBehavior
         $this->getTransactionDate()->shouldHaveType(\DateTime::class);
         $this->getTransactionDate()->format('d/m/Y H:i:s')->shouldReturn('21/02/2016 18:18:54');
         $this->getAuthCode()->shouldReturn('123abc');
-        $this->getMacFromRequest()->shouldReturn('684f5e4f17736ad7a10f7922f676bba2');
+        $this->getMacFromRequest()->shouldReturn('f349d37c0933a97cf922290b3afa34f2');
         $this->getMerchantAlias()->shouldReturn('merchant_123');
         $this->getSessionId()->shouldReturn('123123');
         $this->getCardBrand()->shouldReturn('Visa');
@@ -106,18 +128,18 @@ class HandlerSpec extends ObjectBehavior
         return array(
             'codTrans' => '1200123',
             'esito' => 'OK',
-            'importo' => 50.50,
+            'importo' => '5050',
             'divisa' => 'EUR',
             'data' => '20160221',
             'orario' => '181854',
             'codAut' => '123abc',
-            'mac' => '04fbcde788ac39d9760fa23802dbf7cfda5ced69',
+            'mac' => 'c83cee2a5422189cab2b54ef685b29dc428741dc',
             'alias' => 'merchant_123',
             'session_id' => '123123',
             '$BRAND' => 'Visa',
             'nome' => 'John',
             'cognome' => 'Doe',
-            'email' => 'jd@mail.com',
+            'mail' => 'jd@mail.com',
         );
     }
 }

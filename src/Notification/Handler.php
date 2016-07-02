@@ -255,19 +255,20 @@ class Handler
     private function mapNotificationParams(array $rawParams)
     {
         $this->checkForMissingParameters($rawParams);
+        $this->validateParameters($rawParams);
         $this->merchantAlias = $rawParams['alias'];
-        $this->amount = $rawParams['importo'];
+        $this->amount = $rawParams['importo'] / 100;
         $this->currency = $rawParams['divisa'];
-        $this->sessionId = $rawParams['session_id'];
         $this->transactionCode = $rawParams['codTrans'];
         $this->transactionDate = new \DateTime($rawParams['data'] . ' ' . $rawParams['orario']);
         $this->authCode = $rawParams['codAut'];
         $this->transactionResult = $rawParams['esito'] === 'OK' ? true : false;
-        $this->cardBrand = $rawParams['$BRAND'];
-        $this->firstName = $rawParams['nome'];
-        $this->lastName = $rawParams['cognome'];
-        $this->email = $rawParams['email'];
         $this->macFromRequest = $rawParams['mac'];
+        $this->sessionId = isset($rawParams['session_id']) ? $rawParams['session_id'] : null;
+        $this->cardBrand = isset($rawParams['$BRAND']) ? $rawParams['$BRAND'] : null;
+        $this->firstName = isset($rawParams['nome']) ? $rawParams['nome'] : null;
+        $this->lastName = isset($rawParams['cognome']) ? $rawParams['cognome'] : null;
+        $this->email = isset($rawParams['mail']) ? $rawParams['mail'] : null;
         $this->cardCountry = isset($rawParams['nazionalita']) ? $rawParams['nazionalita'] : null;
         $this->pan = isset($rawParams['Pan']) ? $rawParams['Pan'] : null;
         $this->panExpiration = isset($rawParams['Scadenza_pan']) ? new \DateTime($rawParams['Scadenza_pan']) : null;
@@ -330,5 +331,19 @@ class Handler
                 $macCalculationString
             )
         );
+    }
+
+    private function validateParameters(array $rawParams)
+    {
+        $rawAmount = $rawParams['importo'];
+        if (!ctype_digit($rawAmount)) {
+            throw new \InvalidArgumentException(
+                sprintf(
+                    'Invalid payment notification request. Amount parameter (importo) should be an integer number, ' .
+                    '"%s" given.',
+                    $rawAmount
+                )
+            );
+        }
     }
 }

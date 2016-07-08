@@ -261,9 +261,9 @@ class Handler
         $this->currency = $rawParams['divisa'];
         $this->transactionCode = $rawParams['codTrans'];
         $this->transactionDate = new \DateTime($rawParams['data'] . ' ' . $rawParams['orario']);
-        $this->authCode = $rawParams['codAut'];
-        $this->transactionResult = $rawParams['esito'] === 'OK' ? true : false;
         $this->macFromRequest = $rawParams['mac'];
+        $this->authCode = isset($rawParams['codAut']) ? $rawParams['codAut'] : null;
+        $this->transactionResult = $rawParams['esito'] === 'OK' ? true : false;
         $this->sessionId = isset($rawParams['session_id']) ? $rawParams['session_id'] : null;
         $this->cardBrand = isset($rawParams['$BRAND']) ? $rawParams['$BRAND'] : null;
         $this->firstName = isset($rawParams['nome']) ? $rawParams['nome'] : null;
@@ -310,7 +310,11 @@ class Handler
         $macCalculationParams = array('codTrans', 'esito', 'importo', 'divisa', 'data', 'orario', 'codAut');
         $macCalculationString = '';
         foreach ($macCalculationParams as $macCalculationParam) {
-            $macCalculationString .= sprintf('%s=%s', $macCalculationParam, $rawParams[$macCalculationParam]);
+            $macCalculationString .= sprintf(
+                '%s=%s',
+                $macCalculationParam,
+                isset($rawParams[$macCalculationParam]) ? $rawParams[$macCalculationParam] : ''
+            );
         }
         $macCalculationString .= $secretKey;
         $macMethod = $this->macMethod;

@@ -1,6 +1,8 @@
 Webgriffe QuiPago (Key Client) PHP library
 ==========================================
 
+[![Build Status](https://travis-ci.org/webgriffe/lib-quipago.svg?branch=master)](https://travis-ci.org/webgriffe/lib-quipago)
+
 Development workflow:
 
 * composer install

@@ -1,6 +1,6 @@
 {
     "name": "webgriffe/lib-quipago",
-    "license": "proprietary",
+    "license": "MIT",
     "authors": [
         {
             "name": "Webgriffe SRL",

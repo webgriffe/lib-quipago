@@ -1,0 +1,4 @@
+suites:
+  webgriffe_lib_quipago_suite:
+      namespace: Webgriffe\LibQuiPago
+      psr4_prefix: Webgriffe\LibQuiPago

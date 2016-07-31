@@ -5,10 +5,8 @@ namespace spec\Webgriffe\LibQuiPago\Api;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 use Psr\Http\Message\RequestInterface;
-use Respect\Validation\Exceptions\ExceptionInterface;
-use Respect\Validation\Exceptions\NestedValidationException;
-use Respect\Validation\Exceptions\ValidationException;
 use Webgriffe\LibQuiPago\Api\EcRequest;
+use Webgriffe\LibQuiPago\Api\ValidationException;
 
 class EcRequestSpec extends ObjectBehavior
 {
@@ -57,7 +55,8 @@ XML;
         $data = $this->get_valid_capture_request_data();
         $data[0] = '...'; // Not valid
         $this->beConstructedThrough('createCaptureRequest', $data);
-        $this->shouldThrow(ExceptionInterface::class)->duringInstantiation();
+        $exception = new ValidationException('- merchantAlias must contain only letters (a-z), digits (0-9) and "_"');
+        $this->shouldThrow($exception)->duringInstantiation();
     }
 
     /**

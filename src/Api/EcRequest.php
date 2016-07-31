@@ -3,6 +3,7 @@
 namespace Webgriffe\LibQuiPago\Api;
 
 use GuzzleHttp\Psr7\Request;
+use Respect\Validation\Exceptions\NestedValidationException;
 use Respect\Validation\Validator as v;
 
 class EcRequest
@@ -101,26 +102,7 @@ class EcRequest
         $this->user = $user;
         $this->isTest = $isTest;
 
-        $validator = v::attribute('merchantAlias', v::stringType()->alnum('_')->noWhitespace()->length(1, 30))
-            ->attribute('macKey', v::stringType()->length(1))
-            ->attribute('transactionCode', v::stringType()->alnum()->noWhitespace()->length(1, 30))
-            ->attribute('requestType', v::oneOf(v::stringType()->equals('FA'), v::stringType()->equals('RA')))
-            ->attribute('operationId', v::stringType()->digit()->noWhitespace()->length(1, 10))
-            ->attribute(
-                'operationType',
-                v::oneOf(
-                    v::stringType()->equals(self::CAPTURE_OPERATION_TYPE),
-                    v::stringType()->equals(self::VOID_OPERATION_TYPE)
-                )
-            )
-            ->attribute('originalAmount', v::stringType()->digit()->noWhitespace()->length(9, 9))
-            ->attribute('currency', v::stringType()->alnum()->noWhitespace()->length(3, 3))
-            ->attribute('authCode', v::stringType()->alnum()->noWhitespace()->length(1, 10))
-            ->attribute('operationAmount', v::stringType()->digit()->noWhitespace()->length(9, 9))
-            ->attribute('user', v::optional(v::stringType()->alnum()->length(0, 20)))
-            ->attribute('isTest', v::boolType())
-        ;
-        $validator->assert($this);
+        $this->validate();
     }
 
     /**
@@ -236,5 +218,32 @@ class EcRequest
     private function convertAmountToString($amount)
     {
         return str_pad((string)round($amount, 2)*100, 9, '0', STR_PAD_LEFT);
+    }
+
+    private function validate()
+    {
+        try {
+            $validator = v::attribute('merchantAlias', v::stringType()->alnum('_')->noWhitespace()->length(1, 30))
+                ->attribute('macKey', v::stringType()->length(1))
+                ->attribute('transactionCode', v::stringType()->alnum()->noWhitespace()->length(1, 30))
+                ->attribute('requestType', v::oneOf(v::stringType()->equals('FA'), v::stringType()->equals('RA')))
+                ->attribute('operationId', v::stringType()->digit()->noWhitespace()->length(1, 10))
+                ->attribute(
+                    'operationType',
+                    v::oneOf(
+                        v::stringType()->equals(self::CAPTURE_OPERATION_TYPE),
+                        v::stringType()->equals(self::VOID_OPERATION_TYPE)
+                    )
+                )
+                ->attribute('originalAmount', v::stringType()->digit()->noWhitespace()->length(9, 9))
+                ->attribute('currency', v::stringType()->alnum()->noWhitespace()->length(3, 3))
+                ->attribute('authCode', v::stringType()->alnum()->noWhitespace()->length(1, 10))
+                ->attribute('operationAmount', v::stringType()->digit()->noWhitespace()->length(9, 9))
+                ->attribute('user', v::optional(v::stringType()->alnum()->length(0, 20)))
+                ->attribute('isTest', v::boolType());
+            $validator->assert($this);
+        } catch (NestedValidationException $e) {
+            throw new ValidationException($e->getFullMessage());
+        }
     }
 }

@@ -8,6 +8,7 @@ use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
+use Webgriffe\LibQuiPago\Api\EcRequest;
 use Webgriffe\LibQuiPago\Api\EcResponse;
 
 class ClientSpec extends ObjectBehavior
@@ -35,7 +36,7 @@ class ClientSpec extends ObjectBehavior
         $this
             ->capture(
                 '00000123', // $transactionCode
-                'FA', // $operationType
+                EcRequest::REQUEST_TYPE_FIRST_ATTEMPT, // $operationType
                 '1213123', // $operationId
                 230.78, // $originalAmount
                 'EUR', // $currency
@@ -61,7 +62,7 @@ class ClientSpec extends ObjectBehavior
         $this
             ->capture(
                 '00000123', // $transactionCode
-                'FA', // $operationType
+                EcRequest::REQUEST_TYPE_FIRST_ATTEMPT, // $operationType
                 '1213123', // $operationId
                 230.78, // $originalAmount
                 'EUR', // $currency

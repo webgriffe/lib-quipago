@@ -5,6 +5,7 @@ namespace spec\Webgriffe\LibQuiPago\Api;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 use Psr\Http\Message\ResponseInterface;
+use Webgriffe\LibQuiPago\Api\EcRequest;
 use Webgriffe\LibQuiPago\Api\EcResponse;
 use Webgriffe\LibQuiPago\Api\ValidationException;
 
@@ -93,7 +94,7 @@ class EcResponseSpec extends ObjectBehavior
         $this->getResultCode()->shouldBeEqualTo('0');
         $this->getMerchantAlias()->shouldBeEqualTo('0000000050242004');
         $this->getTransactionCode()->shouldBeEqualTo('T0000000000000000001');
-        $this->getRequestType()->shouldBeEqualTo('FA');
+        $this->getRequestType()->shouldBeEqualTo(EcRequest::REQUEST_TYPE_FIRST_ATTEMPT);
         $this->getOperationId()->shouldBeEqualTo('0000000001');
         $this->getOperationType()->shouldBeEqualTo('C');
         $this->getOperationAmountRaw()->shouldBeEqualTo('000120056');

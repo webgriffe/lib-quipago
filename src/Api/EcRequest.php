@@ -11,6 +11,9 @@ class EcRequest
     const CAPTURE_OPERATION_TYPE = 'P';
     const VOID_OPERATION_TYPE = 'R';
 
+    const REQUEST_TYPE_FIRST_ATTEMPT = 'FA';
+    const REQUEST_TYPE_RETRY_ATTEMPT = 'RA';
+
     /**
      * @var string
      */
@@ -226,7 +229,13 @@ class EcRequest
             $validator = v::attribute('merchantAlias', v::stringType()->alnum('_')->noWhitespace()->length(1, 30))
                 ->attribute('macKey', v::stringType()->length(1))
                 ->attribute('transactionCode', v::stringType()->alnum()->noWhitespace()->length(1, 30))
-                ->attribute('requestType', v::oneOf(v::stringType()->equals('FA'), v::stringType()->equals('RA')))
+                ->attribute(
+                    'requestType',
+                    v::oneOf(
+                        v::stringType()->equals(self::REQUEST_TYPE_FIRST_ATTEMPT),
+                        v::stringType()->equals(self::REQUEST_TYPE_RETRY_ATTEMPT)
+                    )
+                )
                 ->attribute('operationId', v::stringType()->digit()->noWhitespace()->length(1, 10))
                 ->attribute(
                     'operationType',

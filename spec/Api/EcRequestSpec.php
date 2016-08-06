@@ -68,7 +68,7 @@ XML;
             '0000000050242004', // $merchantAlias,
             'QKXQWGUFCKBQYHOPBNJTM', //$macKey,
             'T0000000000000000001', //$transactionCode,
-            'FA', //$requestType,
+            EcRequest::REQUEST_TYPE_FIRST_ATTEMPT, //$requestType,
             '0000000001', //$operationId,
             1230.56, //$originalAmount,
             '978', //$currency,

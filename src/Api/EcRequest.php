@@ -122,6 +122,49 @@ class EcRequest
      * @param bool $isTest
      * @return EcRequest
      */
+    public static function createVoidRequest(
+        $merchantAlias,
+        $macKey,
+        $transactionCode,
+        $requestType,
+        $operationId,
+        $originalAmount,
+        $currency,
+        $authCode,
+        $operationAmount,
+        $user = '',
+        $isTest = false
+    ) {
+        return new EcRequest(
+            self::OPERATION_TYPE_VOID,
+            $merchantAlias,
+            $macKey,
+            $transactionCode,
+            $requestType,
+            $operationId,
+            $originalAmount,
+            $currency,
+            $authCode,
+            $operationAmount,
+            $user,
+            $isTest
+        );
+    }
+
+    /**
+     * @param string $merchantAlias
+     * @param string $macKey
+     * @param string $transactionCode
+     * @param string $requestType
+     * @param string $operationId
+     * @param float $originalAmount
+     * @param string $currency
+     * @param string $authCode
+     * @param float $operationAmount
+     * @param string $user
+     * @param bool $isTest
+     * @return EcRequest
+     */
     public static function createCaptureRequest(
         $merchantAlias,
         $macKey,

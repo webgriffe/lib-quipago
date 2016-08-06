@@ -59,10 +59,58 @@ XML;
         $this->shouldThrow($exception)->duringInstantiation();
     }
 
+    function it_is_initializable_as_void_request()
+    {
+        $this->beConstructedThrough('createVoidRequest', $this->get_valid_void_request_data());
+        $this->shouldHaveType(EcRequest::class);
+        $this->getUrl()->shouldReturn('https://ecommerce.keyclient.it/ecomm/ecomm/XPayBo');
+
+        $body = <<<XML
+<?xml version="1.0" encoding="ISO-8859-15"?>
+<VPOSREQ>
+  <alias>0000000050242004</alias>
+  <ECREQ>
+    <codTrans>T0000000000000000001</codTrans>
+    <request_type>FA</request_type>
+    <id_op>0000000001</id_op>
+    <type_op>R</type_op>
+    <importo>000123056</importo>
+    <divisa>978</divisa>
+    <codAut>098765</codAut>
+    <importo_op>000120056</importo_op>
+  </ECREQ>
+  <user>User001</user>
+  <mac>67510ca58300fab19e8d056b9b111fa2b6655140</mac>
+</VPOSREQ>
+
+XML;
+        $this->getBody()->shouldReturn($body);
+    }
+
     /**
      * @return array
      */
     private function get_valid_capture_request_data()
+    {
+        return [
+            '0000000050242004', // $merchantAlias,
+            'QKXQWGUFCKBQYHOPBNJTM', //$macKey,
+            'T0000000000000000001', //$transactionCode,
+            EcRequest::REQUEST_TYPE_FIRST_ATTEMPT, //$requestType,
+            '0000000001', //$operationId,
+            1230.56, //$originalAmount,
+            '978', //$currency,
+            '098765', //$authCode,
+            1200.56, //$operationAmount,
+            'User001', //$user,
+            false, //$isTest,
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    private function get_valid_void_request_data()
     {
         return [
             '0000000050242004', // $merchantAlias,

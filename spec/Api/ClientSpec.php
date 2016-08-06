@@ -33,19 +33,18 @@ class ClientSpec extends ObjectBehavior
 
         $this->beConstructedWith($client, $this->merchantAlias, $this->macKey, $this->user);
 
-        $this
-            ->capture(
-                '00000123', // $transactionCode
-                EcRequest::REQUEST_TYPE_FIRST_ATTEMPT, // $operationType
-                '1213123', // $operationId
-                230.78, // $originalAmount
-                'EUR', // $currency
-                '00901', // $authCode
-                200, // $operationAmount
-                false // $isTest
-            )
-            ->shouldHaveType(EcResponse::class)
-        ;
+        $response = $this->capture(
+            '00000123', // $transactionCode
+            EcRequest::REQUEST_TYPE_FIRST_ATTEMPT, // $requestType
+            '1213123', // $operationId
+            230.78, // $originalAmount
+            'EUR', // $currency
+            '00901', // $authCode
+            200, // $operationAmount
+            false // $isTest
+        );
+        $response->shouldHaveType(EcResponse::class);
+        $response->isPositive()->shouldReturn(true);
     }
 
     function it_should_disable_ssl_verify_when_is_test(ClientInterface $client, ResponseInterface $response)
@@ -59,19 +58,18 @@ class ClientSpec extends ObjectBehavior
 
         $this->beConstructedWith($client, $this->merchantAlias, $this->macKey, $this->user);
 
-        $this
-            ->capture(
-                '00000123', // $transactionCode
-                EcRequest::REQUEST_TYPE_FIRST_ATTEMPT, // $operationType
-                '1213123', // $operationId
-                230.78, // $originalAmount
-                'EUR', // $currency
-                '00901', // $authCode
-                200, // $operationAmount
-                true // $isTest
-            )
-            ->shouldHaveType(EcResponse::class)
-        ;
+        $response = $this->capture(
+            '00000123', // $transactionCode
+            EcRequest::REQUEST_TYPE_FIRST_ATTEMPT, // $requestType
+            '1213123', // $operationId
+            230.78, // $originalAmount
+            'EUR', // $currency
+            '00901', // $authCode
+            200, // $operationAmount
+            true // $isTest
+        );
+        $response->shouldHaveType(EcResponse::class);
+        $response->isPositive()->shouldReturn(true);
     }
 
     private function get_positive_response_body()

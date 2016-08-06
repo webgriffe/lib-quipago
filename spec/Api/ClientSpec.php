@@ -3,6 +3,7 @@
 namespace spec\Webgriffe\LibQuiPago\Api;
 
 use GuzzleHttp\ClientInterface;
+use GuzzleHttp\RequestOptions;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 use Psr\Http\Message\RequestInterface;
@@ -24,33 +25,49 @@ class ClientSpec extends ObjectBehavior
         $this->getUser()->shouldReturn($this->user);
     }
 
-    function it_should_capture_funds(
-        ClientInterface $client,
-        ResponseInterface $response
-    ) {
+    function it_should_capture_funds(ClientInterface $client, ResponseInterface $response)
+    {
         $response->getBody()->willReturn($this->get_positive_response_body());
-        $client->send(Argument::type(RequestInterface::class))->shouldBeCalled()->willReturn($response);
+        $client->send(Argument::type(RequestInterface::class), [])->shouldBeCalled()->willReturn($response);
 
         $this->beConstructedWith($client, $this->merchantAlias, $this->macKey, $this->user);
 
-        $transactionCode = '00000123';
-        $operationType = 'FA';
-        $operationId = '1213123';
-        $originalAmount = 230.78;
-        $currency = 'EUR';
-        $authCode = '00901';
-        $operationAmount = 200;
-        $isTest = false;
         $this
             ->capture(
-                $transactionCode,
-                $operationType,
-                $operationId,
-                $originalAmount,
-                $currency,
-                $authCode,
-                $operationAmount,
-                $isTest
+                '00000123', // $transactionCode
+                'FA', // $operationType
+                '1213123', // $operationId
+                230.78, // $originalAmount
+                'EUR', // $currency
+                '00901', // $authCode
+                200, // $operationAmount
+                false // $isTest
+            )
+            ->shouldHaveType(EcResponse::class)
+        ;
+    }
+
+    function it_should_disable_ssl_verify_when_is_test(ClientInterface $client, ResponseInterface $response)
+    {
+        $response->getBody()->willReturn($this->get_positive_response_body());
+        $client
+            ->send(Argument::type(RequestInterface::class), [RequestOptions::VERIFY => false])
+            ->shouldBeCalled()
+            ->willReturn($response)
+        ;
+
+        $this->beConstructedWith($client, $this->merchantAlias, $this->macKey, $this->user);
+
+        $this
+            ->capture(
+                '00000123', // $transactionCode
+                'FA', // $operationType
+                '1213123', // $operationId
+                230.78, // $originalAmount
+                'EUR', // $currency
+                '00901', // $authCode
+                200, // $operationAmount
+                true // $isTest
             )
             ->shouldHaveType(EcResponse::class)
         ;

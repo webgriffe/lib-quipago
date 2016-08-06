@@ -3,6 +3,7 @@
 namespace Webgriffe\LibQuiPago\Api;
 
 use GuzzleHttp\ClientInterface;
+use GuzzleHttp\RequestOptions;
 
 class Client
 {
@@ -90,7 +91,11 @@ class Client
             $this->user,
             $isTest
         );
-        $response = $this->httpClient->send($ecRequest->asPsrRequest());
+        $options = [];
+        if ($isTest) {
+            $options = [RequestOptions::VERIFY => false];
+        }
+        $response = $this->httpClient->send($ecRequest->asPsrRequest(), $options);
         return EcResponse::createFromPsrResponse($response, $this->macKey);
     }
 }

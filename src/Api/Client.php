@@ -98,4 +98,46 @@ class Client
         $response = $this->httpClient->send($ecRequest->asPsrRequest(), $options);
         return EcResponse::createFromPsrResponse($response, $this->macKey);
     }
+
+    /**
+     * @param string $transactionCode
+     * @param string $requestType
+     * @param string $operationId
+     * @param float $originalAmount
+     * @param string $currency
+     * @param string $authCode
+     * @param float $operationAmount
+     * @param bool $isTest
+     * @return EcResponse
+     */
+    public function void(
+        $transactionCode,
+        $requestType,
+        $operationId,
+        $originalAmount,
+        $currency,
+        $authCode,
+        $operationAmount,
+        $isTest
+    ) {
+        $ecRequest = EcRequest::createVoidRequest(
+            $this->merchantAlias,
+            $this->macKey,
+            $transactionCode,
+            $requestType,
+            $operationId,
+            $originalAmount,
+            $currency,
+            $authCode,
+            $operationAmount,
+            $this->user,
+            $isTest
+        );
+        $options = [];
+        if ($isTest) {
+            $options = [RequestOptions::VERIFY => false];
+        }
+        $response = $this->httpClient->send($ecRequest->asPsrRequest(), $options);
+        return EcResponse::createFromPsrResponse($response, $this->macKey);
+    }
 }

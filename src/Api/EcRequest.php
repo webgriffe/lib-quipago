@@ -8,8 +8,8 @@ use Respect\Validation\Validator as v;
 
 class EcRequest
 {
-    const CAPTURE_OPERATION_TYPE = 'P';
-    const VOID_OPERATION_TYPE = 'R';
+    const OPERATION_TYPE_CAPTURE = 'P';
+    const OPERATION_TYPE_VOID = 'R';
 
     const REQUEST_TYPE_FIRST_ATTEMPT = 'FA';
     const REQUEST_TYPE_RETRY_ATTEMPT = 'RA';
@@ -136,7 +136,7 @@ class EcRequest
         $isTest = false
     ) {
         return new EcRequest(
-            self::CAPTURE_OPERATION_TYPE,
+            self::OPERATION_TYPE_CAPTURE,
             $merchantAlias,
             $macKey,
             $transactionCode,
@@ -240,8 +240,8 @@ class EcRequest
                 ->attribute(
                     'operationType',
                     v::oneOf(
-                        v::stringType()->equals(self::CAPTURE_OPERATION_TYPE),
-                        v::stringType()->equals(self::VOID_OPERATION_TYPE)
+                        v::stringType()->equals(self::OPERATION_TYPE_CAPTURE),
+                        v::stringType()->equals(self::OPERATION_TYPE_VOID)
                     )
                 )
                 ->attribute('originalAmount', v::stringType()->digit()->noWhitespace()->length(9, 9))

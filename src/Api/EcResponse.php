@@ -61,8 +61,8 @@ class EcResponse
         $this->operationId = (string)$xmlReader->ECRES->id_op;
         $this->operationType = (string)$xmlReader->ECRES->type_op;
         $this->operationAmount = (string)$xmlReader->ECRES->importo_op;
-        $this->mac = $this->validateMac((string)$xmlReader->mac, $macKey);
         $this->rawBody = $rawBody;
+        $this->mac = $this->validateMac((string)$xmlReader->mac, $macKey);
     }
 
     /**
@@ -123,8 +123,19 @@ class EcResponse
         }
     }
 
+    /**
+     * @return string
+     */
+    public function getMac()
+    {
+        return $this->mac;
+    }
+
     private function validateMac($mac, $macKey)
     {
+        if ($mac === '') {
+            return $mac;
+        }
         $macString = implode(
             '',
             array(
@@ -142,9 +153,10 @@ class EcResponse
         }
         throw new ValidationException(
             sprintf(
-                'Invalid MAC code in EcResponse body. Expected MAC was "%s", "%s" given.',
+                'Invalid MAC code in EcResponse body. Expected MAC was "%s", "%s" given. Raw body is "%s".',
                 strtolower($expectedMac),
-                strtolower($mac)
+                strtolower($mac),
+                $this->rawBody
             )
         );
     }

@@ -55,9 +55,20 @@ class EcResponseSpec extends ObjectBehavior
         $this->beConstructedThrough('createFromPsrResponse', array($response, $this->macKey));
         $exception = new ValidationException(
             'Invalid MAC code in EcResponse body. ' .
-            'Expected MAC was "dece8354cb73bc31224f10747e085909b9752c13", "invalid" given.'
+            'Expected MAC was "dece8354cb73bc31224f10747e085909b9752c13", "invalid" given. Raw body is "' .
+            $body . '".'
         );
         $this->shouldThrow($exception)->duringInstantiation();
+    }
+
+    function it_should_not_validate_mac_if_it_is_empty(ResponseInterface $response)
+    {
+        $body = $this->get_positive_response_body();
+        $body = str_replace('<mac>dece8354cb73bc31224f10747e085909b9752c13</mac>', '<mac></mac>', $body);
+        $response->getBody()->willReturn($body);
+        $this->beConstructedThrough('createFromPsrResponse', array($response, $this->macKey));
+        $this->shouldHaveType(EcResponse::class);
+        $this->getMac()->shouldReturn('');
     }
 
     function it_should_return_error_message_in_case_of_negative_result(ResponseInterface $response)

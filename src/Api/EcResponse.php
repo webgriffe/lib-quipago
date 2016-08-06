@@ -13,7 +13,7 @@ class EcResponse
      */
     private $rawBody;
     /**
-     * @var int
+     * @var string
      */
     private $resultCode;
     /**
@@ -24,6 +24,10 @@ class EcResponse
      * @var string
      */
     private $transactionCode;
+    /**
+     * @var string
+     */
+    private $requestType;
     /**
      * @var string
      */
@@ -58,6 +62,7 @@ class EcResponse
         $this->resultCode = (string)$xmlReader->ECRES->esitoRichiesta;
         $this->merchantAlias = (string)$xmlReader->alias;
         $this->transactionCode = (string)$xmlReader->ECRES->codTrans;
+        $this->requestType = (string)$xmlReader->ECRES->request_type;
         $this->operationId = (string)$xmlReader->ECRES->id_op;
         $this->operationType = (string)$xmlReader->ECRES->type_op;
         $this->operationAmount = (string)$xmlReader->ECRES->importo_op;
@@ -129,6 +134,70 @@ class EcResponse
     public function getMac()
     {
         return $this->mac;
+    }
+
+    /**
+     * @return string
+     */
+    public function getResultCode()
+    {
+        return $this->resultCode;
+    }
+
+    /**
+     * @return string
+     */
+    public function getMerchantAlias()
+    {
+        return $this->merchantAlias;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTransactionCode()
+    {
+        return $this->transactionCode;
+    }
+
+    /**
+     * @return string
+     */
+    public function getRequestType()
+    {
+        return $this->requestType;
+    }
+
+    /**
+     * @return string
+     */
+    public function getOperationId()
+    {
+        return $this->operationId;
+    }
+
+    /**
+     * @return string
+     */
+    public function getOperationType()
+    {
+        return $this->operationType;
+    }
+
+    /**
+     * @return string
+     */
+    public function getOperationAmountRaw()
+    {
+        return $this->operationAmount;
+    }
+
+    /**
+     * @return float
+     */
+    public function getOperationAmount()
+    {
+        return (int)$this->operationAmount / 100;
     }
 
     private function validateMac($mac, $macKey)

@@ -83,6 +83,24 @@ class EcResponseSpec extends ObjectBehavior
         );
     }
 
+    function it_should_return_response_data(ResponseInterface $response)
+    {
+        $body = $this->get_positive_response_body();
+        $response->getBody()->willReturn($body);
+        $this->beConstructedThrough('createFromPsrResponse', array($response, $this->macKey));
+        $this->shouldHaveType(EcResponse::class);
+        $this->getRawBody()->shouldBeEqualTo($body);
+        $this->getResultCode()->shouldBeEqualTo('0');
+        $this->getMerchantAlias()->shouldBeEqualTo('0000000050242004');
+        $this->getTransactionCode()->shouldBeEqualTo('T0000000000000000001');
+        $this->getRequestType()->shouldBeEqualTo('FA');
+        $this->getOperationId()->shouldBeEqualTo('0000000001');
+        $this->getOperationType()->shouldBeEqualTo('C');
+        $this->getOperationAmountRaw()->shouldBeEqualTo('000120056');
+        $this->getOperationAmount()->shouldBeEqualTo(1200.56);
+        $this->getMac()->shouldBeEqualTo('dece8354cb73bc31224f10747e085909b9752c13');
+    }
+
     private function get_positive_response_body()
     {
         return <<<XML

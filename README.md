@@ -69,7 +69,47 @@ You can also handle a server-to-server notification by QuiPago using the notific
     // And you know if the transaction has been authorized or not by calling
     $handler->isTransactionResultPositive(); // true
 
-You inject a `Psr\Log\LoggerInterface` logger to both `Webgriffe\LibQuiPago\PaymentInit\UrlGenerator` and `Webgriffe\LibQuiPago\Notification\Handler` to enable logging of internal operations.
+You can inject a `Psr\Log\LoggerInterface` logger to both `Webgriffe\LibQuiPago\PaymentInit\UrlGenerator` and `Webgriffe\LibQuiPago\Notification\Handler` to enable logging of internal operations.
+
+ECREQ/ECRES API
+---------------
+
+You can also send *ECREQ* messages through API `Client` and receive *ECRES* response messages. Capture and void methods are supported:
+
+	require 'vendor/autoload.php';
+
+    $client = new Webgriffe\LibQuiPago\Api\Client(
+        new GuzzleHttp\Client(),
+        'payment_3444153',
+        'TLGHTOWIZXQPTIZRALWKG',
+        'Manu'
+    );
+    
+    /** @var Webgriffe\LibQuiPago\Api\EcResponse $response */
+    $response = $client->capture(
+        '000000123', // Transaction Code
+        Webgriffe\LibQuiPago\Api\EcRequest::REQUEST_TYPE_FIRST_ATTEMPT,
+        '000000123', // Operation Id
+        105, // Original Amount
+        '978', // Currency ISO code
+        'TESTOK', // Auth Code
+        105, // Operation Amount
+        true // Is test request?
+    );
+    
+    /** @var Webgriffe\LibQuiPago\Api\EcResponse $response */
+    $response = $client->void(
+        '000000123', // Transaction Code
+        Webgriffe\LibQuiPago\Api\EcRequest::REQUEST_TYPE_FIRST_ATTEMPT,
+        '000000123', // Operation Id
+        105, // Original Amount
+        '978', // Currency ISO code
+        'TESTOK', // Auth Code
+        105, // Operation Amount
+        true // Is test request?
+    );
+
+See the `Webgriffe\LibQuiPago\Api\EcResponse` class to know which data you can retrive from that object.
 
 Contributing
 ------------

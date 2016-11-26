@@ -6,6 +6,8 @@ use Psr\Log\LoggerInterface;
 
 class UrlGenerator
 {
+    const SHA1_METHOD = 'sha1';
+    const MD5_METHOD = 'md5';
     /**
      * Virtual POS gateway URL it should be https://ecommerce.keyclient.it/ecomm/ecomm/DispatcherServlet
      * @var string
@@ -193,7 +195,7 @@ class UrlGenerator
      */
     public function getAllowedMacCalculationMethods()
     {
-        return array('sha1' => 'SHA1 Hash', 'md5' => 'MD5 Hash');
+        return array(self::SHA1_METHOD => 'SHA1 Hash', self::MD5_METHOD => 'MD5 Hash');
     }
 
     private function mapMandatoryParameters()
@@ -237,6 +239,9 @@ class UrlGenerator
             $this->logger->debug(sprintf('MAC calculation string is "%s"', $macString));
             $this->logger->debug(sprintf('MAC calculation method is "%s"', $method));
         }
+        if ($this->isBase64EncodeEnabledForMethod($method)) {
+            return base64_encode($method($macString));
+        }
         return $method($macString);
     }
 
@@ -276,5 +281,16 @@ class UrlGenerator
     private function getAllowedCurrenciesCodes()
     {
         return array_keys($this->getAllowedCurrencies());
+    }
+
+    private function isBase64EncodeEnabledForMethod($method)
+    {
+        switch ($method) {
+            case self::MD5_METHOD:
+                return true;
+            case self::SHA1_METHOD:
+            default:
+                return false;
+        }
     }
 }

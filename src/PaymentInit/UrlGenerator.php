@@ -137,7 +137,11 @@ class UrlGenerator
         if ($this->logger) {
             $this->logger->debug(sprintf('Calculated MAC is "%s"', $params['mac']));
         }
-        return $this->gatewayUrl . '?' . http_build_query($params);
+        $url = $this->gatewayUrl . '?' . http_build_query($params);
+        if ($this->logger) {
+            $this->logger->debug(sprintf('Generated URL is "%s"', $url));
+        }
+        return $url;
     }
 
     /**

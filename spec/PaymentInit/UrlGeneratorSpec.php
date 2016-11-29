@@ -43,6 +43,11 @@ class UrlGeneratorSpec extends ObjectBehavior
         $logger->debug('MAC calculation string is "codTrans=1200123divisa=EURimporto=5050secret_key"')->shouldBeCalled();
         $logger->debug('MAC calculation method is "sha1"')->shouldBeCalled();
         $logger->debug('Calculated MAC is "0fa0ca05a13c6b5d0bd1466461319658f7f990bf"')->shouldBeCalled();
+        $expectedUrl = 'https://ecommerce.keyclient.it/ecomm/ecomm/DispatcherServlet' .
+            '?alias=merchant_alias&importo=5050&divisa=EUR&codTrans=1200123&url_back=http-cancel-url' .
+            '&mail=customer%40mail.com&url=http-succes-url&session_id=SESSID123' .
+            '&languageId=ITA&urlpost=http-post-url&mac=0fa0ca05a13c6b5d0bd1466461319658f7f990bf';
+        $logger->debug('Generated URL is "' . $expectedUrl . '"')->shouldBeCalled();
         $this
             ->generate(
                 'https://ecommerce.keyclient.it/ecomm/ecomm/DispatcherServlet',
@@ -59,12 +64,7 @@ class UrlGeneratorSpec extends ObjectBehavior
                 'ITA',
                 'http-post-url'
             )
-            ->shouldReturn(
-                'https://ecommerce.keyclient.it/ecomm/ecomm/DispatcherServlet' .
-                '?alias=merchant_alias&importo=5050&divisa=EUR&codTrans=1200123&url_back=http-cancel-url' .
-                '&mail=customer%40mail.com&url=http-succes-url&session_id=SESSID123' .
-                '&languageId=ITA&urlpost=http-post-url&mac=0fa0ca05a13c6b5d0bd1466461319658f7f990bf'
-            )
+            ->shouldReturn($expectedUrl)
         ;
     }
 

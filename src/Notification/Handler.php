@@ -117,7 +117,7 @@ class Handler
         if ($this->logger) {
             $this->logger->debug(sprintf('%s method called', __METHOD__));
             $this->logger->debug(sprintf('Secret key: "%s"', $secretKey));
-            $this->logger->debug(sprintf('Request params: %s', print_r($rawParams, true)));
+            $this->logger->debug(sprintf('Request params: %s', json_encode($rawParams)));
         }
         $this->macMethod = $macMethod;
         $this->mapNotificationParams($rawParams);

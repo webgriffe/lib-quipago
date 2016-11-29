@@ -90,7 +90,7 @@ class HandlerSpec extends ObjectBehavior
         $this->shouldHaveType('Webgriffe\\LibQuiPago\\Notification\\Handler');
         $logger->debug('Webgriffe\\LibQuiPago\\Notification\\Handler::handle method called')->shouldBeCalled();
         $logger->debug('Secret key: "secret_key"')->shouldBeCalled();
-        $logger->debug(sprintf('Request params: %s', print_r($this->getRequestRawParams(), true)))->shouldBeCalled();
+        $logger->debug(sprintf('Request params: %s', json_encode($this->getRequestRawParams())))->shouldBeCalled();
         $str = 'codTrans=1200123esito=OKimporto=5050divisa=EURdata=20160221orario=181854codAut=123abcsecret_key';
         $logger->debug("MAC calculation string is \"$str\"")->shouldBeCalled();
         $logger->debug('MAC calculation method is "sha1"')->shouldBeCalled();

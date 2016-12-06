@@ -8,6 +8,7 @@ class UrlGenerator
 {
     const SHA1_METHOD = 'sha1';
     const MD5_METHOD = 'md5';
+
     /**
      * Virtual POS gateway URL it should be https://ecommerce.keyclient.it/ecomm/ecomm/DispatcherServlet
      * @var string
@@ -96,6 +97,23 @@ class UrlGenerator
         $this->logger = $logger;
     }
 
+    /** @noinspection MoreThanThreeArgumentsInspection */
+    /**
+     * @param string $gatewayUrl
+     * @param string $merchantAlias
+     * @param string $secretKey
+     * @param string $macMethod
+     * @param float $amount
+     * @param string $currency
+     * @param string $transactionCode
+     * @param string $cancelUrl
+     * @param string|null $email
+     * @param string|null $successUrl
+     * @param string|null $sessionId
+     * @param string|null $locale
+     * @param string|null $notifyUrl
+     * @return string
+     */
     public function generate(
         $gatewayUrl,
         $merchantAlias,
@@ -239,7 +257,7 @@ class UrlGenerator
             'urlpost' => $this->notifyUrl,
         );
         foreach ($optionalMap as $k => $value) {
-            if (is_null($value)) {
+            if (null === $value) {
                 unset($optionalMap[$k]);
             }
         }
@@ -275,7 +293,7 @@ class UrlGenerator
 
     private function checkMacMethod()
     {
-        if (!in_array($this->macMethod, $this->getAllowedMacCalculationMethodsCodes())) {
+        if (!in_array($this->macMethod, $this->getAllowedMacCalculationMethodsCodes(), true)) {
             throw new \InvalidArgumentException(
                 sprintf(
                     'Invalid MAC calculation method "%s" (only "%s" allowed).',
@@ -288,7 +306,7 @@ class UrlGenerator
 
     private function checkCurrency()
     {
-        if (!in_array($this->currency, $this->getAllowedCurrenciesCodes())) {
+        if (!in_array($this->currency, $this->getAllowedCurrenciesCodes(), true)) {
             throw new \InvalidArgumentException(
                 sprintf(
                     'Invalid currency "%s" (check documentation to find allowed currencies).',

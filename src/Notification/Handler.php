@@ -264,7 +264,7 @@ class Handler
         $this->transactionDate = new \DateTime($rawParams['data'] . ' ' . $rawParams['orario']);
         $this->macFromRequest = $rawParams['mac'];
         $this->authCode = isset($rawParams['codAut']) ? $rawParams['codAut'] : null;
-        $this->transactionResult = $rawParams['esito'] === 'OK' ? true : false;
+        $this->transactionResult = $rawParams['esito'] === 'OK';
         $this->sessionId = isset($rawParams['session_id']) ? $rawParams['session_id'] : null;
         $this->cardBrand = isset($rawParams['$BRAND']) ? $rawParams['$BRAND'] : null;
         $this->firstName = isset($rawParams['nome']) ? $rawParams['nome'] : null;
@@ -277,6 +277,7 @@ class Handler
 
     /**
      * @param array $rawParams
+     * @throws \InvalidArgumentException
      */
     private function checkForMissingParameters(array $rawParams)
     {

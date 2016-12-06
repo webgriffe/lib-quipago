@@ -202,6 +202,22 @@ class UrlGenerator
         return array(self::SHA1_METHOD => 'SHA1 Hash', self::MD5_METHOD => 'MD5 Hash');
     }
 
+    /**
+     * Returns whether the given MAC method should be used with base64 encoding
+     * @param $method
+     * @return bool
+     */
+    public static function isBase64EncodeEnabledForMethod($method)
+    {
+        switch ($method) {
+            case self::MD5_METHOD:
+                return true;
+            case self::SHA1_METHOD:
+            default:
+                return false;
+        }
+    }
+
     private function mapMandatoryParameters()
     {
         return array(
@@ -243,7 +259,7 @@ class UrlGenerator
             $this->logger->debug(sprintf('MAC calculation string is "%s"', $macString));
             $this->logger->debug(sprintf('MAC calculation method is "%s"', $method));
         }
-        if ($this->isBase64EncodeEnabledForMethod($method)) {
+        if (self::isBase64EncodeEnabledForMethod($method)) {
             return base64_encode($method($macString));
         }
         return $method($macString);
@@ -285,16 +301,5 @@ class UrlGenerator
     private function getAllowedCurrenciesCodes()
     {
         return array_keys($this->getAllowedCurrencies());
-    }
-
-    private function isBase64EncodeEnabledForMethod($method)
-    {
-        switch ($method) {
-            case self::MD5_METHOD:
-                return true;
-            case self::SHA1_METHOD:
-            default:
-                return false;
-        }
     }
 }

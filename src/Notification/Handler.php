@@ -3,6 +3,7 @@
 namespace Webgriffe\LibQuiPago\Notification;
 
 use Psr\Log\LoggerInterface;
+use Webgriffe\LibQuiPago\PaymentInit\UrlGenerator;
 
 class Handler
 {
@@ -323,6 +324,9 @@ class Handler
             $this->logger->debug(sprintf('MAC calculation method is "%s"', $macMethod));
         }
         $calculatedMac = $macMethod($macCalculationString);
+        if (UrlGenerator::isBase64EncodeEnabledForMethod($macMethod)) {
+            $calculatedMac = base64_encode($macMethod($macCalculationString));
+        }
         if ($calculatedMac === $this->macFromRequest) {
             return;
         }

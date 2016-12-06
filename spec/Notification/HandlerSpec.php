@@ -101,7 +101,7 @@ class HandlerSpec extends ObjectBehavior
     {
         $this->shouldHaveType('Webgriffe\\LibQuiPago\\Notification\\Handler');
         $requestRawParams = $this->getRequestRawParams();
-        $requestRawParams['mac'] = 'f349d37c0933a97cf922290b3afa34f2';
+        $requestRawParams['mac'] = 'ZjM0OWQzN2MwOTMzYTk3Y2Y5MjIyOTBiM2FmYTM0ZjI=';
         $this->handle('secret_key', 'md5', $requestRawParams);
 
         $this->getTransactionCode()->shouldReturn('1200123');
@@ -111,7 +111,7 @@ class HandlerSpec extends ObjectBehavior
         $this->getTransactionDate()->shouldHaveType(\DateTime::class);
         $this->getTransactionDate()->format('d/m/Y H:i:s')->shouldReturn('21/02/2016 18:18:54');
         $this->getAuthCode()->shouldReturn('123abc');
-        $this->getMacFromRequest()->shouldReturn('f349d37c0933a97cf922290b3afa34f2');
+        $this->getMacFromRequest()->shouldReturn('ZjM0OWQzN2MwOTMzYTk3Y2Y5MjIyOTBiM2FmYTM0ZjI=');
         $this->getMerchantAlias()->shouldReturn('merchant_123');
         $this->getSessionId()->shouldReturn('123123');
         $this->getCardBrand()->shouldReturn('Visa');

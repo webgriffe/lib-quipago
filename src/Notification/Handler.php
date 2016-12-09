@@ -328,7 +328,14 @@ class Handler
         if (UrlGenerator::isBase64EncodeEnabledForMethod($macMethod)) {
             $calculatedMac = base64_encode($macMethod($macCalculationString));
         }
+        if ($this->logger) {
+            $this->logger->debug(sprintf('Calculated MAC is "%s"', $calculatedMac));
+            $this->logger->debug(sprintf('MAC from request is "%s"', $this->macFromRequest));
+        }
         if ($calculatedMac === $this->macFromRequest) {
+            if ($this->logger) {
+                $this->logger->debug('MAC from request is valid');
+            }
             return;
         }
         throw new InvalidMacException(

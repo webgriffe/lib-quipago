@@ -94,6 +94,9 @@ class HandlerSpec extends ObjectBehavior
         $str = 'codTrans=1200123esito=OKimporto=5050divisa=EURdata=20160221orario=181854codAut=123abcsecret_key';
         $logger->debug("MAC calculation string is \"$str\"")->shouldBeCalled();
         $logger->debug('MAC calculation method is "sha1"')->shouldBeCalled();
+        $logger->debug(Argument::containingString('Calculated MAC is "'))->shouldBeCalled();
+        $logger->debug(Argument::containingString('MAC from request is "'))->shouldBeCalled();
+        $logger->debug('MAC from request is valid')->shouldBeCalled();
         $this->handle('secret_key', 'sha1', $this->getRequestRawParams());
     }
 

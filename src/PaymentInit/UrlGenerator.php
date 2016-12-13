@@ -278,7 +278,7 @@ class UrlGenerator
             $this->logger->debug(sprintf('MAC calculation method is "%s"', $method));
         }
         if (self::isBase64EncodeEnabledForMethod($method)) {
-            return base64_encode($method($macString));
+            return urlencode(base64_encode($method($macString)));
         }
         return $method($macString);
     }

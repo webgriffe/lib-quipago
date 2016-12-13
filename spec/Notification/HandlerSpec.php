@@ -104,7 +104,7 @@ class HandlerSpec extends ObjectBehavior
     {
         $this->shouldHaveType('Webgriffe\\LibQuiPago\\Notification\\Handler');
         $requestRawParams = $this->getRequestRawParams();
-        $requestRawParams['mac'] = 'ZjM0OWQzN2MwOTMzYTk3Y2Y5MjIyOTBiM2FmYTM0ZjI=';
+        $requestRawParams['mac'] = 'ZjM0OWQzN2MwOTMzYTk3Y2Y5MjIyOTBiM2FmYTM0ZjI%3D';
         $this->handle('secret_key', 'md5', $requestRawParams);
 
         $this->getTransactionCode()->shouldReturn('1200123');

@@ -257,12 +257,13 @@ class Handler
     {
         $this->checkForMissingParameters($rawParams);
         $this->validateParameters($rawParams);
+        $isBase64EncodeEnabledForMethod = UrlGenerator::isBase64EncodeEnabledForMethod($this->macMethod);
         $this->merchantAlias = $rawParams['alias'];
         $this->amount = $rawParams['importo'] / 100;
         $this->currency = $rawParams['divisa'];
         $this->transactionCode = $rawParams['codTrans'];
         $this->transactionDate = new \DateTime($rawParams['data'] . ' ' . $rawParams['orario']);
-        $this->macFromRequest = $rawParams['mac'];
+        $this->macFromRequest = $isBase64EncodeEnabledForMethod ? urldecode($rawParams['mac']) : $rawParams['mac'];
         $this->authCode = isset($rawParams['codAut']) ? $rawParams['codAut'] : null;
         $this->transactionResult = $rawParams['esito'] === 'OK';
         $this->sessionId = isset($rawParams['session_id']) ? $rawParams['session_id'] : null;

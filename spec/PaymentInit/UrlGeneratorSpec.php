@@ -91,7 +91,7 @@ class UrlGeneratorSpec extends ObjectBehavior
                 'https://ecommerce.keyclient.it/ecomm/ecomm/DispatcherServlet' .
                 '?alias=merchant_alias&importo=5050&divisa=EUR&codTrans=1200123&url_back=http-cancel-url' .
                 '&mail=customer%40mail.com&url=http-succes-url&session_id=SESSID123' .
-                '&languageId=ITA&urlpost=http-post-url&mac=ZjkyM2NhY2I0M2YyYTA4Y2ViMTEwZDFjZTY5MjE5Zjk%3D'
+                '&languageId=ITA&urlpost=http-post-url&mac=ZjkyM2NhY2I0M2YyYTA4Y2ViMTEwZDFjZTY5MjE5Zjk%253D'
             )
         ;
     }

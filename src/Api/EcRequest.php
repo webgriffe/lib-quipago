@@ -205,9 +205,9 @@ class EcRequest
     public function getUrl()
     {
         if (!$this->isTest) {
-            return 'https://ecommerce.keyclient.it/ecomm/ecomm/XPayBo';
+            return 'https://ecommerce.nexi.it/ecomm/ecomm/XPayBo';
         }
-        return 'https://coll-ecommerce.keyclient.it/ecomm/ecomm/XPayBo';
+        return 'https://coll-ecommerce.nexi.it/ecomm/ecomm/XPayBo';
     }
 
     public function getBody()

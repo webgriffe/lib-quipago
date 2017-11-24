@@ -10,7 +10,7 @@ class UrlGenerator
     const MD5_METHOD = 'md5';
 
     /**
-     * Virtual POS gateway URL it should be https://ecommerce.keyclient.it/ecomm/ecomm/DispatcherServlet
+     * Virtual POS gateway URL it should be https://ecommerce.nexi.it/ecomm/ecomm/DispatcherServlet
      * @var string
      */
     private $gatewayUrl;

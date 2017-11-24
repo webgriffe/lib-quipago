@@ -3,7 +3,7 @@ Webgriffe QuiPago (Key Client/CartaSì) PHP library
 
 [![Build Status](https://travis-ci.org/webgriffe/lib-quipago.svg?branch=master)](https://travis-ci.org/webgriffe/lib-quipago)
 
-A PHP library for QuiPago (Key Client/CartaSì) payment gateway.
+A PHP library for Nexi/QuiPago (Key Client/CartaSì) payment gateway.
 
 Usage
 -----
@@ -12,7 +12,7 @@ You can generate a payment initialization URL using the `UrlGenerator`:
 
 	$urlGenerator = new Webgriffe\LibQuiPago\PaymentInit\UrlGenerator();
 	$url = $urlGenerator->generate(
-		'https://ecommerce.keyclient.it/ecomm/ecomm/DispatcherServlet',
+		'https://ecommerce.nexi.it/ecomm/ecomm/DispatcherServlet',
         'merchant_alias',
         'secret_key',
         'sha1',
@@ -27,7 +27,7 @@ You can generate a payment initialization URL using the `UrlGenerator`:
         'http-post-url' // The URL for the server-to-server notification
 	);
 	
-	// Returned $url is https://ecommerce.keyclient.it/ecomm/ecomm/DispatcherServlet?alias=merchant_alias&importo=5050&divisa=EUR&codTrans=1200123&url_back=http-cancel-url&mail=customer%40mail.com&url=http-succes-url&session_id=SESSID123&languageId=ITA&urlpost=http-post-url&mac=0fa0ca05a13c6b5d0bd1466461319658f7f990bf
+	// Returned $url is https://ecommerce.nexi.it/ecomm/ecomm/DispatcherServlet?alias=merchant_alias&importo=5050&divisa=EUR&codTrans=1200123&url_back=http-cancel-url&mail=customer%40mail.com&url=http-succes-url&session_id=SESSID123&languageId=ITA&urlpost=http-post-url&mac=0fa0ca05a13c6b5d0bd1466461319658f7f990bf
 	
 You can also handle a server-to-server notification by QuiPago using the notification `Handler`:
 

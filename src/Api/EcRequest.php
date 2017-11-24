@@ -207,7 +207,7 @@ class EcRequest
         if (!$this->isTest) {
             return 'https://ecommerce.nexi.it/ecomm/ecomm/XPayBo';
         }
-        return 'https://coll-ecommerce.nexi.it/ecomm/ecomm/XPayBo';
+        return 'https://int-ecommerce.nexi.it/ecomm/ecomm/XPayBo';
     }
 
     public function getBody()

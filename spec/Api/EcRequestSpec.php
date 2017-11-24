@@ -14,7 +14,7 @@ class EcRequestSpec extends ObjectBehavior
     {
         $this->beConstructedThrough('createCaptureRequest', $this->get_valid_capture_request_data());
         $this->shouldHaveType(EcRequest::class);
-        $this->getUrl()->shouldReturn('https://ecommerce.keyclient.it/ecomm/ecomm/XPayBo');
+        $this->getUrl()->shouldReturn('https://ecommerce.nexi.it/ecomm/ecomm/XPayBo');
 
         $body = <<<XML
 <?xml version="1.0" encoding="ISO-8859-15"?>
@@ -63,7 +63,7 @@ XML;
     {
         $this->beConstructedThrough('createVoidRequest', $this->get_valid_void_request_data());
         $this->shouldHaveType(EcRequest::class);
-        $this->getUrl()->shouldReturn('https://ecommerce.keyclient.it/ecomm/ecomm/XPayBo');
+        $this->getUrl()->shouldReturn('https://ecommerce.nexi.it/ecomm/ecomm/XPayBo');
 
         $body = <<<XML
 <?xml version="1.0" encoding="ISO-8859-15"?>

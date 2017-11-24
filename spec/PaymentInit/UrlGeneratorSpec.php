@@ -13,7 +13,7 @@ class UrlGeneratorSpec extends ObjectBehavior
         $this->shouldHaveType('Webgriffe\\LibQuiPago\\PaymentInit\\UrlGenerator');
         $this
             ->generate(
-                'https://ecommerce.keyclient.it/ecomm/ecomm/DispatcherServlet',
+                'https://ecommerce.nexi.it/ecomm/ecomm/DispatcherServlet',
                 'merchant_alias',
                 'secret_key',
                 'sha1',
@@ -28,7 +28,7 @@ class UrlGeneratorSpec extends ObjectBehavior
                 'http-post-url'
             )
             ->shouldReturn(
-                'https://ecommerce.keyclient.it/ecomm/ecomm/DispatcherServlet' .
+                'https://ecommerce.nexi.it/ecomm/ecomm/DispatcherServlet' .
                 '?alias=merchant_alias&importo=5050&divisa=EUR&codTrans=1200123&url_back=http-cancel-url' .
                 '&mail=customer%40mail.com&url=http-succes-url&session_id=SESSID123' .
                 '&languageId=ITA&urlpost=http-post-url&mac=0fa0ca05a13c6b5d0bd1466461319658f7f990bf'
@@ -43,14 +43,14 @@ class UrlGeneratorSpec extends ObjectBehavior
         $logger->debug('MAC calculation string is "codTrans=1200123divisa=EURimporto=5050secret_key"')->shouldBeCalled();
         $logger->debug('MAC calculation method is "sha1"')->shouldBeCalled();
         $logger->debug('Calculated MAC is "0fa0ca05a13c6b5d0bd1466461319658f7f990bf"')->shouldBeCalled();
-        $expectedUrl = 'https://ecommerce.keyclient.it/ecomm/ecomm/DispatcherServlet' .
+        $expectedUrl = 'https://ecommerce.nexi.it/ecomm/ecomm/DispatcherServlet' .
             '?alias=merchant_alias&importo=5050&divisa=EUR&codTrans=1200123&url_back=http-cancel-url' .
             '&mail=customer%40mail.com&url=http-succes-url&session_id=SESSID123' .
             '&languageId=ITA&urlpost=http-post-url&mac=0fa0ca05a13c6b5d0bd1466461319658f7f990bf';
         $logger->debug('Generated URL is "' . $expectedUrl . '"')->shouldBeCalled();
         $this
             ->generate(
-                'https://ecommerce.keyclient.it/ecomm/ecomm/DispatcherServlet',
+                'https://ecommerce.nexi.it/ecomm/ecomm/DispatcherServlet',
                 'merchant_alias',
                 'secret_key',
                 'sha1',
@@ -73,7 +73,7 @@ class UrlGeneratorSpec extends ObjectBehavior
         $this->shouldHaveType('Webgriffe\\LibQuiPago\\PaymentInit\\UrlGenerator');
         $this
             ->generate(
-                'https://ecommerce.keyclient.it/ecomm/ecomm/DispatcherServlet',
+                'https://ecommerce.nexi.it/ecomm/ecomm/DispatcherServlet',
                 'merchant_alias',
                 'secret_key',
                 'md5',
@@ -88,7 +88,7 @@ class UrlGeneratorSpec extends ObjectBehavior
                 'http-post-url'
             )
             ->shouldReturn(
-                'https://ecommerce.keyclient.it/ecomm/ecomm/DispatcherServlet' .
+                'https://ecommerce.nexi.it/ecomm/ecomm/DispatcherServlet' .
                 '?alias=merchant_alias&importo=5050&divisa=EUR&codTrans=1200123&url_back=http-cancel-url' .
                 '&mail=customer%40mail.com&url=http-succes-url&session_id=SESSID123' .
                 '&languageId=ITA&urlpost=http-post-url&mac=ZjkyM2NhY2I0M2YyYTA4Y2ViMTEwZDFjZTY5MjE5Zjk%253D'
@@ -103,7 +103,7 @@ class UrlGeneratorSpec extends ObjectBehavior
             ->during(
                 'generate',
                 array(
-                    'https://ecommerce.keyclient.it/ecomm/ecomm/DispatcherServlet',
+                    'https://ecommerce.nexi.it/ecomm/ecomm/DispatcherServlet',
                     'merchant_alias',
                     'secret_key',
                     'invalid', // <- Invalid MAC method
@@ -128,7 +128,7 @@ class UrlGeneratorSpec extends ObjectBehavior
             ->during(
                 'generate',
                 array(
-                    'https://ecommerce.keyclient.it/ecomm/ecomm/DispatcherServlet',
+                    'https://ecommerce.nexi.it/ecomm/ecomm/DispatcherServlet',
                     'merchant_alias',
                     'secret_key',
                     'sha1',

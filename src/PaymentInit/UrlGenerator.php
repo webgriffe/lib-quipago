@@ -8,6 +8,7 @@ class UrlGenerator
 {
     const SHA1_METHOD = 'sha1';
     const MD5_METHOD = 'md5';
+    const EURO_CURRENCY_CODE = 'EUR';
 
     /**
      * Virtual POS gateway URL it should be https://ecommerce.nexi.it/ecomm/ecomm/DispatcherServlet
@@ -163,55 +164,6 @@ class UrlGenerator
     }
 
     /**
-     * Returns the list of allowed currencies
-     * @return array
-     */
-    public function getAllowedCurrencies()
-    {
-        return array(
-            'EUR' => 'Euro',
-            'AUD' => 'Australian Dollar',
-            'CAD' => 'Canadian Dollar',
-            'HKD' => 'Hong Kong Dollar',
-            'JPY' => 'Japan Yen',
-            'CHF' => 'Swiss Franc',
-            'GBP' => 'Pound Sterling',
-            'USD' => 'US Dollar',
-            'BRL' => 'Brazil real (1994-)',
-            'SGD' => 'Singapore dollar',
-            'AED' => 'United Arab Emirates dirham',
-            'TWD' => 'Taiwan new dollar',
-            'SAR' => 'Saudi Arabia riyal',
-            'IDR' => 'Indonesia rupiah',
-            'THB' => 'Thailand baht',
-            'KWD' => 'Kuwait dinar',
-            'MYR' => 'Malaysia ringgit',
-            'QAR' => 'Qatar riyal',
-            'MXN' => 'Mexico peso',
-            'ZAR' => 'South Africa rand',
-            'KRW' => 'Korea, South won',
-            'PLN' => 'Polish Zloty',
-            'INR' => 'India rupee',
-            'PHP' => 'Philippines peso',
-            'CZK' => 'Czech Republic koruna',
-            'NZD' => 'New Zealand dollar',
-            'CLP' => 'Chile peso',
-            'RON' => 'Romanian New Leu',
-            'HUF' => 'Hungary forint',
-            'COP' => 'Colombia peso',
-            'BHD' => 'Bahrain dinar',
-            'EGP' => 'Egypt pound',
-            'HRK' => 'Croatia kuna',
-            'LVL' => 'Latvia lat',
-            'VEF' => 'Venezuelan Bolivar Fuerte',
-            'JOD' => 'Jordan dinar',
-            'ARS' => 'Argentina peso (1991-)',
-            'MOP' => 'Macao (Macau) pataca',
-            'DKK' => 'Corona Danese',
-        );
-    }
-
-    /**
      * Returns the list of the allowed MAC calculation methods.
      * @return array
      */
@@ -306,18 +258,14 @@ class UrlGenerator
 
     private function checkCurrency()
     {
-        if (!in_array($this->currency, $this->getAllowedCurrenciesCodes(), true)) {
+        if ($this->currency !== self::EURO_CURRENCY_CODE) {
             throw new \InvalidArgumentException(
                 sprintf(
-                    'Invalid currency "%s" (check documentation to find allowed currencies).',
-                    $this->macMethod
+                    'Invalid currency "%s", the only supported currency is "%s".',
+                    $this->macMethod,
+                    self::EURO_CURRENCY_CODE
                 )
             );
         }
-    }
-
-    private function getAllowedCurrenciesCodes()
-    {
-        return array_keys($this->getAllowedCurrencies());
     }
 }

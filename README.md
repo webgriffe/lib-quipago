@@ -17,7 +17,6 @@ You can generate a payment initialization URL using the `UrlGenerator`:
         'secret_key',
         'sha1',
         50.50,
-        'EUR',
         '1200123',
         'http-cancel-url', // The URL where the user is redirected on failed payment
         'customer@mail.com',

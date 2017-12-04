@@ -29,12 +29,6 @@ class UrlGenerator
     private $amount;
 
     /**
-     * Currency identifier (aka "divisa")
-     * @var string
-     */
-    private $currency;
-
-    /**
      * Transaction identification code (aka "codTrans")
      * @var string
      */
@@ -105,7 +99,6 @@ class UrlGenerator
      * @param string $secretKey
      * @param string $macMethod
      * @param float $amount
-     * @param string $currency
      * @param string $transactionCode
      * @param string $cancelUrl
      * @param string|null $email
@@ -121,7 +114,6 @@ class UrlGenerator
         $secretKey,
         $macMethod,
         $amount,
-        $currency,
         $transactionCode,
         $cancelUrl,
         $email = null,
@@ -139,7 +131,6 @@ class UrlGenerator
         $this->secretKey = $secretKey;
         $this->macMethod = $macMethod;
         $this->amount = $amount;
-        $this->currency = $currency;
         $this->transactionCode = $transactionCode;
         $this->cancelUrl = $cancelUrl;
         $this->email = $email;
@@ -149,7 +140,6 @@ class UrlGenerator
         $this->notifyUrl = $notifyUrl;
 
         $this->checkMacMethod();
-        $this->checkCurrency();
         $params = $this->mapMandatoryParameters();
         $params = $this->addOptionalParameters($params);
         $params['mac'] = $this->calculateMac($params);
@@ -193,7 +183,7 @@ class UrlGenerator
         return array(
             'alias' => $this->merchantAlias,
             'importo' => round($this->amount, 2) * 100,
-            'divisa' => $this->currency,
+            'divisa' => self::EURO_CURRENCY_CODE,
             'codTrans' => $this->transactionCode,
             'url_back' => $this->cancelUrl,
         );
@@ -251,19 +241,6 @@ class UrlGenerator
                     'Invalid MAC calculation method "%s" (only "%s" allowed).',
                     $this->macMethod,
                     implode(', ', $this->getAllowedMacCalculationMethodsCodes())
-                )
-            );
-        }
-    }
-
-    private function checkCurrency()
-    {
-        if ($this->currency !== self::EURO_CURRENCY_CODE) {
-            throw new \InvalidArgumentException(
-                sprintf(
-                    'Invalid currency "%s", the only supported currency is "%s".',
-                    $this->macMethod,
-                    self::EURO_CURRENCY_CODE
                 )
             );
         }

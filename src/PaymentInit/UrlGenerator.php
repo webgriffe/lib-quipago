@@ -3,6 +3,7 @@
 namespace Webgriffe\LibQuiPago\PaymentInit;
 
 use Psr\Log\LoggerInterface;
+use Webgriffe\LibQuiPago\Signature\Signer;
 
 class UrlGenerator
 {
@@ -126,23 +127,41 @@ class UrlGenerator
             $this->logger->debug(sprintf('%s method called', __METHOD__));
         }
 
+        $request = new Request(
+            $merchantAlias,
+            $amount,
+            $transactionCode,
+            $cancelUrl,
+            $email,
+            $successUrl,
+            $sessionId,
+            $locale,
+            $notifyUrl
+        );
+
         $this->gatewayUrl = $gatewayUrl;
-        $this->merchantAlias = $merchantAlias;
+        //$this->merchantAlias = $merchantAlias;
         $this->secretKey = $secretKey;
         $this->macMethod = $macMethod;
-        $this->amount = $amount;
-        $this->transactionCode = $transactionCode;
-        $this->cancelUrl = $cancelUrl;
-        $this->email = $email;
-        $this->successUrl = $successUrl;
-        $this->sessionId = $sessionId;
-        $this->locale = $locale;
-        $this->notifyUrl = $notifyUrl;
+        //$this->amount = $amount;
+        //$this->transactionCode = $transactionCode;
+        //$this->cancelUrl = $cancelUrl;
+        //$this->email = $email;
+        //$this->successUrl = $successUrl;
+        //$this->sessionId = $sessionId;
+        //$this->locale = $locale;
+        //$this->notifyUrl = $notifyUrl;
+
+        $signer = new Signer();
+        $signer->sign($request);
+
+        $params = $request->getParams();
 
         $this->checkMacMethod();
         $params = $this->mapMandatoryParameters();
         $params = $this->addOptionalParameters($params);
         $params['mac'] = $this->calculateMac($params);
+
         if ($this->logger) {
             $this->logger->debug(sprintf('Calculated MAC is "%s"', $params['mac']));
         }

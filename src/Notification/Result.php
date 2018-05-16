@@ -10,6 +10,8 @@ namespace Webgriffe\LibQuiPago\Notification;
 
 class Result
 {
+    const POSITIVE_OUTCOME = 'OK';
+
     /**
      * @var string
      */
@@ -222,5 +224,13 @@ class Result
     public function getPanExpiration()
     {
         return $this->panExpiration;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isTransactionResultPositive()
+    {
+        return $this->getOutcome() === self::POSITIVE_OUTCOME;
     }
 }

@@ -9,7 +9,6 @@
 namespace Webgriffe\LibQuiPago\Signature;
 
 use Psr\Log\LoggerInterface;
-use Webgriffe\LibQuiPago\Lists\SignatureMethod;
 
 class Signer
 {
@@ -18,9 +17,15 @@ class Signer
      */
     private $logger;
 
-    public function __construct(LoggerInterface $logger)
+    /**
+     * @var SignatureHasingManagerInterface
+     */
+    private $hashingManager;
+
+    public function __construct(LoggerInterface $logger, SignatureHasingManagerInterface $hashingManager)
     {
         $this->logger = $logger;
+        $this->hashingManager = $hashingManager;
     }
 
     public function sign(Signable $signable, $secretKey, $method)
@@ -37,35 +42,6 @@ class Signer
             $this->logger->debug(sprintf('MAC calculation method is "%s"', $method));
         }
 
-        $signable->setSignature($this->computeHash($macString, $method));
-    }
-
-    private function computeHash($macString, $method)
-    {
-        switch ($method) {
-            case SignatureMethod::MD5_METHOD:
-                $encodedString = md5($macString);
-                break;
-            case SignatureMethod::SHA1_METHOD:
-                $encodedString = sha1($macString);
-                break;
-            default:
-                throw new \InvalidArgumentException("Unknown hash method {$method} requested");
-        }
-
-        if ($this->mustEcodeHashResultAsUrlencodedBase64($method)) {
-            $encodedString = urlencode(base64_encode($encodedString));
-        }
-
-        if ($this->logger) {
-            $this->logger->debug("Computed mac string is: ".$encodedString);
-        }
-
-        return $encodedString;
-    }
-
-    private function mustEcodeHashResultAsUrlencodedBase64($method)
-    {
-        return $method == SignatureMethod::MD5_METHOD;
+        $signable->setSignature(urlencode($this->hashingManager->hashSignatureString($macString, $method)));
     }
 }

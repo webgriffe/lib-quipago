@@ -14,6 +14,11 @@ class Language
     const LANGUAGE_SPA = 'SPA';
     const LANGUAGE_FRA = 'FRA';
     const LANGUAGE_GER = 'GER';
+    const LANGUAGE_JPG = 'JPG';
+    const LANGUAGE_CHI = 'CHI';
+    const LANGUAGE_ARA = 'ARA';
+    const LANGUAGE_RUS = 'RUS';
+    const LANGUAGE_POR = 'POR';
 
     /**
      * Get options in "key-value" format
@@ -28,6 +33,11 @@ class Language
             [self::LANGUAGE_SPA => 'Spanish'],
             [self::LANGUAGE_FRA => 'French'],
             [self::LANGUAGE_GER => 'German'],
+            [self::LANGUAGE_JPG => 'Japanese'],
+            [self::LANGUAGE_CHI => 'Chinese'],
+            [self::LANGUAGE_ARA => 'Arabic'],
+            [self::LANGUAGE_RUS => 'Russian'],
+            [self::LANGUAGE_POR => 'Portuguese'],
         ];
     }
 }

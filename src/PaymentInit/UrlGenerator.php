@@ -22,7 +22,7 @@ class UrlGenerator
     {
         $this->logger = $logger;
         if (!$signer) {
-            $signer = new StandardSigner();
+            $signer = new StandardSigner($logger);
         }
         $this->signer = $signer;
     }

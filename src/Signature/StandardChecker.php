@@ -47,10 +47,20 @@ class StandardChecker implements Checker
         }
         $macCalculationStringWithSecretKey = $macCalculationString . $secretKey;
 
+        if ($this->logger) {
+            $this->logger->debug(sprintf('MAC calculation string is "%s"', $macCalculationString));
+            $this->logger->debug(sprintf('MAC calculation method is "%s"', $macMethod));
+        }
+
         $calculatedSignature = $this->hashingManager->hashSignatureString(
             $macCalculationStringWithSecretKey,
             $macMethod
         );
+
+        if ($this->logger) {
+            $this->logger->debug("Calculated MAC is \"{$calculatedSignature}\"");
+            $this->logger->debug("MAC from request is \"{$signed->getSignature()}\"");
+        }
 
         if (hash_equals($calculatedSignature, $signed->getSignature())) {
             if ($this->logger) {

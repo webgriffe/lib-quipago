@@ -27,7 +27,7 @@ class StandardHandler implements Handler
     public function __construct(LoggerInterface $logger = null, Checker $checker = null)
     {
         if (!$checker) {
-            $checker = new StandardChecker();
+            $checker = new StandardChecker($logger);
         }
         $this->checker = $checker;
         $this->logger = $logger;

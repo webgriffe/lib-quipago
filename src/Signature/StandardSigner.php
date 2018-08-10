@@ -45,6 +45,12 @@ class StandardSigner implements Signer
             $this->logger->debug(sprintf('MAC calculation method is "%s"', $method));
         }
 
-        $signable->setSignature(urlencode($this->hashingManager->hashSignatureString($macString, $method)));
+        $mac = $this->hashingManager->hashSignatureString($macString, $method);
+
+        if ($this->logger) {
+            $this->logger->debug("Calculated MAC is \"{$mac}\"");
+        }
+
+        $signable->setSignature(urlencode($mac));
     }
 }

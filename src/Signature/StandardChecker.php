@@ -62,7 +62,13 @@ class StandardChecker implements Checker
             $this->logger->debug("MAC from request is \"{$signed->getSignature()}\"");
         }
 
-        if (hash_equals($calculatedSignature, $signed->getSignature())) {
+        if (function_exists('hash_equals')) {
+            $hashEquals = hash_equals($calculatedSignature, $signed->getSignature());
+        } else {
+            $hashEquals = strcmp($calculatedSignature, $signed->getSignature()) === 0;
+        }
+
+        if ($hashEquals) {
             if ($this->logger) {
                 $this->logger->debug('MAC from request is valid');
             }

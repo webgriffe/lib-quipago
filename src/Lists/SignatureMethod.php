@@ -10,8 +10,8 @@ namespace Webgriffe\LibQuiPago\Lists;
 
 class SignatureMethod
 {
-    const SHA1_METHOD = 'sha1';
-    const MD5_METHOD = 'md5';
+    const SHA1_METHOD   = 'sha1';
+    const MD5_METHOD    = 'md5';
 
     /**
      * @return array

@@ -8,7 +8,7 @@
 
 namespace Webgriffe\LibQuiPago\Signature;
 
-interface Signer
+interface Checker
 {
-    public function sign(Signable $signable, $secretKey, $method);
+    public function checkSignature(Signed $signed, $secretKey, $macMethod);
 }

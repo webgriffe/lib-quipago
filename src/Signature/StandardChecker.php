@@ -11,7 +11,7 @@ namespace Webgriffe\LibQuiPago\Signature;
 use Psr\Log\LoggerInterface;
 use Webgriffe\LibQuiPago\Notification\InvalidMacException;
 
-class SignatureChecker
+class StandardChecker implements Checker
 {
     /**
      * @var LoggerInterface
@@ -35,9 +35,12 @@ class SignatureChecker
         foreach ($signed->getSignatureFields() as $fieldName => $value) {
             $macCalculationString .= sprintf('%s=%s', $fieldName, $value);
         }
-        $macCalculationString .= $secretKey;
+        $macCalculationStringWithSecretKey = $macCalculationString . $secretKey;
 
-        $calculatedSignature = $this->hashingManager->hashSignatureString($macCalculationString, $macMethod);
+        $calculatedSignature = $this->hashingManager->hashSignatureString(
+            $macCalculationStringWithSecretKey,
+            $macMethod
+        );
 
         if (hash_equals($calculatedSignature, $signed->getSignature())) {
             if ($this->logger) {
@@ -48,7 +51,8 @@ class SignatureChecker
 
         throw new InvalidMacException(
             sprintf(
-                'Invalid MAC from notification request. It is "%s", but should be "%s" (the %s hash of "%s").',
+                'Invalid MAC from notification request. It is "%s", but should be "%s" '.
+                '(the %s hash of "%s" plus the secret key).',
                 $signed->getSignature(),
                 $calculatedSignature,
                 $macMethod,

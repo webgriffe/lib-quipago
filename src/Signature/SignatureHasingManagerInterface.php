@@ -8,7 +8,6 @@
 
 namespace Webgriffe\LibQuiPago\Signature;
 
-
 interface SignatureHasingManagerInterface
 {
     public function hashSignatureString($string, $method);

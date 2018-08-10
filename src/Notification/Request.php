@@ -107,19 +107,22 @@ class Request implements Signed
         $this->importo = $rawParams['importo'];
         $this->divisa = $rawParams['divisa'];
         $this->codTrans = $rawParams['codTrans'];
+        $this->brand = isset($rawParams['$BRAND']) ? $rawParams['$BRAND'] : null;
+        $this->mac = urldecode($rawParams['mac']);
+        $this->esito = $rawParams['esito'];
         $this->data = $rawParams['data'];
         $this->orario = $rawParams['orario'];
-        $this->mac = urldecode($rawParams['mac']);
+
         $this->codAut = isset($rawParams['codAut']) ? $rawParams['codAut'] : null;
-        $this->esito = $rawParams['esito'];
-        $this->session_id = isset($rawParams['session_id']) ? $rawParams['session_id'] : null;
-        $this->brand = isset($rawParams['$BRAND']) ? $rawParams['$BRAND'] : null;
+        $this->pan = isset($rawParams['Pan']) ? $rawParams['Pan'] : null;
+        $this->scadenza_pan = isset($rawParams['Scadenza_pan']) ? $rawParams['Scadenza_pan'] : null;
+
+        $this->nazionalita = isset($rawParams['nazionalita']) ? $rawParams['nazionalita'] : null;
+
         $this->nome = isset($rawParams['nome']) ? $rawParams['nome'] : null;
         $this->cognome = isset($rawParams['cognome']) ? $rawParams['cognome'] : null;
         $this->mail = isset($rawParams['mail']) ? $rawParams['mail'] : null;
-        $this->nazionalita = isset($rawParams['nazionalita']) ? $rawParams['nazionalita'] : null;
-        $this->pan = isset($rawParams['Pan']) ? $rawParams['Pan'] : null;
-        $this->scadenza_pan = isset($rawParams['Scadenza_pan']) ? $rawParams['Scadenza_pan'] : null;
+        $this->session_id = isset($rawParams['session_id']) ? $rawParams['session_id'] : null;
     }
 
     /**

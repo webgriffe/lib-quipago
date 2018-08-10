@@ -8,6 +8,8 @@
         }
     ],
     "require": {
+        "ext-ctype": "*",
+        "ext-json": "*",
         "psr/log": "^1.0",
         "guzzlehttp/guzzle": "^6.2",
         "respect/validation": "^1.1"

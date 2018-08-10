@@ -3,18 +3,23 @@
 namespace Webgriffe\LibQuiPago\PaymentInit;
 
 use Psr\Log\LoggerInterface;
-use Webgriffe\LibQuiPago\Lists\SignatureMethod;
 use Webgriffe\LibQuiPago\Signature\Signer;
 
 class UrlGenerator
 {
     /**
+     * @var Signer
+     */
+    private $signer;
+
+    /**
      * @var LoggerInterface
      */
     private $logger;
 
-    public function __construct(LoggerInterface $logger = null)
+    public function __construct(Signer $signer, LoggerInterface $logger = null)
     {
+        $this->signer = $signer;
         $this->logger = $logger;
     }
 
@@ -64,8 +69,7 @@ class UrlGenerator
             $notifyUrl
         );
 
-        $signer = new Signer($this->logger);
-        $signer->sign($request, $secretKey, $macMethod);
+        $this->signer->sign($request, $secretKey, $macMethod);
 
         $params = $request->getParams();
 
@@ -80,21 +84,5 @@ class UrlGenerator
         }
 
         return $url;
-    }
-
-    /**
-     * Returns whether the given MAC method should be used with base64 encoding
-     * @param $method
-     * @return bool
-     */
-    public static function isBase64EncodeEnabledForMethod($method)
-    {
-        switch ($method) {
-            case SignatureMethod::MD5_METHOD:
-                return true;
-            case SignatureMethod::SHA1_METHOD:
-            default:
-                return false;
-        }
     }
 }

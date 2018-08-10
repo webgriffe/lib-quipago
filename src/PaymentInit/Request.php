@@ -115,7 +115,12 @@ class Request implements \Webgriffe\LibQuiPago\Signature\Signable
      */
     public function getParams()
     {
-        //@todo: check thet the request has been signed
+        if (!$this->mac) {
+            throw new \RuntimeException(
+                'Cannot generate request params without a signature. '.
+                'Please sign this object before calling this method'
+            );
+        }
 
         return array_merge(
             $this->getMandatoryParameters(),
@@ -127,22 +132,22 @@ class Request implements \Webgriffe\LibQuiPago\Signature\Signable
     private function getMandatoryParameters()
     {
         return array(
-            'alias' => $this->merchantAlias,
-            'importo' => $this->getAmountAsNumberOfCents(),
-            'divisa' => \Webgriffe\LibQuiPago\Lists\Currency::EURO_CURRENCY_CODE,
-            'codTrans' => $this->transactionCode,
-            'url_back' => $this->cancelUrl,
+            'alias'     => $this->merchantAlias,
+            'importo'   => $this->getAmountAsNumberOfCents(),
+            'divisa'    => \Webgriffe\LibQuiPago\Lists\Currency::EURO_CURRENCY_CODE,
+            'codTrans'  => $this->transactionCode,
+            'url'       => $this->successUrl,
+            'url_back'  => $this->cancelUrl,
         );
     }
 
     private function getOptionalParameters()
     {
         $optionalMap = array(
-            'mail' => $this->email,
-            'url' => $this->successUrl,
-            'session_id' => $this->sessionId,
-            'languageId' => $this->locale,
-            'urlpost' => $this->notifyUrl,
+            'urlpost'       => $this->notifyUrl,
+            'mail'          => $this->email,
+            'languageId'    => $this->locale,
+            'session_id'    => $this->sessionId,
         );
 
         foreach ($optionalMap as $k => $value) {

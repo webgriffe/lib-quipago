@@ -22,9 +22,12 @@ class StandardSigner implements Signer
      */
     private $hashingManager;
 
-    public function __construct(LoggerInterface $logger, SignatureHasingManagerInterface $hashingManager)
+    public function __construct(LoggerInterface $logger = null, SignatureHasingManagerInterface $hashingManager = null)
     {
         $this->logger = $logger;
+        if (!$hashingManager) {
+            $hashingManager = new SignatureHashingManager();
+        }
         $this->hashingManager = $hashingManager;
     }
 

@@ -9,7 +9,6 @@
 namespace Webgriffe\LibQuiPago\Signature;
 
 use Psr\Log\LoggerInterface;
-use Webgriffe\LibQuiPago\Notification\InvalidMacException;
 
 class StandardChecker implements Checker
 {
@@ -23,12 +22,23 @@ class StandardChecker implements Checker
      */
     private $hashingManager;
 
-    public function __construct(LoggerInterface $logger, SignatureHasingManagerInterface $hashingManager)
+    public function __construct(LoggerInterface $logger = null, SignatureHasingManagerInterface $hashingManager = null)
     {
         $this->logger = $logger;
+        if (!$hashingManager) {
+            $hashingManager = new SignatureHashingManager();
+        }
         $this->hashingManager = $hashingManager;
     }
 
+    /**
+     * @param Signed $signed
+     * @param $secretKey
+     * @param $macMethod
+     * @return void
+     *
+     * @throws InvalidMacException
+     */
     public function checkSignature(Signed $signed, $secretKey, $macMethod)
     {
         $macCalculationString = '';
@@ -46,7 +56,7 @@ class StandardChecker implements Checker
             if ($this->logger) {
                 $this->logger->debug('MAC from request is valid');
             }
-            return true;
+            return;
         }
 
         throw new InvalidMacException(

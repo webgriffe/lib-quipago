@@ -5,6 +5,8 @@ namespace Webgriffe\LibQuiPago\Notification;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Log\LoggerInterface;
 use Webgriffe\LibQuiPago\Signature\Checker;
+use Webgriffe\LibQuiPago\Signature\InvalidMacException;
+use Webgriffe\LibQuiPago\Signature\StandardChecker;
 
 class StandardHandler implements Handler
 {
@@ -22,8 +24,11 @@ class StandardHandler implements Handler
      * Handler constructor.
      * @param LoggerInterface $logger
      */
-    public function __construct(Checker $checker, LoggerInterface $logger = null)
+    public function __construct(LoggerInterface $logger = null, Checker $checker = null)
     {
+        if (!$checker) {
+            $checker = new StandardChecker();
+        }
         $this->checker = $checker;
         $this->logger = $logger;
     }

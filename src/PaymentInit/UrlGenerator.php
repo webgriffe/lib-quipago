@@ -4,6 +4,7 @@ namespace Webgriffe\LibQuiPago\PaymentInit;
 
 use Psr\Log\LoggerInterface;
 use Webgriffe\LibQuiPago\Signature\Signer;
+use Webgriffe\LibQuiPago\Signature\StandardSigner;
 
 class UrlGenerator
 {
@@ -17,10 +18,13 @@ class UrlGenerator
      */
     private $logger;
 
-    public function __construct(Signer $signer, LoggerInterface $logger = null)
+    public function __construct(LoggerInterface $logger = null, Signer $signer = null)
     {
-        $this->signer = $signer;
         $this->logger = $logger;
+        if (!$signer) {
+            $signer = new StandardSigner();
+        }
+        $this->signer = $signer;
     }
 
     /** @noinspection MoreThanThreeArgumentsInspection */

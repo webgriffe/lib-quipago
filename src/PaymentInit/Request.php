@@ -164,6 +164,15 @@ class Request implements \Webgriffe\LibQuiPago\Signature\Signable
      */
     private function getAmountAsNumberOfCents()
     {
-        return round($this->amount * 100);
+        $numberOfCents = round($this->amount * 100);
+        if (($numberOfCents / 100) != $this->amount) {
+            //@todo test this
+            throw new \RuntimeException(
+                "Payment amount {$this->amount} cannot be represented as a whole number of cents. ".
+                "Maybe there are more than two decimal digits?"
+            );
+        }
+
+        return $numberOfCents;
     }
 }

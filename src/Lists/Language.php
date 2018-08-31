@@ -28,16 +28,16 @@ class Language
     public function getList()
     {
         return [
-            [self::LANGUAGE_ITA => 'Italian'],
-            [self::LANGUAGE_ENG => 'English'],
-            [self::LANGUAGE_SPA => 'Spanish'],
-            [self::LANGUAGE_FRA => 'French'],
-            [self::LANGUAGE_GER => 'German'],
-            [self::LANGUAGE_JPG => 'Japanese'],
-            [self::LANGUAGE_CHI => 'Chinese'],
-            [self::LANGUAGE_ARA => 'Arabic'],
-            [self::LANGUAGE_RUS => 'Russian'],
-            [self::LANGUAGE_POR => 'Portuguese'],
+            self::LANGUAGE_ITA => 'Italian',
+            self::LANGUAGE_ENG => 'English',
+            self::LANGUAGE_SPA => 'Spanish',
+            self::LANGUAGE_FRA => 'French',
+            self::LANGUAGE_GER => 'German',
+            self::LANGUAGE_JPG => 'Japanese',
+            self::LANGUAGE_CHI => 'Chinese',
+            self::LANGUAGE_ARA => 'Arabic',
+            self::LANGUAGE_RUS => 'Russian',
+            self::LANGUAGE_POR => 'Portuguese',
         ];
     }
 }

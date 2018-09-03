@@ -27,10 +27,10 @@ class UrlGeneratorSpec extends ObjectBehavior
                 'http-post-url'
             )
             ->shouldReturn(
-                'https://ecommerce.nexi.it/ecomm/ecomm/DispatcherServlet' .
-                '?alias=merchant_alias&importo=5050&divisa=EUR&codTrans=1200123&url_back=http-cancel-url' .
-                '&mail=customer%40mail.com&url=http-succes-url&session_id=SESSID123' .
-                '&languageId=ITA&urlpost=http-post-url&mac=0fa0ca05a13c6b5d0bd1466461319658f7f990bf'
+                'https://ecommerce.nexi.it/ecomm/ecomm/DispatcherServlet'.
+                '?alias=merchant_alias&importo=5050&divisa=EUR&codTrans=1200123&url=http-succes-url'.
+                '&url_back=http-cancel-url&urlpost=http-post-url&mail=customer%40mail.com'.
+                '&languageId=ITA&session_id=SESSID123&mac=0fa0ca05a13c6b5d0bd1466461319658f7f990bf'
             )
         ;
     }
@@ -42,11 +42,32 @@ class UrlGeneratorSpec extends ObjectBehavior
         $logger->debug('MAC calculation string is "codTrans=1200123divisa=EURimporto=5050secret_key"')->shouldBeCalled();
         $logger->debug('MAC calculation method is "sha1"')->shouldBeCalled();
         $logger->debug('Calculated MAC is "0fa0ca05a13c6b5d0bd1466461319658f7f990bf"')->shouldBeCalled();
-        $expectedUrl = 'https://ecommerce.nexi.it/ecomm/ecomm/DispatcherServlet' .
-            '?alias=merchant_alias&importo=5050&divisa=EUR&codTrans=1200123&url_back=http-cancel-url' .
-            '&mail=customer%40mail.com&url=http-succes-url&session_id=SESSID123' .
-            '&languageId=ITA&urlpost=http-post-url&mac=0fa0ca05a13c6b5d0bd1466461319658f7f990bf';
+
+        $log = <<<STR
+Request params: Array
+(
+    [alias] => merchant_alias
+    [importo] => 5050
+    [divisa] => EUR
+    [codTrans] => 1200123
+    [url] => http-succes-url
+    [url_back] => http-cancel-url
+    [urlpost] => http-post-url
+    [mail] => customer@mail.com
+    [languageId] => ITA
+    [session_id] => SESSID123
+    [mac] => 0fa0ca05a13c6b5d0bd1466461319658f7f990bf
+)
+
+STR;
+        $logger->debug($log)->shouldBeCalled();
+
+        $expectedUrl = 'https://ecommerce.nexi.it/ecomm/ecomm/DispatcherServlet'.
+            '?alias=merchant_alias&importo=5050&divisa=EUR&codTrans=1200123&url=http-succes-url'.
+            '&url_back=http-cancel-url&urlpost=http-post-url&mail=customer%40mail.com&languageId=ITA'.
+            '&session_id=SESSID123&mac=0fa0ca05a13c6b5d0bd1466461319658f7f990bf';
         $logger->debug('Generated URL is "' . $expectedUrl . '"')->shouldBeCalled();
+
         $this
             ->generate(
                 'https://ecommerce.nexi.it/ecomm/ecomm/DispatcherServlet',
@@ -85,10 +106,10 @@ class UrlGeneratorSpec extends ObjectBehavior
                 'http-post-url'
             )
             ->shouldReturn(
-                'https://ecommerce.nexi.it/ecomm/ecomm/DispatcherServlet' .
-                '?alias=merchant_alias&importo=5050&divisa=EUR&codTrans=1200123&url_back=http-cancel-url' .
-                '&mail=customer%40mail.com&url=http-succes-url&session_id=SESSID123' .
-                '&languageId=ITA&urlpost=http-post-url&mac=ZjkyM2NhY2I0M2YyYTA4Y2ViMTEwZDFjZTY5MjE5Zjk%253D'
+                'https://ecommerce.nexi.it/ecomm/ecomm/DispatcherServlet'.
+                '?alias=merchant_alias&importo=5050&divisa=EUR&codTrans=1200123&url=http-succes-url'.
+                '&url_back=http-cancel-url&urlpost=http-post-url&mail=customer%40mail.com'.
+                '&languageId=ITA&session_id=SESSID123&mac=ZjkyM2NhY2I0M2YyYTA4Y2ViMTEwZDFjZTY5MjE5Zjk%253D'
             )
         ;
     }

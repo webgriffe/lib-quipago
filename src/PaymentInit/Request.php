@@ -170,7 +170,7 @@ class Request implements \Webgriffe\LibQuiPago\Signature\Signable
                 "Maybe there are more than two decimal digits?"
             );
         }
-        
+
         return round($this->amount * 100);
     }
 }

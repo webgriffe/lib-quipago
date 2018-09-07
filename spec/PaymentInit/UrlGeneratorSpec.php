@@ -140,7 +140,7 @@ STR;
     function it_should_throw_an_invalid_argument_exception_if_amount_has_more_than_two_decimal()
     {
         $this
-            ->shouldThrow(\InvalidArgumentException::class)
+            ->shouldThrow(\RuntimeException::class)
             ->during(
                 'generate',
                 array(

@@ -131,7 +131,14 @@ class Request implements Signed
      */
     public static function buildFromHttpRequest(ServerRequestInterface $request)
     {
-        return new static($request->getParsedBody());
+        //@todo test both cases
+        if (strtoupper($request->getMethod()) == 'POST') {
+            $rawParams = $request->getParsedBody();
+        } else {
+            $rawParams = $request->getQueryParams();
+        }
+
+        return new static($rawParams);
     }
 
     /**

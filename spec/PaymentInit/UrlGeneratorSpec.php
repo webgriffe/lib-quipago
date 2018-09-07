@@ -137,4 +137,27 @@ STR;
             )
         ;
     }
+    function it_should_throw_an_invalid_argument_exception_if_amount_has_more_than_two_decimal()
+    {
+        $this
+            ->shouldThrow(\RuntimeException::class)
+            ->during(
+                'generate',
+                array(
+                    'https://ecommerce.nexi.it/ecomm/ecomm/DispatcherServlet',
+                    'merchant_alias',
+                    'secret_key',
+                    'sha1',
+                    50.505, // <- Invalid amount
+                    '1200123',
+                    'http-cancel-url',
+                    'customer@mail.com',
+                    'http-succes-url',
+                    'SESSID123',
+                    'ITA',
+                    'http-post-url'
+                )
+            )
+        ;
+    }
 }

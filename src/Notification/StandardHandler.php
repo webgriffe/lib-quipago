@@ -47,7 +47,8 @@ class StandardHandler implements Handler
         if ($this->logger) {
             $this->logger->debug(sprintf('%s method called', __METHOD__));
             $this->logger->debug(sprintf('Secret key: "%s"', $secretKey));
-            $this->logger->debug(sprintf('Request params: %s', json_encode($httpRequest->getParsedBody())));
+            $this->logger->debug(sprintf('Request body: %s', json_encode($httpRequest->getParsedBody())));
+            $this->logger->debug(sprintf('Request query: %s', json_encode($httpRequest->getQueryParams())));
         }
 
         $request = Request::buildFromHttpRequest($httpRequest);

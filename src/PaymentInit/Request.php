@@ -65,6 +65,12 @@ class Request implements \Webgriffe\LibQuiPago\Signature\Signable
     private $notifyUrl;
 
     /**
+     * Preselected payment method to use
+     * @var string
+     */
+    private $selectedcard;
+
+    /**
      * Signature string
      * @var string
      */
@@ -79,7 +85,8 @@ class Request implements \Webgriffe\LibQuiPago\Signature\Signable
         $successUrl,
         $sessionId,
         $locale,
-        $notifyUrl
+        $notifyUrl,
+        $selectedcard = null
     ) {
         $this->merchantAlias = $merchantAlias;
         $this->amount = $amount;
@@ -90,6 +97,7 @@ class Request implements \Webgriffe\LibQuiPago\Signature\Signable
         $this->sessionId = $sessionId;
         $this->locale = $locale;
         $this->notifyUrl = $notifyUrl;
+        $this->selectedcard = $selectedcard;
     }
 
     public function getSignatureData()
@@ -148,6 +156,7 @@ class Request implements \Webgriffe\LibQuiPago\Signature\Signable
             'mail'          => $this->email,
             'languageId'    => $this->locale,
             'session_id'    => $this->sessionId,
+            'selectedcard'  => $this->selectedcard,
         );
 
         foreach ($optionalMap as $k => $value) {

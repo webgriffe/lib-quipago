@@ -41,6 +41,8 @@ class UrlGenerator
      * @param string|null $sessionId
      * @param string|null $locale
      * @param string|null $notifyUrl
+     * @param string|null $selectedCard
+     *
      * @return string
      */
     public function generate(
@@ -55,7 +57,8 @@ class UrlGenerator
         $successUrl = null,
         $sessionId = null,
         $locale = null,
-        $notifyUrl = null
+        $notifyUrl = null,
+        $selectedCard = null
     ) {
         if ($this->logger) {
             $this->logger->debug(sprintf('%s method called', __METHOD__));
@@ -70,7 +73,8 @@ class UrlGenerator
             $successUrl,
             $sessionId,
             $locale,
-            $notifyUrl
+            $notifyUrl,
+            $selectedCard
         );
 
         $this->signer->sign($request, $secretKey, $macMethod);

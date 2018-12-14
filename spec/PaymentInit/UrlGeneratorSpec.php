@@ -137,6 +137,7 @@ STR;
             )
         ;
     }
+
     function it_should_throw_an_invalid_argument_exception_if_amount_has_more_than_two_decimal()
     {
         $this
@@ -157,6 +158,34 @@ STR;
                     'ITA',
                     'http-post-url'
                 )
+            )
+        ;
+    }
+
+    function it_is_initializable_and_generates_correct_url_with_selectedcard_value()
+    {
+        $this->shouldHaveType('Webgriffe\\LibQuiPago\\PaymentInit\\UrlGenerator');
+        $this
+            ->generate(
+                'https://ecommerce.nexi.it/ecomm/ecomm/DispatcherServlet',
+                'merchant_alias',
+                'secret_key',
+                'sha1',
+                50.50,
+                '1200123',
+                'http-cancel-url',
+                'customer@mail.com',
+                'http-succes-url',
+                'SESSID123',
+                'ITA',
+                'http-post-url',
+                'SCT'
+            )
+            ->shouldReturn(
+                'https://ecommerce.nexi.it/ecomm/ecomm/DispatcherServlet'.
+                '?alias=merchant_alias&importo=5050&divisa=EUR&codTrans=1200123&url=http-succes-url'.
+                '&url_back=http-cancel-url&urlpost=http-post-url&mail=customer%40mail.com'.
+                '&languageId=ITA&session_id=SESSID123&selectedcard=SCT&mac=0fa0ca05a13c6b5d0bd1466461319658f7f990bf'
             )
         ;
     }

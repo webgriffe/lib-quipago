@@ -16,6 +16,7 @@ class StandardHandlerSpec extends ObjectBehavior
 
         $requestRawParams = $this->getRequestRawParams();
         unset($requestRawParams['alias']);
+        $request->getMethod()->willReturn('POST');
         $request->getParsedBody()->willReturn($requestRawParams);
 
         $this->shouldThrow(\InvalidArgumentException::class)->during(
@@ -30,6 +31,7 @@ class StandardHandlerSpec extends ObjectBehavior
 
         $requestRawParams = $this->getRequestRawParams();
         $requestRawParams['importo'] = 'ABC';
+        $request->getMethod()->willReturn('POST');
         $request->getParsedBody()->willReturn($requestRawParams);
 
         $this->shouldThrow(\InvalidArgumentException::class)->during(
@@ -44,6 +46,7 @@ class StandardHandlerSpec extends ObjectBehavior
 
         $requestRawParams = $this->getRequestRawParams();
         $requestRawParams['importo'] = '100.10';
+        $request->getMethod()->willReturn('POST');
         $request->getParsedBody()->willReturn($requestRawParams);
 
         $this->shouldThrow(\InvalidArgumentException::class)->during(
@@ -58,6 +61,7 @@ class StandardHandlerSpec extends ObjectBehavior
 
         $requestRawParams = $this->getRequestRawParams();
         $requestRawParams['mac'] = 'invalid-mac';
+        $request->getMethod()->willReturn('POST');
         $request->getParsedBody()->willReturn($requestRawParams);
 
         $this->shouldThrow(InvalidMacException::class)->during(
@@ -70,7 +74,31 @@ class StandardHandlerSpec extends ObjectBehavior
     {
         $this->shouldHaveType('Webgriffe\\LibQuiPago\\Notification\\StandardHandler');
 
+        $request->getMethod()->willReturn('POST');
         $request->getParsedBody()->willReturn($this->getRequestRawParams());
+        $result = $this->handle($request, 'secret_key', 'sha1');
+
+        $result->getTransactionCode()->shouldReturn('1200123');
+        $result->isTransactionResultPositive()->shouldReturn(true);
+        $result->getAmount()->shouldReturn(50.50);
+        $result->getCurrency()->shouldReturn('EUR');
+        $result->getDate()->shouldHaveType(\DateTime::class);
+        $result->getDate()->format('d/m/Y H:i:s')->shouldReturn('21/02/2016 18:18:54');
+        $result->getAuthCode()->shouldReturn('123abc');
+        $result->getMerchantAlias()->shouldReturn('merchant_123');
+        $result->getSessionId()->shouldReturn('123123');
+        $result->getCardBrand()->shouldReturn('Visa');
+        $result->getFirstName()->shouldReturn('John');
+        $result->getLastName()->shouldReturn('Doe');
+        $result->getEmail()->shouldReturn('jd@mail.com');
+    }
+
+    function it_returns_mapped_params_from_query_string(ServerRequestInterface $request)
+    {
+        $this->shouldHaveType('Webgriffe\\LibQuiPago\\Notification\\StandardHandler');
+
+        $request->getQueryParams()->willReturn($this->getRequestRawParams());
+        $request->getMethod()->willReturn('GET');
         $result = $this->handle($request, 'secret_key', 'sha1');
 
         $result->getTransactionCode()->shouldReturn('1200123');
@@ -95,6 +123,7 @@ class StandardHandlerSpec extends ObjectBehavior
         $requestRawParams = $this->getRequestRawParams();
         $requestRawParams['esito'] = 'KO';
         $requestRawParams['mac'] = '5246a2f5d8dce9a0cabb4c4369cf69c4b567647e';
+        $request->getMethod()->willReturn('POST');
         $request->getParsedBody()->willReturn($requestRawParams);
 
         $result = $this->handle($request,'secret_key', 'sha1');
@@ -108,7 +137,8 @@ class StandardHandlerSpec extends ObjectBehavior
 
         $logger->debug('Webgriffe\\LibQuiPago\\Notification\\StandardHandler::handle method called')->shouldBeCalled();
         $logger->debug('Secret key: "secret_key"')->shouldBeCalled();
-        $logger->debug(sprintf('Request params: %s', json_encode($this->getRequestRawParams())))->shouldBeCalled();
+        $logger->debug(sprintf('Request body: %s', json_encode($this->getRequestRawParams())))->shouldBeCalled();
+        $logger->debug(sprintf('Request query: []'))->shouldBeCalled();
 
         $str = 'codTrans=1200123esito=OKimporto=5050divisa=EURdata=20160221orario=181854codAut=123abc';
         $logger->debug("MAC calculation string is \"$str\"")->shouldBeCalled();
@@ -118,7 +148,9 @@ class StandardHandlerSpec extends ObjectBehavior
         $logger->debug(Argument::containingString('MAC from request is "'))->shouldBeCalled();
         $logger->debug('MAC from request is valid')->shouldBeCalled();
 
+        $request->getMethod()->willReturn('POST');
         $request->getParsedBody()->willReturn($this->getRequestRawParams());
+        $request->getQueryParams()->willReturn([]);
 
         $this->handle($request,'secret_key', 'sha1');
     }
@@ -129,6 +161,7 @@ class StandardHandlerSpec extends ObjectBehavior
 
         $requestRawParams = $this->getRequestRawParams();
         $requestRawParams['mac'] = 'ZjM0OWQzN2MwOTMzYTk3Y2Y5MjIyOTBiM2FmYTM0ZjI%3D';
+        $request->getMethod()->willReturn('POST');
         $request->getParsedBody()->willReturn($requestRawParams);
 
         $result = $this->handle($request, 'secret_key', 'md5');

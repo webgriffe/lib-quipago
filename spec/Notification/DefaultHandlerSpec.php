@@ -8,7 +8,7 @@ use Psr\Log\LoggerInterface;
 use Webgriffe\LibQuiPago\Signature\InvalidMacException;
 use Psr\Http\Message\ServerRequestInterface;
 
-class StandardHandlerSpec extends ObjectBehavior
+class DefaultHandlerSpec extends ObjectBehavior
 {
     function it_throws_an_exception_if_some_parameter_is_missing(ServerRequestInterface $request)
     {

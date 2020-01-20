@@ -11,14 +11,17 @@ class Client
      * @var ClientInterface
      */
     private $httpClient;
+
     /**
      * @var string
      */
     private $merchantAlias;
+
     /**
      * @var string
      */
     private $macKey;
+
     /**
      * @var string
      */
@@ -66,6 +69,7 @@ class Client
      * @param string $authCode
      * @param float $operationAmount
      * @param bool $isTest
+     *
      * @return EcResponse
      */
     public function capture(
@@ -108,6 +112,7 @@ class Client
      * @param string $authCode
      * @param float $operationAmount
      * @param bool $isTest
+     *
      * @return EcResponse
      */
     public function void(

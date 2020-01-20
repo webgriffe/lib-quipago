@@ -6,7 +6,7 @@ use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 use Psr\Log\LoggerInterface;
 
-class UrlGeneratorSpec extends ObjectBehavior
+class DefaultUrlGeneratorSpec extends ObjectBehavior
 {
     function it_is_initializable_and_generates_correct_url()
     {
@@ -38,7 +38,7 @@ class UrlGeneratorSpec extends ObjectBehavior
     function it_should_log_url_generation_process_if_a_logger_is_given(LoggerInterface $logger)
     {
         $this->beConstructedWith($logger);
-        $logger->debug('Webgriffe\\LibQuiPago\\PaymentInit\\UrlGenerator::generate method called')->shouldBeCalled();
+        $logger->debug('Webgriffe\\LibQuiPago\\PaymentInit\\DefaultUrlGenerator::generate method called')->shouldBeCalled();
         $logger->debug('MAC calculation string is "codTrans=1200123divisa=EURimporto=5050secret_key"')->shouldBeCalled();
         $logger->debug('MAC calculation method is "sha1"')->shouldBeCalled();
         $logger->debug('Calculated MAC is "0fa0ca05a13c6b5d0bd1466461319658f7f990bf"')->shouldBeCalled();

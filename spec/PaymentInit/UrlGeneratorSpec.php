@@ -10,7 +10,7 @@ class UrlGeneratorSpec extends ObjectBehavior
 {
     function it_is_initializable_and_generates_correct_url()
     {
-        $this->shouldHaveType('Webgriffe\\LibQuiPago\\PaymentInit\\UrlGenerator');
+        $this->shouldHaveType('Webgriffe\\LibQuiPago\\PaymentInit\\DefaultUrlGenerator');
         $this
             ->generate(
                 'https://ecommerce.nexi.it/ecomm/ecomm/DispatcherServlet',
@@ -89,7 +89,7 @@ STR;
 
     function it_should_use_md5_method_if_specified()
     {
-        $this->shouldHaveType('Webgriffe\\LibQuiPago\\PaymentInit\\UrlGenerator');
+        $this->shouldHaveType('Webgriffe\\LibQuiPago\\PaymentInit\\DefaultUrlGenerator');
         $this
             ->generate(
                 'https://ecommerce.nexi.it/ecomm/ecomm/DispatcherServlet',
@@ -164,7 +164,7 @@ STR;
 
     function it_is_initializable_and_generates_correct_url_with_selectedcard_value()
     {
-        $this->shouldHaveType('Webgriffe\\LibQuiPago\\PaymentInit\\UrlGenerator');
+        $this->shouldHaveType('Webgriffe\\LibQuiPago\\PaymentInit\\DefaultUrlGenerator');
         $this
             ->generate(
                 'https://ecommerce.nexi.it/ecomm/ecomm/DispatcherServlet',

@@ -10,7 +10,7 @@ namespace Webgriffe\LibQuiPago\Signature;
 
 use Webgriffe\LibQuiPago\Lists\SignatureMethod;
 
-class SignatureHashingManager implements SignatureHasingManagerInterface
+class DefaultSignatureHashingManager implements SignatureHasingManager
 {
     public function hashSignatureString($string, $method)
     {
@@ -25,14 +25,14 @@ class SignatureHashingManager implements SignatureHasingManagerInterface
                 throw new \InvalidArgumentException("Unknown hash method {$method} requested");
         }
 
-        if ($this->mustEcodeHashResultAsUrlencodedBase64($method)) {
+        if ($this->mustEncodeHashResultAsUrlencodedBase64($method)) {
             $encodedString = base64_encode($encodedString);
         }
 
         return $encodedString;
     }
 
-    private function mustEcodeHashResultAsUrlencodedBase64($method)
+    private function mustEncodeHashResultAsUrlencodedBase64($method)
     {
         return $method == SignatureMethod::MD5_METHOD;
     }

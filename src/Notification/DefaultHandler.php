@@ -6,9 +6,9 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Log\LoggerInterface;
 use Webgriffe\LibQuiPago\Signature\Checker;
 use Webgriffe\LibQuiPago\Signature\InvalidMacException;
-use Webgriffe\LibQuiPago\Signature\StandardChecker;
+use Webgriffe\LibQuiPago\Signature\DefaultChecker;
 
-class StandardHandler implements Handler
+class DefaultHandler implements Handler
 {
     /**
      * @var Checker
@@ -27,7 +27,7 @@ class StandardHandler implements Handler
     public function __construct(LoggerInterface $logger = null, Checker $checker = null)
     {
         if (!$checker) {
-            $checker = new StandardChecker($logger);
+            $checker = new DefaultChecker($logger);
         }
         $this->checker = $checker;
         $this->logger = $logger;

@@ -2,31 +2,8 @@
 
 namespace Webgriffe\LibQuiPago\PaymentInit;
 
-use Psr\Log\LoggerInterface;
-use Webgriffe\LibQuiPago\Signature\Signer;
-use Webgriffe\LibQuiPago\Signature\StandardSigner;
-
-class UrlGenerator
+interface UrlGenerator
 {
-    /**
-     * @var Signer
-     */
-    private $signer;
-
-    /**
-     * @var LoggerInterface
-     */
-    private $logger;
-
-    public function __construct(LoggerInterface $logger = null, Signer $signer = null)
-    {
-        $this->logger = $logger;
-        if (!$signer) {
-            $signer = new StandardSigner($logger);
-        }
-        $this->signer = $signer;
-    }
-
     /** @noinspection MoreThanThreeArgumentsInspection */
     /**
      * @param string $gatewayUrl
@@ -59,38 +36,5 @@ class UrlGenerator
         $locale = null,
         $notifyUrl = null,
         $selectedCard = null
-    ) {
-        if ($this->logger) {
-            $this->logger->debug(sprintf('%s method called', __METHOD__));
-        }
-
-        $request = new Request(
-            $merchantAlias,
-            $amount,
-            $transactionCode,
-            $cancelUrl,
-            $email,
-            $successUrl,
-            $sessionId,
-            $locale,
-            $notifyUrl,
-            $selectedCard
-        );
-
-        $this->signer->sign($request, $secretKey, $macMethod);
-
-        $params = $request->getParams();
-
-        if ($this->logger) {
-            $this->logger->debug('Request params: '.print_r($params, true));
-        }
-
-        $url = $gatewayUrl . '?' . http_build_query($params);
-
-        if ($this->logger) {
-            $this->logger->debug(sprintf('Generated URL is "%s"', $url));
-        }
-
-        return $url;
-    }
+    );
 }

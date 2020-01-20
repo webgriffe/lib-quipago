@@ -10,7 +10,7 @@ namespace Webgriffe\LibQuiPago\Signature;
 
 use Psr\Log\LoggerInterface;
 
-class StandardSigner implements Signer
+class DefaultSigner implements Signer
 {
     /**
      * @var LoggerInterface
@@ -18,15 +18,15 @@ class StandardSigner implements Signer
     private $logger;
 
     /**
-     * @var SignatureHasingManagerInterface
+     * @var SignatureHasingManager
      */
     private $hashingManager;
 
-    public function __construct(LoggerInterface $logger = null, SignatureHasingManagerInterface $hashingManager = null)
+    public function __construct(LoggerInterface $logger = null, SignatureHasingManager $hashingManager = null)
     {
         $this->logger = $logger;
         if (!$hashingManager) {
-            $hashingManager = new SignatureHashingManager();
+            $hashingManager = new DefaultSignatureHashingManager();
         }
         $this->hashingManager = $hashingManager;
     }

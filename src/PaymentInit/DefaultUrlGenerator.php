@@ -64,8 +64,7 @@ class DefaultUrlGenerator implements UrlGenerator
             $this->logger->debug(sprintf('%s method called', __METHOD__));
         }
 
-        if (
-            $selectedCard &&
+        if ($selectedCard &&
             $selectedCard != self::VISA_SELECTEDCARD &&
             $selectedCard != self::MASTERCARD_SELECTEDCARD &&
             $selectedCard != self::AMEX_SELECTEDCARD &&

@@ -64,6 +64,28 @@ class DefaultUrlGenerator implements UrlGenerator
             $this->logger->debug(sprintf('%s method called', __METHOD__));
         }
 
+        if (
+            $selectedCard &&
+            $selectedCard != self::VISA_SELECTEDCARD &&
+            $selectedCard != self::MASTERCARD_SELECTEDCARD &&
+            $selectedCard != self::AMEX_SELECTEDCARD &&
+            $selectedCard != self::DINERS_SELECTEDCARD &&
+            $selectedCard != self::JCB_SELECTEDCARD &&
+            $selectedCard != self::MAESTRO_SELECTEDCARD &&
+            $selectedCard != self::MYBANK_SELECTEDCARD &&
+            $selectedCard != self::CREDIT_CARD_SELECTEDCARD &&
+            $selectedCard != self::MASTERPASS_SELECTEDCARD &&
+            $selectedCard != self::SOFORT_SELECTEDCARD &&
+            $selectedCard != self::PAYPAL_SELECTEDCARD &&
+            $selectedCard != self::AMAZONPAY_SELECTEDCARD &&
+            $selectedCard != self::GOOGLEPAY_SELECTEDCARD &&
+            $selectedCard != self::APPLEPAY_SELECTEDCARD &&
+            $selectedCard != self::ALIPAY_SELECTEDCARD &&
+            $selectedCard != self::WECHATPAY_SELECTEDCARD
+        ) {
+            throw new \RuntimeException("Selectedcard value '{$selectedCard}' is not one of the allowed values");
+        }
+
         $request = new Request(
             $merchantAlias,
             $amount,

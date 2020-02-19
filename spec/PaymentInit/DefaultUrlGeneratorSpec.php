@@ -189,4 +189,30 @@ STR;
             )
         ;
     }
+
+    function it_throws_error_if_an_unexpected_selectedcard_value_is_received()
+    {
+        $this->shouldHaveType('Webgriffe\\LibQuiPago\\PaymentInit\\DefaultUrlGenerator');
+        $this
+            ->shouldThrow(\RuntimeException::class)
+            ->during(
+                'generate',
+                array(
+                    'https://ecommerce.nexi.it/ecomm/ecomm/DispatcherServlet',
+                    'merchant_alias',
+                    'secret_key',
+                    'sha1',
+                    50.50,
+                    '1200123',
+                    'http-cancel-url',
+                    'customer@mail.com',
+                    'http-succes-url',
+                    'SESSID123',
+                    'ITA',
+                    'http-post-url',
+                    'KRAKENPAY'
+                )
+            )
+        ;
+    }
 }

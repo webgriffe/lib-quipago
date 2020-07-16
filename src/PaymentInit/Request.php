@@ -10,6 +10,9 @@ namespace Webgriffe\LibQuiPago\PaymentInit;
 
 class Request implements \Webgriffe\LibQuiPago\Signature\Signable
 {
+    const OPERATION_TYPE_CAPTURE = 'C';
+    const OPERATION_TYPE_AUTHORIZE = 'D';
+
     /**
      * Merchant alias (aka "alias")
      * @var string
@@ -76,6 +79,18 @@ class Request implements \Webgriffe\LibQuiPago\Signature\Signable
      */
     private $mac;
 
+    /**
+     * Operation type (aka "TCONTAB")
+     * @var string
+     */
+    private $operationType;
+
+    /**
+     * Payment description (aka "descrizione")
+     * @var string|null
+     */
+    private $description;
+
     public function __construct(
         $merchantAlias,
         $amount,
@@ -86,7 +101,9 @@ class Request implements \Webgriffe\LibQuiPago\Signature\Signable
         $sessionId,
         $locale,
         $notifyUrl,
-        $selectedcard = null
+        $selectedcard = null,
+        $operationType = self::OPERATION_TYPE_CAPTURE,
+        $description = null
     ) {
         $this->merchantAlias = $merchantAlias;
         $this->amount = $amount;
@@ -98,6 +115,8 @@ class Request implements \Webgriffe\LibQuiPago\Signature\Signable
         $this->locale = $locale;
         $this->notifyUrl = $notifyUrl;
         $this->selectedcard = $selectedcard;
+        $this->operationType = $operationType;
+        $this->description = $description;
     }
 
     public function getSignatureData()
@@ -157,6 +176,8 @@ class Request implements \Webgriffe\LibQuiPago\Signature\Signable
             'languageId'    => $this->locale,
             'session_id'    => $this->sessionId,
             'selectedcard'  => $this->selectedcard,
+            'TCONTAB'       => $this->operationType,
+            'descrizione'   => $this->description
         );
 
         foreach ($optionalMap as $k => $value) {

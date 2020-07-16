@@ -10,7 +10,15 @@ namespace Webgriffe\LibQuiPago\Notification;
 
 class Result
 {
+    /**
+     * @deprecated will be removed in 3.0 use Result::OUTCOME_OK instead
+     */
     const POSITIVE_OUTCOME = 'OK';
+
+    const OUTCOME_OK = 'OK';
+    const OUTCOME_ANNULLO = 'ANNULLO';
+    const OUTCOME_KO = 'KO';
+    const OUTCOME_ERRORE = 'ERRORE';
 
     /**
      * @var string
@@ -231,6 +239,6 @@ class Result
      */
     public function isTransactionResultPositive()
     {
-        return $this->getOutcome() === self::POSITIVE_OUTCOME;
+        return $this->getOutcome() === self::OUTCOME_OK;
     }
 }

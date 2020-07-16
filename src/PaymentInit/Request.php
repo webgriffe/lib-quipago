@@ -102,7 +102,7 @@ class Request implements \Webgriffe\LibQuiPago\Signature\Signable
         $locale,
         $notifyUrl,
         $selectedcard = null,
-        $operationType = self::OPERATION_TYPE_CAPTURE,
+        $operationType = null,
         $description = null
     ) {
         $this->merchantAlias = $merchantAlias;

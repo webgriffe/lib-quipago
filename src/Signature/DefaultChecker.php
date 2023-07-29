@@ -6,54 +6,45 @@ use Psr\Log\LoggerInterface;
 
 class DefaultChecker implements Checker
 {
-    /**
-     * @var LoggerInterface
-     */
-    private $logger;
+    private \Webgriffe\LibQuiPago\Signature\SignatureHasingManager $signatureHasingManager;
 
-    /**
-     * @var SignatureHasingManager
-     */
-    private $hashingManager;
-
-    public function __construct(LoggerInterface $logger = null, SignatureHasingManager $hashingManager = null)
+    public function __construct(private ?\Psr\Log\LoggerInterface $logger = null, SignatureHasingManager $signatureHasingManager = null)
     {
-        $this->logger = $logger;
-        if (!$hashingManager) {
-            $hashingManager = new DefaultSignatureHashingManager();
+        if (!$signatureHasingManager instanceof \Webgriffe\LibQuiPago\Signature\SignatureHasingManager) {
+            $signatureHasingManager = new DefaultSignatureHashingManager();
         }
-        $this->hashingManager = $hashingManager;
+
+        $this->signatureHasingManager = $signatureHasingManager;
     }
 
     /**
-     * @param Signed $signed
      * @param $secretKey
      * @param $macMethod
      * @return void
-     *
      * @throws InvalidMacException
      */
     public function checkSignature(Signed $signed, $secretKey, $macMethod)
     {
         $macCalculationString = '';
-        foreach ($signed->getSignatureFields() as $fieldName => $value) {
-            $macCalculationString .= sprintf('%s=%s', $fieldName, $value);
+        foreach ($signed->getSignatureFields() as $fieldName => $signatureField) {
+            $macCalculationString .= sprintf('%s=%s', $fieldName, $signatureField);
         }
+
         $macCalculationStringWithSecretKey = $macCalculationString . $secretKey;
 
-        if ($this->logger) {
+        if ($this->logger instanceof \Psr\Log\LoggerInterface) {
             $this->logger->debug(sprintf('MAC calculation string is "%s"', $macCalculationString));
             $this->logger->debug(sprintf('MAC calculation method is "%s"', $macMethod));
         }
 
-        $calculatedSignature = $this->hashingManager->hashSignatureString(
+        $calculatedSignature = $this->signatureHasingManager->hashSignatureString(
             $macCalculationStringWithSecretKey,
             $macMethod
         );
 
-        if ($this->logger) {
-            $this->logger->debug("Calculated MAC is \"{$calculatedSignature}\"");
-            $this->logger->debug("MAC from request is \"{$signed->getSignature()}\"");
+        if ($this->logger instanceof \Psr\Log\LoggerInterface) {
+            $this->logger->debug(sprintf('Calculated MAC is "%s"', $calculatedSignature));
+            $this->logger->debug(sprintf('MAC from request is "%s"', $signed->getSignature()));
         }
 
         if (function_exists('hash_equals')) {
@@ -63,9 +54,10 @@ class DefaultChecker implements Checker
         }
 
         if ($hashEquals) {
-            if ($this->logger) {
+            if ($this->logger instanceof \Psr\Log\LoggerInterface) {
                 $this->logger->debug('MAC from request is valid');
             }
+
             return;
         }
 

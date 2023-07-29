@@ -10,48 +10,41 @@ use Webgriffe\LibQuiPago\Signature\DefaultChecker;
 
 class DefaultHandler implements Handler
 {
-    /**
-     * @var Checker
-     */
-    private $checker;
+    private \Webgriffe\LibQuiPago\Signature\Checker $checker;
 
-    /**
-     * @var LoggerInterface
-     */
-    private $logger;
+    private ?\Psr\Log\LoggerInterface $logger = null;
 
     /**
      * Handler constructor.
-     * @param LoggerInterface $logger
      */
     public function __construct(LoggerInterface $logger = null, Checker $checker = null)
     {
-        if (!$checker) {
+        if (!$checker instanceof \Webgriffe\LibQuiPago\Signature\Checker) {
             $checker = new DefaultChecker($logger);
         }
+
         $this->checker = $checker;
         $this->logger = $logger;
     }
 
     /**
      * Handle notification request
-     * @param ServerRequestInterface $httpRequest Notify request coming from Quipago
+     * @param ServerRequestInterface $serverRequest Notify request coming from Quipago
      * @param string $secretKey Secret key for MAC calculation
      * @param string $macMethod MAC calculation method. It should be 'sha1' or 'md5'
      *
-     * @return Result
      * @throws InvalidMacException
      */
-    public function handle(ServerRequestInterface $httpRequest, $secretKey, $macMethod)
+    public function handle(ServerRequestInterface $serverRequest, $secretKey, $macMethod): \Webgriffe\LibQuiPago\Notification\Result
     {
-        if ($this->logger) {
+        if ($this->logger instanceof \Psr\Log\LoggerInterface) {
             $this->logger->debug(sprintf('%s method called', __METHOD__));
             $this->logger->debug(sprintf('Secret key: "%s"', $secretKey));
-            $this->logger->debug(sprintf('Request body: %s', json_encode($httpRequest->getParsedBody())));
-            $this->logger->debug(sprintf('Request query: %s', json_encode($httpRequest->getQueryParams())));
+            $this->logger->debug(sprintf('Request body: %s', json_encode($serverRequest->getParsedBody(), JSON_THROW_ON_ERROR)));
+            $this->logger->debug(sprintf('Request query: %s', json_encode($serverRequest->getQueryParams(), JSON_THROW_ON_ERROR)));
         }
 
-        $request = Request::buildFromHttpRequest($httpRequest);
+        $request = Request::buildFromHttpRequest($serverRequest);
         $this->checker->checkSignature($request, $secretKey, $macMethod);
 
         return new Result($request);

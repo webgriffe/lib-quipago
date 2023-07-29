@@ -4,68 +4,9 @@ namespace Webgriffe\LibQuiPago\PaymentInit;
 
 class Request implements \Webgriffe\LibQuiPago\Signature\Signable
 {
-    const OPERATION_TYPE_CAPTURE = 'C';
-    const OPERATION_TYPE_AUTHORIZE = 'D';
+    public const OPERATION_TYPE_CAPTURE = 'C';
 
-    /**
-     * Merchant alias (aka "alias")
-     * @var string
-     */
-    private $merchantAlias;
-
-    /**
-     * Transaction amount (aka "importo")
-     * @var float
-     */
-    private $amount;
-
-    /**
-     * Transaction identification code (aka "codTrans")
-     * @var string
-     */
-    private $transactionCode;
-
-    /**
-     * URL where user will be redirected when he cancel the transaction (aka "url_back")
-     * @var string
-     */
-    private $cancelUrl;
-
-    /**
-     * Email address where transaction result will be sent (aka "email")
-     * @var string
-     */
-    private $email;
-
-    /**
-     * URL where user will be redirected when the transaction is successful (aka "url")
-     * @var string
-     */
-    private $successUrl;
-
-    /**
-     * Session identifier (aka "sess_id")
-     * @var string
-     */
-    private $sessionId;
-
-    /**
-     * Language identifier code (aka "languageId")
-     * @var string
-     */
-    private $locale;
-
-    /**
-     * Server to server transaction feedback notification URL (aka "urlpost")
-     * @var string
-     */
-    private $notifyUrl;
-
-    /**
-     * Preselected payment method to use
-     * @var string
-     */
-    private $selectedcard;
+    public const OPERATION_TYPE_AUTHORIZE = 'D';
 
     /**
      * Signature string
@@ -74,51 +15,78 @@ class Request implements \Webgriffe\LibQuiPago\Signature\Signable
     private $mac;
 
     /**
-     * Operation type (aka "TCONTAB")
-     * @var string
+     * @param string $merchantAlias
+     * @param float $amount
+     * @param string $transactionCode
+     * @param string $cancelUrl
+     * @param string $email
+     * @param string $successUrl
+     * @param string $sessionId
+     * @param string $locale
+     * @param string $notifyUrl
+     * @param string $selectedcard
+     * @param string $operationType
+     * @param string|null $description
      */
-    private $operationType;
-
-    /**
-     * Payment description (aka "descrizione")
-     * @var string|null
-     */
-    private $description;
-
     public function __construct(
-        $merchantAlias,
-        $amount,
-        $transactionCode,
-        $cancelUrl,
-        $email,
-        $successUrl,
-        $sessionId,
-        $locale,
-        $notifyUrl,
-        $selectedcard = null,
-        $operationType = null,
-        $description = null
-    ) {
-        $this->merchantAlias = $merchantAlias;
-        $this->amount = $amount;
-        $this->transactionCode = $transactionCode;
-        $this->cancelUrl = $cancelUrl;
-        $this->email = $email;
-        $this->successUrl = $successUrl;
-        $this->sessionId = $sessionId;
-        $this->locale = $locale;
-        $this->notifyUrl = $notifyUrl;
-        $this->selectedcard = $selectedcard;
-        $this->operationType = $operationType;
-        $this->description = $description;
+        /**
+         * Merchant alias (aka "alias")
+         */
+        private $merchantAlias,
+        /**
+         * Transaction amount (aka "importo")
+         */
+        private $amount,
+        /**
+         * Transaction identification code (aka "codTrans")
+         */
+        private $transactionCode,
+        /**
+         * URL where user will be redirected when he cancel the transaction (aka "url_back")
+         */
+        private $cancelUrl,
+        /**
+         * Email address where transaction result will be sent (aka "email")
+         */
+        private $email,
+        /**
+         * URL where user will be redirected when the transaction is successful (aka "url")
+         */
+        private $successUrl,
+        /**
+         * Session identifier (aka "sess_id")
+         */
+        private $sessionId,
+        /**
+         * Language identifier code (aka "languageId")
+         */
+        private $locale,
+        /**
+         * Server to server transaction feedback notification URL (aka "urlpost")
+         */
+        private $notifyUrl,
+        /**
+         * Preselected payment method to use
+         */
+        private $selectedcard = null,
+        /**
+         * Operation type (aka "TCONTAB")
+         */
+        private $operationType = null,
+        /**
+         * Payment description (aka "descrizione")
+         */
+        private $description = null
+    )
+    {
     }
 
     public function getSignatureData()
     {
         $paramValues = $this->getMandatoryParameters();
 
-        $result = array();
-        foreach (array('codTrans', 'divisa', 'importo') as $paramName) {
+        $result = [];
+        foreach (['codTrans', 'divisa', 'importo'] as $paramName) {
             $result[$paramName] = $paramValues[$paramName];
         }
 
@@ -131,12 +99,9 @@ class Request implements \Webgriffe\LibQuiPago\Signature\Signable
         return $this;
     }
 
-    /**
-     * @return array
-     */
-    public function getParams()
+    public function getParams(): array
     {
-        if (!$this->mac) {
+        if ($this->mac === '' || $this->mac === '0') {
             throw new \RuntimeException(
                 'Cannot generate request params without a signature. '.
                 'Please sign this object before calling this method'
@@ -146,33 +111,18 @@ class Request implements \Webgriffe\LibQuiPago\Signature\Signable
         return array_merge(
             $this->getMandatoryParameters(),
             $this->getOptionalParameters(),
-            array('mac' => $this->mac)
+            ['mac' => $this->mac]
         );
     }
 
-    private function getMandatoryParameters()
+    private function getMandatoryParameters(): array
     {
-        return array(
-            'alias'     => $this->merchantAlias,
-            'importo'   => $this->getAmountAsNumberOfCents(),
-            'divisa'    => \Webgriffe\LibQuiPago\Lists\Currency::EURO_CURRENCY_CODE,
-            'codTrans'  => $this->transactionCode,
-            'url'       => $this->successUrl,
-            'url_back'  => $this->cancelUrl,
-        );
+        return ['alias'     => $this->merchantAlias, 'importo'   => $this->getAmountAsNumberOfCents(), 'divisa'    => \Webgriffe\LibQuiPago\Lists\Currency::EURO_CURRENCY_CODE, 'codTrans'  => $this->transactionCode, 'url'       => $this->successUrl, 'url_back'  => $this->cancelUrl];
     }
 
-    private function getOptionalParameters()
+    private function getOptionalParameters(): array
     {
-        $optionalMap = array(
-            'urlpost'       => $this->notifyUrl,
-            'mail'          => $this->email,
-            'languageId'    => $this->locale,
-            'session_id'    => $this->sessionId,
-            'selectedcard'  => $this->selectedcard,
-            'TCONTAB'       => $this->operationType,
-            'descrizione'   => $this->description
-        );
+        $optionalMap = ['urlpost'       => $this->notifyUrl, 'mail'          => $this->email, 'languageId'    => $this->locale, 'session_id'    => $this->sessionId, 'selectedcard'  => $this->selectedcard, 'TCONTAB'       => $this->operationType, 'descrizione'   => $this->description];
 
         foreach ($optionalMap as $k => $value) {
             if (null === $value) {
@@ -183,14 +133,11 @@ class Request implements \Webgriffe\LibQuiPago\Signature\Signable
         return $optionalMap;
     }
 
-    /**
-     * @return int
-     */
-    private function getAmountAsNumberOfCents()
+    private function getAmountAsNumberOfCents(): float
     {
-        if (round($this->amount, 2) != $this->amount) {
+        if (round($this->amount, 2) !== $this->amount) {
             throw new \RuntimeException(
-                "Payment amount {$this->amount} cannot be represented as a whole number of cents. ".
+                sprintf('Payment amount %s cannot be represented as a whole number of cents. ', $this->amount).
                 "Maybe there are more than two decimal digits?"
             );
         }

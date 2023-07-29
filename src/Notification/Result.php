@@ -7,87 +7,45 @@ class Result
     /**
      * @deprecated will be removed in 3.0 use Result::OUTCOME_OK instead
      */
-    const POSITIVE_OUTCOME = 'OK';
+    public const POSITIVE_OUTCOME = 'OK';
 
-    const OUTCOME_OK = 'OK';
-    const OUTCOME_ANNULLO = 'ANNULLO';
-    const OUTCOME_KO = 'KO';
-    const OUTCOME_ERRORE = 'ERRORE';
+    public const OUTCOME_OK = 'OK';
 
-    /**
-     * @var string
-     */
-    private $merchantAlias;
+    public const OUTCOME_ANNULLO = 'ANNULLO';
 
-    /**
-     * @var float
-     */
-    private $amount;
+    public const OUTCOME_KO = 'KO';
 
-    /**
-     * @var string
-     */
-    private $currency;
+    public const OUTCOME_ERRORE = 'ERRORE';
 
-    /**
-     * @var string
-     */
-    private $transactionCode;
+    private string $merchantAlias;
 
-    /**
-     * @var \DateTime
-     */
-    private $date;
+    private int|float $amount;
 
-    /**
-     * @var string
-     */
-    private $authCode;
+    private string $currency;
 
-    /**
-     * @var string
-     */
-    private $outcome;
+    private string $transactionCode;
 
-    /**
-     * @var string
-     */
-    private $sessionId;
+    private \DateTime $dateTime;
 
-    /**
-     * @var string
-     */
-    private $cardBrand;
+    private string $authCode;
 
-    /**
-     * @var string
-     */
-    private $firstName;
+    private string $outcome;
 
-    /**
-     * @var string
-     */
-    private $lastName;
+    private string $sessionId;
 
-    /**
-     * @var string
-     */
-    private $email;
+    private string $cardBrand;
 
-    /**
-     * @var string
-     */
-    private $country;
+    private string $firstName;
 
-    /**
-     * @var string
-     */
-    private $pan;
+    private string $lastName;
 
-    /**
-     * @var string
-     */
-    private $panExpiration;
+    private string $email;
+
+    private string $country;
+
+    private string $pan;
+
+    private string $panExpiration;
 
     public function __construct(Request $request)
     {
@@ -95,7 +53,7 @@ class Result
         $this->amount = $request->getImporto() / 100;
         $this->currency = $request->getDivisa();
         $this->transactionCode = $request->getCodTrans();
-        $this->date = new \DateTime($request->getData(). ' ' .$request->getOrario());
+        $this->dateTime = new \DateTime($request->getData(). ' ' .$request->getOrario());
         $this->authCode = $request->getCodAut();
         $this->outcome = $request->getEsito();
         $this->sessionId = $request->getSessionId();
@@ -108,10 +66,7 @@ class Result
         $this->panExpiration = $request->getScadenzaPan();
     }
 
-    /**
-     * @return string
-     */
-    public function getMerchantAlias()
+    public function getMerchantAlias(): string
     {
         return $this->merchantAlias;
     }
@@ -119,23 +74,17 @@ class Result
     /**
      * @return float
      */
-    public function getAmount()
+    public function getAmount(): int|float
     {
         return $this->amount;
     }
 
-    /**
-     * @return string
-     */
-    public function getCurrency()
+    public function getCurrency(): string
     {
         return $this->currency;
     }
 
-    /**
-     * @return string
-     */
-    public function getTransactionCode()
+    public function getTransactionCode(): string
     {
         return $this->transactionCode;
     }
@@ -145,93 +94,60 @@ class Result
      */
     public function getDate()
     {
-        return $this->date;
+        return $this->dateTime;
     }
 
-    /**
-     * @return string
-     */
-    public function getAuthCode()
+    public function getAuthCode(): string
     {
         return $this->authCode;
     }
 
-    /**
-     * @return string
-     */
-    public function getOutcome()
+    public function getOutcome(): string
     {
         return $this->outcome;
     }
 
-    /**
-     * @return string
-     */
-    public function getSessionId()
+    public function getSessionId(): string
     {
         return $this->sessionId;
     }
 
-    /**
-     * @return string
-     */
-    public function getCardBrand()
+    public function getCardBrand(): string
     {
         return $this->cardBrand;
     }
 
-    /**
-     * @return string
-     */
-    public function getFirstName()
+    public function getFirstName(): string
     {
         return $this->firstName;
     }
 
-    /**
-     * @return string
-     */
-    public function getLastName()
+    public function getLastName(): string
     {
         return $this->lastName;
     }
 
-    /**
-     * @return string
-     */
-    public function getEmail()
+    public function getEmail(): string
     {
         return $this->email;
     }
 
-    /**
-     * @return string
-     */
-    public function getCountry()
+    public function getCountry(): string
     {
         return $this->country;
     }
 
-    /**
-     * @return string
-     */
-    public function getPan()
+    public function getPan(): string
     {
         return $this->pan;
     }
 
-    /**
-     * @return string
-     */
-    public function getPanExpiration()
+    public function getPanExpiration(): string
     {
         return $this->panExpiration;
     }
 
-    /**
-     * @return bool
-     */
-    public function isTransactionResultPositive()
+    public function isTransactionResultPositive(): bool
     {
         return $this->getOutcome() === self::OUTCOME_OK;
     }

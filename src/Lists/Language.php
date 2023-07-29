@@ -4,23 +4,30 @@ namespace Webgriffe\LibQuiPago\Lists;
 
 class Language
 {
-    const LANGUAGE_ITA = 'ITA';
-    const LANGUAGE_ENG = 'ENG';
-    const LANGUAGE_SPA = 'SPA';
-    const LANGUAGE_FRA = 'FRA';
-    const LANGUAGE_GER = 'GER';
-    const LANGUAGE_JPG = 'JPG';
-    const LANGUAGE_CHI = 'CHI';
-    const LANGUAGE_ARA = 'ARA';
-    const LANGUAGE_RUS = 'RUS';
-    const LANGUAGE_POR = 'POR';
+    public const LANGUAGE_ITA = 'ITA';
+
+    public const LANGUAGE_ENG = 'ENG';
+
+    public const LANGUAGE_SPA = 'SPA';
+
+    public const LANGUAGE_FRA = 'FRA';
+
+    public const LANGUAGE_GER = 'GER';
+
+    public const LANGUAGE_JPG = 'JPG';
+
+    public const LANGUAGE_CHI = 'CHI';
+
+    public const LANGUAGE_ARA = 'ARA';
+
+    public const LANGUAGE_RUS = 'RUS';
+
+    public const LANGUAGE_POR = 'POR';
 
     /**
      * Get options in "key-value" format
-     *
-     * @return array
      */
-    public function getList()
+    public function getList(): array
     {
         return [
             self::LANGUAGE_ITA => 'Italian',

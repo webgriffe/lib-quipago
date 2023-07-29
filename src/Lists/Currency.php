@@ -4,5 +4,5 @@ namespace Webgriffe\LibQuiPago\Lists;
 
 class Currency
 {
-    const EURO_CURRENCY_CODE = 'EUR';
+    public const EURO_CURRENCY_CODE = 'EUR';
 }

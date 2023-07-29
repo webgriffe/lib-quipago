@@ -8,22 +8,14 @@ use Webgriffe\LibQuiPago\Signature\DefaultSigner;
 
 class DefaultUrlGenerator implements UrlGenerator
 {
-    /**
-     * @var Signer
-     */
-    private $signer;
+    private \Webgriffe\LibQuiPago\Signature\Signer $signer;
 
-    /**
-     * @var LoggerInterface
-     */
-    private $logger;
-
-    public function __construct(LoggerInterface $logger = null, Signer $signer = null)
+    public function __construct(private ?\Psr\Log\LoggerInterface $logger = null, Signer $signer = null)
     {
-        $this->logger = $logger;
-        if (!$signer) {
+        if (!$signer instanceof \Webgriffe\LibQuiPago\Signature\Signer) {
             $signer = new DefaultSigner($logger);
         }
+
         $this->signer = $signer;
     }
 
@@ -60,7 +52,7 @@ class DefaultUrlGenerator implements UrlGenerator
         $notifyUrl = null,
         $selectedCard = null
     ) {
-        if ($this->logger) {
+        if ($this->logger instanceof \Psr\Log\LoggerInterface) {
             $this->logger->debug(sprintf('%s method called', __METHOD__));
         }
 
@@ -82,7 +74,7 @@ class DefaultUrlGenerator implements UrlGenerator
             $selectedCard != self::ALIPAY_SELECTEDCARD &&
             $selectedCard != self::WECHATPAY_SELECTEDCARD
         ) {
-            throw new \RuntimeException("Selectedcard value '{$selectedCard}' is not one of the allowed values");
+            throw new \RuntimeException(sprintf('Selectedcard value \'%s\' is not one of the allowed values', $selectedCard));
         }
 
         $request = new Request(
@@ -102,13 +94,13 @@ class DefaultUrlGenerator implements UrlGenerator
 
         $params = $request->getParams();
 
-        if ($this->logger) {
+        if ($this->logger instanceof \Psr\Log\LoggerInterface) {
             $this->logger->debug('Request params: '.print_r($params, true));
         }
 
         $url = $gatewayUrl . '?' . http_build_query($params);
 
-        if ($this->logger) {
+        if ($this->logger instanceof \Psr\Log\LoggerInterface) {
             $this->logger->debug(sprintf('Generated URL is "%s"', $url));
         }
 

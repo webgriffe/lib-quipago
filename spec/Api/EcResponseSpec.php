@@ -10,84 +10,84 @@ use Webgriffe\LibQuiPago\Api\ValidationException;
 
 class EcResponseSpec extends ObjectBehavior
 {
-    private $macKey = '123key';
+    private string $macKey = '123key';
 
-    function it_is_initializable_through_psr_response(ResponseInterface $response)
+    public function it_is_initializable_through_psr_response(ResponseInterface $response): void
     {
-        $this->beConstructedThrough('createFromPsrResponse', array($response, $this->macKey));
+        $this->beConstructedThrough('createFromPsrResponse', [$response, $this->macKey]);
         $this->shouldHaveType(EcResponse::class);
     }
 
-    function it_should_return_body_from_psr_response(ResponseInterface $response)
+    public function it_should_return_body_from_psr_response(ResponseInterface $response): void
     {
         $body = $this->get_positive_response_body();
         $response->getBody()->willReturn($body);
-        $this->beConstructedThrough('createFromPsrResponse', array($response, $this->macKey));
+        $this->beConstructedThrough('createFromPsrResponse', [$response, $this->macKey]);
         $this->shouldHaveType(EcResponse::class);
         $this->getRawBody()->shouldBeEqualTo($body);
     }
 
-    function it_should_handle_positive_response(ResponseInterface $response)
+    public function it_should_handle_positive_response(ResponseInterface $response): void
     {
         $body = $this->get_positive_response_body();
         $response->getBody()->willReturn($body);
-        $this->beConstructedThrough('createFromPsrResponse', array($response, $this->macKey));
+        $this->beConstructedThrough('createFromPsrResponse', [$response, $this->macKey]);
         $this->shouldHaveType(EcResponse::class);
         $this->isPositive()->shouldReturn(true);
         $this->getErrorMessageByResultCode()->shouldReturn(null);
     }
 
-    function it_should_throw_an_exception_if_invalid_response(ResponseInterface $response)
+    public function it_should_throw_an_exception_if_invalid_response(ResponseInterface $response): void
     {
         $response->getBody()->willReturn('invalid body');
-        $this->beConstructedThrough('createFromPsrResponse', array($response, $this->macKey));
-        $exception = new ValidationException(
+        $this->beConstructedThrough('createFromPsrResponse', [$response, $this->macKey]);
+        $validationException = new ValidationException(
             'The string "invalid body" is an invalid EcResponse body. String could not be parsed as XML'
         );
-        $this->shouldThrow($exception)->duringInstantiation();
+        $this->shouldThrow($validationException)->duringInstantiation();
     }
 
-    function it_should_throw_an_exception_if_valid_xml_body_but_not_valid_mac(ResponseInterface $response)
+    public function it_should_throw_an_exception_if_valid_xml_body_but_not_valid_mac(ResponseInterface $response): void
     {
         $body = $this->get_positive_response_body();
         $body = str_replace('<mac>dece8354cb73bc31224f10747e085909b9752c13</mac>', '<mac>invalid</mac>', $body);
         $response->getBody()->willReturn($body);
-        $this->beConstructedThrough('createFromPsrResponse', array($response, $this->macKey));
-        $exception = new ValidationException(
+        $this->beConstructedThrough('createFromPsrResponse', [$response, $this->macKey]);
+        $validationException = new ValidationException(
             'Invalid MAC code in EcResponse body. ' .
             'Expected MAC was "dece8354cb73bc31224f10747e085909b9752c13", "invalid" given. Raw body is "' .
             $body . '".'
         );
-        $this->shouldThrow($exception)->duringInstantiation();
+        $this->shouldThrow($validationException)->duringInstantiation();
     }
 
-    function it_should_not_validate_mac_if_it_is_empty(ResponseInterface $response)
+    public function it_should_not_validate_mac_if_it_is_empty(ResponseInterface $response): void
     {
         $body = $this->get_positive_response_body();
         $body = str_replace('<mac>dece8354cb73bc31224f10747e085909b9752c13</mac>', '<mac></mac>', $body);
         $response->getBody()->willReturn($body);
-        $this->beConstructedThrough('createFromPsrResponse', array($response, $this->macKey));
+        $this->beConstructedThrough('createFromPsrResponse', [$response, $this->macKey]);
         $this->shouldHaveType(EcResponse::class);
         $this->getMac()->shouldReturn('');
     }
 
-    function it_should_return_error_message_in_case_of_negative_result(ResponseInterface $response)
+    public function it_should_return_error_message_in_case_of_negative_result(ResponseInterface $response): void
     {
         $body = $this->get_positive_response_body();
         $body = str_replace('<esitoRichiesta>0</esitoRichiesta>', '<esitoRichiesta>1</esitoRichiesta>', $body);
         $response->getBody()->willReturn($body);
-        $this->beConstructedThrough('createFromPsrResponse', array($response, $this->macKey));
+        $this->beConstructedThrough('createFromPsrResponse', [$response, $this->macKey]);
         $this->isPositive()->shouldReturn(false);
         $this->getErrorMessageByResultCode()->shouldReturn(
             'Errore nella richiesta: Formato del messaggio errato o campo mancante o errato'
         );
     }
 
-    function it_should_return_response_data(ResponseInterface $response)
+    public function it_should_return_response_data(ResponseInterface $response): void
     {
         $body = $this->get_positive_response_body();
         $response->getBody()->willReturn($body);
-        $this->beConstructedThrough('createFromPsrResponse', array($response, $this->macKey));
+        $this->beConstructedThrough('createFromPsrResponse', [$response, $this->macKey]);
         $this->shouldHaveType(EcResponse::class);
         $this->getRawBody()->shouldBeEqualTo($body);
         $this->getResultCode()->shouldBeEqualTo('0');
@@ -101,7 +101,7 @@ class EcResponseSpec extends ObjectBehavior
         $this->getMac()->shouldBeEqualTo('dece8354cb73bc31224f10747e085909b9752c13');
     }
 
-    private function get_positive_response_body()
+    private function get_positive_response_body(): string
     {
         return <<<XML
 <?xml version="1.0" encoding="ISO-8859-15"?>

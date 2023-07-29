@@ -9,7 +9,7 @@ use Webgriffe\LibQuiPago\Api\ValidationException;
 
 class EcRequestSpec extends ObjectBehavior
 {
-    function it_is_initializable_as_capture_request()
+    public function it_is_initializable_as_capture_request(): void
     {
         $this->beConstructedThrough('createCaptureRequest', $this->get_valid_capture_request_data());
         $this->shouldHaveType(EcRequest::class);
@@ -37,7 +37,7 @@ XML;
         $this->getBody()->shouldReturn($body);
     }
 
-    function it_should_return_itself_as_psr_request()
+    public function it_should_return_itself_as_psr_request(): void
     {
         $this->beConstructedThrough('createCaptureRequest', $this->get_valid_capture_request_data());
         $this->shouldHaveType(EcRequest::class);
@@ -49,16 +49,16 @@ XML;
         $psrRequest->getUri()->__toString()->shouldReturn($this->getUrl());
     }
 
-    function it_should_throw_an_exception_if_data_are_not_valid()
+    public function it_should_throw_an_exception_if_data_are_not_valid(): void
     {
         $data = $this->get_valid_capture_request_data();
         $data[0] = '...'; // Not valid
         $this->beConstructedThrough('createCaptureRequest', $data);
-        $exception = new ValidationException('- merchantAlias must contain only letters (a-z), digits (0-9) and "_"');
-        $this->shouldThrow($exception)->duringInstantiation();
+        $validationException = new ValidationException('- merchantAlias must contain only letters (a-z), digits (0-9) and "_"');
+        $this->shouldThrow($validationException)->duringInstantiation();
     }
 
-    function it_is_initializable_as_void_request()
+    public function it_is_initializable_as_void_request(): void
     {
         $this->beConstructedThrough('createVoidRequest', $this->get_valid_void_request_data());
         $this->shouldHaveType(EcRequest::class);
@@ -86,10 +86,7 @@ XML;
         $this->getBody()->shouldReturn($body);
     }
 
-    /**
-     * @return array
-     */
-    private function get_valid_capture_request_data()
+    private function get_valid_capture_request_data(): array
     {
         return [
             '0000000050242004', // $merchantAlias,
@@ -106,10 +103,7 @@ XML;
         ];
     }
 
-    /**
-     * @return array
-     */
-    private function get_valid_void_request_data()
+    private function get_valid_void_request_data(): array
     {
         return [
             '0000000050242004', // $merchantAlias,

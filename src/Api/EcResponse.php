@@ -6,40 +6,27 @@ use Psr\Http\Message\ResponseInterface;
 
 class EcResponse
 {
-    const POSITIVE_RESULT_CODE = '0';
+    public const POSITIVE_RESULT_CODE = '0';
 
     /**
      * @var string
      */
     private $rawBody;
-    /**
-     * @var string
-     */
-    private $resultCode;
-    /**
-     * @var string
-     */
-    private $merchantAlias;
-    /**
-     * @var string
-     */
-    private $transactionCode;
-    /**
-     * @var string
-     */
-    private $requestType;
-    /**
-     * @var string
-     */
-    private $operationId;
-    /**
-     * @var string
-     */
-    private $operationType;
-    /**
-     * @var string
-     */
-    private $operationAmount;
+
+    private string $resultCode;
+
+    private string $merchantAlias;
+
+    private string $transactionCode;
+
+    private string $requestType;
+
+    private string $operationId;
+
+    private string $operationType;
+
+    private string $operationAmount;
+
     /**
      * @var string
      */
@@ -54,11 +41,12 @@ class EcResponse
     {
         try {
             $xmlReader = new \SimpleXMLElement($rawBody);
-        } catch (\Exception $e) {
+        } catch (\Exception $exception) {
             throw new ValidationException(
-                sprintf('The string "%s" is an invalid EcResponse body. %s', $rawBody, $e->getMessage())
+                sprintf('The string "%s" is an invalid EcResponse body. %s', $rawBody, $exception->getMessage())
             );
         }
+
         $this->resultCode = (string)$xmlReader->ECRES->esitoRichiesta;
         $this->merchantAlias = (string)$xmlReader->alias;
         $this->transactionCode = (string)$xmlReader->ECRES->codTrans;
@@ -71,11 +59,9 @@ class EcResponse
     }
 
     /**
-     * @param ResponseInterface $response
      * @param string $macKey
-     * @return EcResponse
      */
-    public static function createFromPsrResponse(ResponseInterface $response, $macKey)
+    public static function createFromPsrResponse(ResponseInterface $response, $macKey): self
     {
         return new self($response->getBody(), $macKey);
     }
@@ -88,10 +74,7 @@ class EcResponse
         return $this->rawBody;
     }
 
-    /**
-     * @return bool
-     */
-    public function isPositive()
+    public function isPositive(): bool
     {
         return $this->resultCode === self::POSITIVE_RESULT_CODE;
     }
@@ -101,31 +84,21 @@ class EcResponse
      */
     public function getErrorMessageByResultCode()
     {
-        switch ($this->resultCode) {
-            case self::POSITIVE_RESULT_CODE:
-                return null;
-            case '1':
-                return 'Errore nella richiesta: Formato del messaggio errato o campo mancante o errato';
-            case '3':
-                return 'Errore nella richiesta: Campo id_op duplicato (caso "FA") o non trovato (caso "RA")';
-            case '16':
-                return 'Errore nella richiesta: Campo alias sconosciuto o non abilitato';
-            case '18':
-                return 'Errore nella richiesta: operazione negata dall’emittente della carta di credito';
-            case '2':
-                return 'Errore nella richiesta: Errore imprevisto durante l’elaborazione della richiesta';
-            case '8':
-                return 'Errore nella richiesta: mac errato';
-            case '21':
-                return 'Errore nella richiesta: Campo codTrans sconosciuto';
-            case '22':
-                return 'Errore nella richiesta: operazione non eseguibile (es. storno superiore all’incasso)';
-            default:
-                return sprintf(
-                    'Unknown result code "%s". Please refer to updated documentation to find related error message.',
-                    $this->resultCode
-                );
-        }
+        return match ($this->resultCode) {
+            self::POSITIVE_RESULT_CODE => null,
+            '1' => 'Errore nella richiesta: Formato del messaggio errato o campo mancante o errato',
+            '3' => 'Errore nella richiesta: Campo id_op duplicato (caso "FA") o non trovato (caso "RA")',
+            '16' => 'Errore nella richiesta: Campo alias sconosciuto o non abilitato',
+            '18' => 'Errore nella richiesta: operazione negata dall’emittente della carta di credito',
+            '2' => 'Errore nella richiesta: Errore imprevisto durante l’elaborazione della richiesta',
+            '8' => 'Errore nella richiesta: mac errato',
+            '21' => 'Errore nella richiesta: Campo codTrans sconosciuto',
+            '22' => 'Errore nella richiesta: operazione non eseguibile (es. storno superiore all’incasso)',
+            default => sprintf(
+                'Unknown result code "%s". Please refer to updated documentation to find related error message.',
+                $this->resultCode
+            ),
+        };
     }
 
     /**
@@ -136,58 +109,37 @@ class EcResponse
         return $this->mac;
     }
 
-    /**
-     * @return string
-     */
-    public function getResultCode()
+    public function getResultCode(): string
     {
         return $this->resultCode;
     }
 
-    /**
-     * @return string
-     */
-    public function getMerchantAlias()
+    public function getMerchantAlias(): string
     {
         return $this->merchantAlias;
     }
 
-    /**
-     * @return string
-     */
-    public function getTransactionCode()
+    public function getTransactionCode(): string
     {
         return $this->transactionCode;
     }
 
-    /**
-     * @return string
-     */
-    public function getRequestType()
+    public function getRequestType(): string
     {
         return $this->requestType;
     }
 
-    /**
-     * @return string
-     */
-    public function getOperationId()
+    public function getOperationId(): string
     {
         return $this->operationId;
     }
 
-    /**
-     * @return string
-     */
-    public function getOperationType()
+    public function getOperationType(): string
     {
         return $this->operationType;
     }
 
-    /**
-     * @return string
-     */
-    public function getOperationAmountRaw()
+    public function getOperationAmountRaw(): string
     {
         return $this->operationAmount;
     }
@@ -200,26 +152,21 @@ class EcResponse
         return (int)$this->operationAmount / 100;
     }
 
-    private function validateMac($mac, $macKey)
+    private function validateMac(string $mac, $macKey): string
     {
         if ($mac === '') {
             return $mac;
         }
+
         $macString = implode(
             '',
-            array(
-                $this->merchantAlias,
-                $this->transactionCode,
-                $this->operationId,
-                $this->operationType,
-                $this->operationAmount,
-                $macKey
-            )
+            [$this->merchantAlias, $this->transactionCode, $this->operationId, $this->operationType, $this->operationAmount, $macKey]
         );
         $expectedMac = sha1($macString);
         if (strtolower($expectedMac) === strtolower($mac)) {
             return $mac;
         }
+
         throw new ValidationException(
             sprintf(
                 'Invalid MAC code in EcResponse body. Expected MAC was "%s", "%s" given. Raw body is "%s".',

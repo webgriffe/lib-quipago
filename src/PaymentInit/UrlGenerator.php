@@ -12,24 +12,38 @@ interface UrlGenerator
      * "selectedcard" one. Use SCT instead.
      */
     //Specific credit card brands:
-    const VISA_SELECTEDCARD         = 'VISA';
-    const MASTERCARD_SELECTEDCARD   = 'MasterCard';
-    const AMEX_SELECTEDCARD         = 'Amex';
-    const DINERS_SELECTEDCARD       = 'Diners';
-    const JCB_SELECTEDCARD          = 'Jcb';
-    const MAESTRO_SELECTEDCARD      = 'Maestro';
+    public const VISA_SELECTEDCARD         = 'VISA';
+
+    public const MASTERCARD_SELECTEDCARD   = 'MasterCard';
+
+    public const AMEX_SELECTEDCARD         = 'Amex';
+
+    public const DINERS_SELECTEDCARD       = 'Diners';
+
+    public const JCB_SELECTEDCARD          = 'Jcb';
+
+    public const MAESTRO_SELECTEDCARD      = 'Maestro';
 
     //...and more generic payment methods
-    const MYBANK_SELECTEDCARD       = 'SCT';
-    const CREDIT_CARD_SELECTEDCARD  = 'CC';         //Any credit card
-    const MASTERPASS_SELECTEDCARD   = 'Masterpass';
-    const SOFORT_SELECTEDCARD       = 'SOFORT';
-    const PAYPAL_SELECTEDCARD       = 'PAYPAL';
-    const AMAZONPAY_SELECTEDCARD    = 'AMAZONPAY';
-    const GOOGLEPAY_SELECTEDCARD    = 'GOOGLEPAY';
-    const APPLEPAY_SELECTEDCARD     = 'APPLEPAY';
-    const ALIPAY_SELECTEDCARD       = 'ALIPAY';
-    const WECHATPAY_SELECTEDCARD    = 'WECHATPAY';
+    public const MYBANK_SELECTEDCARD       = 'SCT';
+
+    public const CREDIT_CARD_SELECTEDCARD  = 'CC';
+             //Any credit card
+    public const MASTERPASS_SELECTEDCARD   = 'Masterpass';
+
+    public const SOFORT_SELECTEDCARD       = 'SOFORT';
+
+    public const PAYPAL_SELECTEDCARD       = 'PAYPAL';
+
+    public const AMAZONPAY_SELECTEDCARD    = 'AMAZONPAY';
+
+    public const GOOGLEPAY_SELECTEDCARD    = 'GOOGLEPAY';
+
+    public const APPLEPAY_SELECTEDCARD     = 'APPLEPAY';
+
+    public const ALIPAY_SELECTEDCARD       = 'ALIPAY';
+
+    public const WECHATPAY_SELECTEDCARD    = 'WECHATPAY';
 
     /** @noinspection MoreThanThreeArgumentsInspection */
     /**

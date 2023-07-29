@@ -7,9 +7,9 @@ use Psr\Log\LoggerInterface;
 
 class DefaultUrlGeneratorSpec extends ObjectBehavior
 {
-    function it_is_initializable_and_generates_correct_url()
+    public function it_is_initializable_and_generates_correct_url(): void
     {
-        $this->shouldHaveType('Webgriffe\\LibQuiPago\\PaymentInit\\DefaultUrlGenerator');
+        $this->shouldHaveType(\Webgriffe\LibQuiPago\PaymentInit\DefaultUrlGenerator::class);
         $this
             ->generate(
                 'https://ecommerce.nexi.it/ecomm/ecomm/DispatcherServlet',
@@ -34,10 +34,10 @@ class DefaultUrlGeneratorSpec extends ObjectBehavior
         ;
     }
 
-    function it_should_log_url_generation_process_if_a_logger_is_given(LoggerInterface $logger)
+    public function it_should_log_url_generation_process_if_a_logger_is_given(LoggerInterface $logger): void
     {
         $this->beConstructedWith($logger);
-        $logger->debug('Webgriffe\\LibQuiPago\\PaymentInit\\DefaultUrlGenerator::generate method called')->shouldBeCalled();
+        $logger->debug(\Webgriffe\LibQuiPago\PaymentInit\DefaultUrlGenerator::class . '::generate method called')->shouldBeCalled();
         $logger->debug('MAC calculation string is "codTrans=1200123divisa=EURimporto=5050secret_key"')->shouldBeCalled();
         $logger->debug('MAC calculation method is "sha1"')->shouldBeCalled();
         $logger->debug('Calculated MAC is "0fa0ca05a13c6b5d0bd1466461319658f7f990bf"')->shouldBeCalled();
@@ -86,9 +86,9 @@ STR;
         ;
     }
 
-    function it_should_use_md5_method_if_specified()
+    public function it_should_use_md5_method_if_specified(): void
     {
-        $this->shouldHaveType('Webgriffe\\LibQuiPago\\PaymentInit\\DefaultUrlGenerator');
+        $this->shouldHaveType(\Webgriffe\LibQuiPago\PaymentInit\DefaultUrlGenerator::class);
         $this
             ->generate(
                 'https://ecommerce.nexi.it/ecomm/ecomm/DispatcherServlet',
@@ -113,17 +113,18 @@ STR;
         ;
     }
 
-    function it_should_throw_an_invalid_argument_exception_if_mac_method_is_not_sha1_or_md5()
+    public function it_should_throw_an_invalid_argument_exception_if_mac_method_is_not_sha1_or_md5(): void
     {
         $this
             ->shouldThrow(\InvalidArgumentException::class)
             ->during(
                 'generate',
-                array(
+                [
                     'https://ecommerce.nexi.it/ecomm/ecomm/DispatcherServlet',
                     'merchant_alias',
                     'secret_key',
-                    'invalid', // <- Invalid MAC method
+                    'invalid',
+                    // <- Invalid MAC method
                     50.50,
                     '1200123',
                     'http-cancel-url',
@@ -131,39 +132,40 @@ STR;
                     'http-succes-url',
                     'SESSID123',
                     'ITA',
-                    'http-post-url'
-                )
+                    'http-post-url',
+                ]
             )
         ;
     }
 
-    function it_should_throw_an_invalid_argument_exception_if_amount_has_more_than_two_decimal()
+    public function it_should_throw_an_invalid_argument_exception_if_amount_has_more_than_two_decimal(): void
     {
         $this
             ->shouldThrow(\RuntimeException::class)
             ->during(
                 'generate',
-                array(
+                [
                     'https://ecommerce.nexi.it/ecomm/ecomm/DispatcherServlet',
                     'merchant_alias',
                     'secret_key',
                     'sha1',
-                    50.505, // <- Invalid amount
+                    50.505,
+                    // <- Invalid amount
                     '1200123',
                     'http-cancel-url',
                     'customer@mail.com',
                     'http-succes-url',
                     'SESSID123',
                     'ITA',
-                    'http-post-url'
-                )
+                    'http-post-url',
+                ]
             )
         ;
     }
 
-    function it_is_initializable_and_generates_correct_url_with_selectedcard_value()
+    public function it_is_initializable_and_generates_correct_url_with_selectedcard_value(): void
     {
-        $this->shouldHaveType('Webgriffe\\LibQuiPago\\PaymentInit\\DefaultUrlGenerator');
+        $this->shouldHaveType(\Webgriffe\LibQuiPago\PaymentInit\DefaultUrlGenerator::class);
         $this
             ->generate(
                 'https://ecommerce.nexi.it/ecomm/ecomm/DispatcherServlet',
@@ -189,28 +191,14 @@ STR;
         ;
     }
 
-    function it_throws_error_if_an_unexpected_selectedcard_value_is_received()
+    public function it_throws_error_if_an_unexpected_selectedcard_value_is_received(): void
     {
-        $this->shouldHaveType('Webgriffe\\LibQuiPago\\PaymentInit\\DefaultUrlGenerator');
+        $this->shouldHaveType(\Webgriffe\LibQuiPago\PaymentInit\DefaultUrlGenerator::class);
         $this
             ->shouldThrow(\RuntimeException::class)
             ->during(
                 'generate',
-                array(
-                    'https://ecommerce.nexi.it/ecomm/ecomm/DispatcherServlet',
-                    'merchant_alias',
-                    'secret_key',
-                    'sha1',
-                    50.50,
-                    '1200123',
-                    'http-cancel-url',
-                    'customer@mail.com',
-                    'http-succes-url',
-                    'SESSID123',
-                    'ITA',
-                    'http-post-url',
-                    'KRAKENPAY'
-                )
+                ['https://ecommerce.nexi.it/ecomm/ecomm/DispatcherServlet', 'merchant_alias', 'secret_key', 'sha1', 50.50, '1200123', 'http-cancel-url', 'customer@mail.com', 'http-succes-url', 'SESSID123', 'ITA', 'http-post-url', 'KRAKENPAY']
             )
         ;
     }

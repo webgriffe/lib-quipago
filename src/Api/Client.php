@@ -8,38 +8,13 @@ use GuzzleHttp\RequestOptions;
 class Client
 {
     /**
-     * @var ClientInterface
-     */
-    private $httpClient;
-
-    /**
-     * @var string
-     */
-    private $merchantAlias;
-
-    /**
-     * @var string
-     */
-    private $macKey;
-
-    /**
-     * @var string
-     */
-    private $user;
-
-    /**
      * Client constructor.
-     * @param ClientInterface $httpClient
      * @param string $merchantAlias
      * @param string $macKey
      * @param string $user
      */
-    public function __construct(ClientInterface $httpClient, $merchantAlias, $macKey, $user)
+    public function __construct(private ClientInterface $httpClient, private $merchantAlias, private $macKey, private $user)
     {
-        $this->httpClient = $httpClient;
-        $this->merchantAlias = $merchantAlias;
-        $this->macKey = $macKey;
-        $this->user = $user;
     }
 
     public function getMerchantAlias()
@@ -99,6 +74,7 @@ class Client
         if ($isTest) {
             $options = [RequestOptions::VERIFY => false];
         }
+
         $response = $this->httpClient->send($ecRequest->asPsrRequest(), $options);
         return EcResponse::createFromPsrResponse($response, $this->macKey);
     }
@@ -142,6 +118,7 @@ class Client
         if ($isTest) {
             $options = [RequestOptions::VERIFY => false];
         }
+
         $response = $this->httpClient->send($ecRequest->asPsrRequest(), $options);
         return EcResponse::createFromPsrResponse($response, $this->macKey);
     }

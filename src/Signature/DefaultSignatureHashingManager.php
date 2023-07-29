@@ -8,25 +8,20 @@ class DefaultSignatureHashingManager implements SignatureHasingManager
 {
     public function hashSignatureString($string, $method)
     {
-        switch ($method) {
-            case SignatureMethod::MD5_METHOD:
-                $encodedString = md5($string);
-                break;
-            case SignatureMethod::SHA1_METHOD:
-                $encodedString = sha1($string);
-                break;
-            default:
-                throw new \InvalidArgumentException("Unknown hash method {$method} requested");
-        }
+        $encodedString = match ($method) {
+            SignatureMethod::MD5_METHOD => md5($string),
+            SignatureMethod::SHA1_METHOD => sha1($string),
+            default => throw new \InvalidArgumentException(sprintf('Unknown hash method %s requested', $method)),
+        };
 
         if ($this->mustEncodeHashResultAsUrlencodedBase64($method)) {
-            $encodedString = base64_encode($encodedString);
+            return base64_encode($encodedString);
         }
 
         return $encodedString;
     }
 
-    private function mustEncodeHashResultAsUrlencodedBase64($method)
+    private function mustEncodeHashResultAsUrlencodedBase64($method): bool
     {
         return $method == SignatureMethod::MD5_METHOD;
     }

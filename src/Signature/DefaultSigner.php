@@ -6,26 +6,18 @@ use Psr\Log\LoggerInterface;
 
 class DefaultSigner implements Signer
 {
-    /**
-     * @var LoggerInterface
-     */
-    private $logger;
+    private \Webgriffe\LibQuiPago\Signature\SignatureHasingManager $signatureHasingManager;
 
-    /**
-     * @var SignatureHasingManager
-     */
-    private $hashingManager;
-
-    public function __construct(LoggerInterface $logger = null, SignatureHasingManager $hashingManager = null)
+    public function __construct(private ?\Psr\Log\LoggerInterface $logger = null, SignatureHasingManager $signatureHasingManager = null)
     {
-        $this->logger = $logger;
-        if (!$hashingManager) {
-            $hashingManager = new DefaultSignatureHashingManager();
+        if (!$signatureHasingManager instanceof \Webgriffe\LibQuiPago\Signature\SignatureHasingManager) {
+            $signatureHasingManager = new DefaultSignatureHashingManager();
         }
-        $this->hashingManager = $hashingManager;
+
+        $this->signatureHasingManager = $signatureHasingManager;
     }
 
-    public function sign(Signable $signable, $secretKey, $method)
+    public function sign(Signable $signable, $secretKey, $method): void
     {
         $macString = '';
         foreach ($signable->getSignatureData() as $fieldName => $value) {
@@ -34,15 +26,15 @@ class DefaultSigner implements Signer
 
         $macString .= $secretKey;
 
-        if ($this->logger) {
+        if ($this->logger instanceof \Psr\Log\LoggerInterface) {
             $this->logger->debug(sprintf('MAC calculation string is "%s"', $macString));
             $this->logger->debug(sprintf('MAC calculation method is "%s"', $method));
         }
 
-        $mac = $this->hashingManager->hashSignatureString($macString, $method);
+        $mac = $this->signatureHasingManager->hashSignatureString($macString, $method);
 
-        if ($this->logger) {
-            $this->logger->debug("Calculated MAC is \"{$mac}\"");
+        if ($this->logger instanceof \Psr\Log\LoggerInterface) {
+            $this->logger->debug(sprintf('Calculated MAC is "%s"', $mac));
         }
 
         $signable->setSignature(urlencode($mac));

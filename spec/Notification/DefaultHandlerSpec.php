@@ -10,73 +10,73 @@ use Psr\Http\Message\ServerRequestInterface;
 
 class DefaultHandlerSpec extends ObjectBehavior
 {
-    function it_throws_an_exception_if_some_parameter_is_missing(ServerRequestInterface $request)
+    public function it_throws_an_exception_if_some_parameter_is_missing(ServerRequestInterface $serverRequest): void
     {
-        $this->shouldHaveType('Webgriffe\\LibQuiPago\\Notification\\DefaultHandler');
+        $this->shouldHaveType(\Webgriffe\LibQuiPago\Notification\DefaultHandler::class);
 
         $requestRawParams = $this->getRequestRawParams();
         unset($requestRawParams['alias']);
-        $request->getMethod()->willReturn('POST');
-        $request->getParsedBody()->willReturn($requestRawParams);
+        $serverRequest->getMethod()->willReturn('POST');
+        $serverRequest->getParsedBody()->willReturn($requestRawParams);
 
         $this->shouldThrow(\InvalidArgumentException::class)->during(
             'handle',
-            array($request, 'secret_key', 'sha1')
+            [$serverRequest, 'secret_key', 'sha1']
         );
     }
 
-    function it_throws_an_exception_if_amount_is_not_numeric(ServerRequestInterface $request)
+    public function it_throws_an_exception_if_amount_is_not_numeric(ServerRequestInterface $serverRequest): void
     {
-        $this->shouldHaveType('Webgriffe\\LibQuiPago\\Notification\\DefaultHandler');
+        $this->shouldHaveType(\Webgriffe\LibQuiPago\Notification\DefaultHandler::class);
 
         $requestRawParams = $this->getRequestRawParams();
         $requestRawParams['importo'] = 'ABC';
-        $request->getMethod()->willReturn('POST');
-        $request->getParsedBody()->willReturn($requestRawParams);
+        $serverRequest->getMethod()->willReturn('POST');
+        $serverRequest->getParsedBody()->willReturn($requestRawParams);
 
         $this->shouldThrow(\InvalidArgumentException::class)->during(
             'handle',
-            array($request, 'secret_key', 'sha1')
+            [$serverRequest, 'secret_key', 'sha1']
         );
     }
 
-    function it_throws_an_exception_if_amount_is_not_an_integer_number(ServerRequestInterface $request)
+    public function it_throws_an_exception_if_amount_is_not_an_integer_number(ServerRequestInterface $serverRequest): void
     {
-        $this->shouldHaveType('Webgriffe\\LibQuiPago\\Notification\\DefaultHandler');
+        $this->shouldHaveType(\Webgriffe\LibQuiPago\Notification\DefaultHandler::class);
 
         $requestRawParams = $this->getRequestRawParams();
         $requestRawParams['importo'] = '100.10';
-        $request->getMethod()->willReturn('POST');
-        $request->getParsedBody()->willReturn($requestRawParams);
+        $serverRequest->getMethod()->willReturn('POST');
+        $serverRequest->getParsedBody()->willReturn($requestRawParams);
 
         $this->shouldThrow(\InvalidArgumentException::class)->during(
             'handle',
-            array($request, 'secret_key', 'sha1')
+            [$serverRequest, 'secret_key', 'sha1']
         );
     }
 
-    function it_throws_an_exception_if_mac_is_wrong(ServerRequestInterface $request)
+    public function it_throws_an_exception_if_mac_is_wrong(ServerRequestInterface $serverRequest): void
     {
-        $this->shouldHaveType('Webgriffe\\LibQuiPago\\Notification\\DefaultHandler');
+        $this->shouldHaveType(\Webgriffe\LibQuiPago\Notification\DefaultHandler::class);
 
         $requestRawParams = $this->getRequestRawParams();
         $requestRawParams['mac'] = 'invalid-mac';
-        $request->getMethod()->willReturn('POST');
-        $request->getParsedBody()->willReturn($requestRawParams);
+        $serverRequest->getMethod()->willReturn('POST');
+        $serverRequest->getParsedBody()->willReturn($requestRawParams);
 
         $this->shouldThrow(InvalidMacException::class)->during(
             'handle',
-            array($request, 'secret_key', 'sha1')
+            [$serverRequest, 'secret_key', 'sha1']
         );
     }
 
-    function it_returns_mapped_params(ServerRequestInterface $request)
+    public function it_returns_mapped_params(ServerRequestInterface $serverRequest): void
     {
-        $this->shouldHaveType('Webgriffe\\LibQuiPago\\Notification\\DefaultHandler');
+        $this->shouldHaveType(\Webgriffe\LibQuiPago\Notification\DefaultHandler::class);
 
-        $request->getMethod()->willReturn('POST');
-        $request->getParsedBody()->willReturn($this->getRequestRawParams());
-        $result = $this->handle($request, 'secret_key', 'sha1');
+        $serverRequest->getMethod()->willReturn('POST');
+        $serverRequest->getParsedBody()->willReturn($this->getRequestRawParams());
+        $result = $this->handle($serverRequest, 'secret_key', 'sha1');
 
         $result->getTransactionCode()->shouldReturn('1200123');
         $result->isTransactionResultPositive()->shouldReturn(true);
@@ -93,13 +93,13 @@ class DefaultHandlerSpec extends ObjectBehavior
         $result->getEmail()->shouldReturn('jd@mail.com');
     }
 
-    function it_returns_mapped_params_from_query_string(ServerRequestInterface $request)
+    public function it_returns_mapped_params_from_query_string(ServerRequestInterface $serverRequest): void
     {
-        $this->shouldHaveType('Webgriffe\\LibQuiPago\\Notification\\DefaultHandler');
+        $this->shouldHaveType(\Webgriffe\LibQuiPago\Notification\DefaultHandler::class);
 
-        $request->getQueryParams()->willReturn($this->getRequestRawParams());
-        $request->getMethod()->willReturn('GET');
-        $result = $this->handle($request, 'secret_key', 'sha1');
+        $serverRequest->getQueryParams()->willReturn($this->getRequestRawParams());
+        $serverRequest->getMethod()->willReturn('GET');
+        $result = $this->handle($serverRequest, 'secret_key', 'sha1');
 
         $result->getTransactionCode()->shouldReturn('1200123');
         $result->isTransactionResultPositive()->shouldReturn(true);
@@ -116,55 +116,55 @@ class DefaultHandlerSpec extends ObjectBehavior
         $result->getEmail()->shouldReturn('jd@mail.com');
     }
 
-    function it_returns_negative_result_if_transaction_result_is_ko(ServerRequestInterface $request)
+    public function it_returns_negative_result_if_transaction_result_is_ko(ServerRequestInterface $serverRequest): void
     {
-        $this->shouldHaveType('Webgriffe\\LibQuiPago\\Notification\\DefaultHandler');
+        $this->shouldHaveType(\Webgriffe\LibQuiPago\Notification\DefaultHandler::class);
 
         $requestRawParams = $this->getRequestRawParams();
         $requestRawParams['esito'] = 'KO';
         $requestRawParams['mac'] = '5246a2f5d8dce9a0cabb4c4369cf69c4b567647e';
-        $request->getMethod()->willReturn('POST');
-        $request->getParsedBody()->willReturn($requestRawParams);
+        $serverRequest->getMethod()->willReturn('POST');
+        $serverRequest->getParsedBody()->willReturn($requestRawParams);
 
-        $result = $this->handle($request,'secret_key', 'sha1');
+        $result = $this->handle($serverRequest,'secret_key', 'sha1');
         $result->isTransactionResultPositive()->shouldReturn(false);
     }
 
-    function it_should_log_if_logger_is_passed(ServerRequestInterface $request, LoggerInterface $logger)
+    public function it_should_log_if_logger_is_passed(ServerRequestInterface $serverRequest, LoggerInterface $logger): void
     {
         $this->beConstructedWith($logger);
-        $this->shouldHaveType('Webgriffe\\LibQuiPago\\Notification\\DefaultHandler');
+        $this->shouldHaveType(\Webgriffe\LibQuiPago\Notification\DefaultHandler::class);
 
-        $logger->debug('Webgriffe\\LibQuiPago\\Notification\\DefaultHandler::handle method called')->shouldBeCalled();
+        $logger->debug(\Webgriffe\LibQuiPago\Notification\DefaultHandler::class . '::handle method called')->shouldBeCalled();
         $logger->debug('Secret key: "secret_key"')->shouldBeCalled();
-        $logger->debug(sprintf('Request body: %s', json_encode($this->getRequestRawParams())))->shouldBeCalled();
-        $logger->debug(sprintf('Request query: []'))->shouldBeCalled();
+        $logger->debug(sprintf('Request body: %s', json_encode($this->getRequestRawParams(), JSON_THROW_ON_ERROR)))->shouldBeCalled();
+        $logger->debug('Request query: []')->shouldBeCalled();
 
         $str = 'codTrans=1200123esito=OKimporto=5050divisa=EURdata=20160221orario=181854codAut=123abc';
-        $logger->debug("MAC calculation string is \"$str\"")->shouldBeCalled();
+        $logger->debug(sprintf('MAC calculation string is "%s"', $str))->shouldBeCalled();
 
         $logger->debug('MAC calculation method is "sha1"')->shouldBeCalled();
         $logger->debug(Argument::containingString('Calculated MAC is "'))->shouldBeCalled();
         $logger->debug(Argument::containingString('MAC from request is "'))->shouldBeCalled();
         $logger->debug('MAC from request is valid')->shouldBeCalled();
 
-        $request->getMethod()->willReturn('POST');
-        $request->getParsedBody()->willReturn($this->getRequestRawParams());
-        $request->getQueryParams()->willReturn([]);
+        $serverRequest->getMethod()->willReturn('POST');
+        $serverRequest->getParsedBody()->willReturn($this->getRequestRawParams());
+        $serverRequest->getQueryParams()->willReturn([]);
 
-        $this->handle($request,'secret_key', 'sha1');
+        $this->handle($serverRequest,'secret_key', 'sha1');
     }
 
-    function it_should_use_md5_as_mac_calculation_method_if_specified(ServerRequestInterface $request)
+    public function it_should_use_md5_as_mac_calculation_method_if_specified(ServerRequestInterface $serverRequest): void
     {
-        $this->shouldHaveType('Webgriffe\\LibQuiPago\\Notification\\DefaultHandler');
+        $this->shouldHaveType(\Webgriffe\LibQuiPago\Notification\DefaultHandler::class);
 
         $requestRawParams = $this->getRequestRawParams();
         $requestRawParams['mac'] = 'ZjM0OWQzN2MwOTMzYTk3Y2Y5MjIyOTBiM2FmYTM0ZjI%3D';
-        $request->getMethod()->willReturn('POST');
-        $request->getParsedBody()->willReturn($requestRawParams);
+        $serverRequest->getMethod()->willReturn('POST');
+        $serverRequest->getParsedBody()->willReturn($requestRawParams);
 
-        $result = $this->handle($request, 'secret_key', 'md5');
+        $result = $this->handle($serverRequest, 'secret_key', 'md5');
 
         $result->getTransactionCode()->shouldReturn('1200123');
         $result->isTransactionResultPositive()->shouldReturn(true);
@@ -181,26 +181,8 @@ class DefaultHandlerSpec extends ObjectBehavior
         $result->getEmail()->shouldReturn('jd@mail.com');
     }
 
-    /**
-     * @return array
-     */
-    private function getRequestRawParams()
+    private function getRequestRawParams(): array
     {
-        return array(
-            'codTrans'      => '1200123',
-            'esito'         => 'OK',
-            'importo'       => '5050',
-            'divisa'        => 'EUR',
-            'data'          => '20160221',
-            'orario'        => '181854',
-            'codAut'        => '123abc',
-            'mac'           => 'c83cee2a5422189cab2b54ef685b29dc428741dc',
-            'alias'         => 'merchant_123',
-            'session_id'    => '123123',
-            '$BRAND'        => 'Visa',
-            'nome'          => 'John',
-            'cognome'       => 'Doe',
-            'mail'          => 'jd@mail.com',
-        );
+        return ['codTrans'      => '1200123', 'esito'         => 'OK', 'importo'       => '5050', 'divisa'        => 'EUR', 'data'          => '20160221', 'orario'        => '181854', 'codAut'        => '123abc', 'mac'           => 'c83cee2a5422189cab2b54ef685b29dc428741dc', 'alias'         => 'merchant_123', 'session_id'    => '123123', '$BRAND'        => 'Visa', 'nome'          => 'John', 'cognome'       => 'Doe', 'mail'          => 'jd@mail.com'];
     }
 }

@@ -3,7 +3,6 @@
 namespace spec\Webgriffe\LibQuiPago\Api;
 
 use PhpSpec\ObjectBehavior;
-use Prophecy\Argument;
 use Psr\Http\Message\RequestInterface;
 use Webgriffe\LibQuiPago\Api\EcRequest;
 use Webgriffe\LibQuiPago\Api\ValidationException;

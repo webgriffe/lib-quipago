@@ -3,7 +3,6 @@
 namespace spec\Webgriffe\LibQuiPago\PaymentInit;
 
 use PhpSpec\ObjectBehavior;
-use Prophecy\Argument;
 use Psr\Log\LoggerInterface;
 
 class DefaultUrlGeneratorSpec extends ObjectBehavior

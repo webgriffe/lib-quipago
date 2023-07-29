@@ -3,7 +3,6 @@
 namespace spec\Webgriffe\LibQuiPago\Signature;
 
 use PhpSpec\ObjectBehavior;
-use Prophecy\Argument;
 
 class InvalidMacExceptionSpec extends ObjectBehavior
 {

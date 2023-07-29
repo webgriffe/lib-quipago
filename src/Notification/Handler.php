@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: kraken
- * Date: 10/08/18
- * Time: 15.36
- */
 
 namespace Webgriffe\LibQuiPago\Notification;
 

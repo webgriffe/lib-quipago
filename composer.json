@@ -10,14 +10,15 @@
     "require": {
         "ext-ctype": "*",
         "ext-json": "*",
-        "psr/log": "^2.0",
-        "guzzlehttp/guzzle": "^6.2",
-        "respect/validation": "^1.1",
+        "psr/log": " ^1.0 || ^2.0 || ^3.0",
+        "guzzlehttp/guzzle": "^7.0",
+        "respect/validation": "^2.0",
         "php": "^8.0"
     },
     "require-dev": {
         "squizlabs/php_codesniffer": "^3.7",
-        "phpspec/phpspec": "^7.3"
+        "phpspec/phpspec": "^7.3",
+        "rector/rector": "^0.17.7"
     },
     "autoload": {
         "psr-4": {

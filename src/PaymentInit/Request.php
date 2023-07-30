@@ -133,7 +133,7 @@ class Request implements Signable
         return $optionalMap;
     }
 
-    private function getAmountAsNumberOfCents(): float
+    private function getAmountAsNumberOfCents(): int
     {
         if (round($this->amount, 2) !== $this->amount) {
             throw new RuntimeException(
@@ -142,6 +142,6 @@ class Request implements Signable
             );
         }
 
-        return round($this->amount * 100);
+        return (int) round($this->amount * 100);
     }
 }

@@ -47,15 +47,15 @@ class Request implements Signed
         $this->checkForMissingParameters($rawParams);
         $this->validateParameters($rawParams);
 
-        $this->alias = $rawParams['alias'];
+        $this->alias = (string) $rawParams['alias'];
         $this->importo = (int) $rawParams['importo'];
-        $this->divisa = $rawParams['divisa'];
-        $this->codTrans = $rawParams['codTrans'];
+        $this->divisa = (string) $rawParams['divisa'];
+        $this->codTrans = (string) $rawParams['codTrans'];
         $this->brand = $rawParams['$BRAND'] ?? null;
         $this->mac = urldecode($rawParams['mac']);
-        $this->esito = $rawParams['esito'];
-        $this->data = $rawParams['data'];
-        $this->orario = $rawParams['orario'];
+        $this->esito = (string) $rawParams['esito'];
+        $this->data = (string) $rawParams['data'];
+        $this->orario = (string) $rawParams['orario'];
 
         $this->codAut = $rawParams['codAut'] ?? null;
         $this->pan = $rawParams['Pan'] ?? null;

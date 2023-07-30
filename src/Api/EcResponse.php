@@ -125,7 +125,7 @@ class EcResponse
 
     public function getOperationAmount(): float
     {
-        return (float)((int)$this->operationAmount / 100);
+        return $this->operationAmount / 100.0;
     }
 
     private function validateMac(string $mac, string $macKey): string

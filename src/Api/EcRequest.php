@@ -7,6 +7,7 @@ use DOMException;
 use GuzzleHttp\Psr7\Request;
 use Respect\Validation\Exceptions\NestedValidationException;
 use Respect\Validation\Validator as v;
+use RuntimeException;
 
 class EcRequest
 {
@@ -121,7 +122,7 @@ class EcRequest
     /**
      * @throws DOMException
      */
-    public function getBody(): string|bool
+    public function getBody(): string
     {
         $domDocument = new DOMDocument('1.0', 'ISO-8859-15');
         $domDocument->formatOutput = true;
@@ -143,7 +144,12 @@ class EcRequest
         $vposreq->appendChild($domDocument->createElement('mac', $this->calculateMac()));
 
         $domDocument->appendChild($vposreq);
-        return $domDocument->saveXML();
+        $body = $domDocument->saveXML();
+        if ($body === false) {
+            throw new RuntimeException('Cannot create the body for the request');
+        }
+
+        return $body;
     }
 
     /**

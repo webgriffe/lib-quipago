@@ -56,7 +56,7 @@ class Result
     public function __construct(Request $request)
     {
         $this->merchantAlias = $request->getAlias();
-        $this->amount = (float)($request->getImporto() / 100);
+        $this->amount = $request->getImporto() / 100.0;
         $this->currency = $request->getDivisa();
         $this->transactionCode = $request->getCodTrans();
         $this->dateTime = new DateTime($request->getData(). ' ' .$request->getOrario());

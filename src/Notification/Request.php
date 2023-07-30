@@ -8,87 +8,39 @@ use Webgriffe\LibQuiPago\Signature\Signed;
 
 class Request implements Signed
 {
-    /**
-     * @var string
-     */
-    private $alias;
+    private string $alias;
 
-    /**
-     * @var int
-     */
-    private $importo;
+    private int $importo;
 
-    /**
-     * @var string
-     */
-    private $divisa;
+    private string $divisa;
 
-    /**
-     * @var string
-     */
-    private $codTrans;
+    private string $codTrans;
 
-    /**
-     * @var string
-     */
-    private $data;
+    private string $data;
 
-    /**
-     * @var string
-     */
-    private $orario;
+    private string $orario;
 
     private string $mac;
 
-    /**
-     * @var string
-     */
-    private $codAut;
+    private ?string $codAut;
 
-    /**
-     * @var string
-     */
-    private $esito;
+    private string $esito;
 
-    /**
-     * @var string
-     */
-    private $session_id;
+    private ?string $session_id;
 
-    /**
-     * @var string
-     */
-    private $brand;
+    private ?string $brand;
 
-    /**
-     * @var string
-     */
-    private $nome;
+    private ?string $nome;
 
-    /**
-     * @var string
-     */
-    private $cognome;
+    private ?string $cognome;
 
-    /**
-     * @var string
-     */
-    private $mail;
+    private ?string $mail;
 
-    /**
-     * @var string
-     */
-    private $nazionalita;
+    private ?string $nazionalita;
 
-    /**
-     * @var string
-     */
-    private $pan;
+    private ?string $pan;
 
-    /**
-     * @var string
-     */
-    private $scadenza_pan;
+    private ?string $scadenza_pan;
 
     private function __construct(array $rawParams)
     {
@@ -96,7 +48,7 @@ class Request implements Signed
         $this->validateParameters($rawParams);
 
         $this->alias = $rawParams['alias'];
-        $this->importo = $rawParams['importo'];
+        $this->importo = (int) $rawParams['importo'];
         $this->divisa = $rawParams['divisa'];
         $this->codTrans = $rawParams['codTrans'];
         $this->brand = $rawParams['$BRAND'] ?? null;
@@ -131,7 +83,7 @@ class Request implements Signed
     /**
      * @throws InvalidArgumentException
      */
-    private function checkForMissingParameters(array $rawParams)
+    private function checkForMissingParameters(array $rawParams): void
     {
         $requiredParams = ['alias', 'importo', 'divisa', 'codTrans', 'mac', 'esito', 'data', 'orario'];
         $missingParams = [];
@@ -151,7 +103,7 @@ class Request implements Signed
         }
     }
 
-    private function validateParameters(array $rawParams)
+    private function validateParameters(array $rawParams): void
     {
         $rawAmount = $rawParams['importo'];
         if (!ctype_digit($rawAmount)) {
@@ -165,50 +117,32 @@ class Request implements Signed
         }
     }
 
-    /**
-     * @return string
-     */
-    public function getAlias()
+    public function getAlias(): string
     {
         return $this->alias;
     }
 
-    /**
-     * @return int
-     */
-    public function getImporto()
+    public function getImporto(): int
     {
         return $this->importo;
     }
 
-    /**
-     * @return string
-     */
-    public function getDivisa()
+    public function getDivisa(): string
     {
         return $this->divisa;
     }
 
-    /**
-     * @return string
-     */
-    public function getCodTrans()
+    public function getCodTrans(): string
     {
         return $this->codTrans;
     }
 
-    /**
-     * @return string
-     */
-    public function getData()
+    public function getData(): string
     {
         return $this->data;
     }
 
-    /**
-     * @return string
-     */
-    public function getOrario()
+    public function getOrario(): string
     {
         return $this->orario;
     }
@@ -218,82 +152,52 @@ class Request implements Signed
         return $this->mac;
     }
 
-    /**
-     * @return string
-     */
-    public function getCodAut()
+    public function getCodAut(): ?string
     {
         return $this->codAut;
     }
 
-    /**
-     * @return string
-     */
-    public function getEsito()
+    public function getEsito(): string
     {
         return $this->esito;
     }
 
-    /**
-     * @return string
-     */
-    public function getSessionId()
+    public function getSessionId(): ?string
     {
         return $this->session_id;
     }
 
-    /**
-     * @return string
-     */
-    public function getBrand()
+    public function getBrand(): ?string
     {
         return $this->brand;
     }
 
-    /**
-     * @return string
-     */
-    public function getNome()
+    public function getNome(): ?string
     {
         return $this->nome;
     }
 
-    /**
-     * @return string
-     */
-    public function getCognome()
+    public function getCognome(): ?string
     {
         return $this->cognome;
     }
 
-    /**
-     * @return string
-     */
-    public function getMail()
+    public function getMail(): ?string
     {
         return $this->mail;
     }
 
-    /**
-     * @return string
-     */
-    public function getNazionalita()
+    public function getNazionalita(): ?string
     {
         return $this->nazionalita;
     }
 
-    /**
-     * @return string
-     */
-    public function getPan()
+    public function getPan(): ?string
     {
         return $this->pan;
     }
 
-    /**
-     * @return string
-     */
-    public function getScadenzaPan()
+    public function getScadenzaPan(): ?string
     {
         return $this->scadenza_pan;
     }

@@ -3,6 +3,7 @@
 namespace Webgriffe\LibQuiPago\Api;
 
 use DOMDocument;
+use DOMException;
 use GuzzleHttp\Psr7\Request;
 use Respect\Validation\Exceptions\NestedValidationException;
 use Respect\Validation\Validator as v;
@@ -17,38 +18,27 @@ class EcRequest
 
     public const REQUEST_TYPE_RETRY_ATTEMPT = 'RA';
 
+    public const PRODUCTION_ENDPOINT = 'https://ecommerce.nexi.it/ecomm/ecomm/XPayBo';
+
+    public const TEST_ENDPOINT = 'https://int-ecommerce.nexi.it/ecomm/ecomm/XPayBo';
+
     private string $originalAmount;
 
     private string $operationAmount;
 
-    /**
-     * EcRequest constructor.
-     * @param string $operationType
-     * @param string $merchantAlias
-     * @param string $macKey
-     * @param string $transactionCode
-     * @param string $requestType
-     * @param string $operationId
-     * @param float $originalAmount
-     * @param string $currency
-     * @param string $authCode
-     * @param float $operationAmount
-     * @param string $user
-     * @param bool $isTest
-     */
     private function __construct(
-        private $operationType,
-        private $merchantAlias,
-        private $macKey,
-        private $transactionCode,
-        private $requestType,
-        private $operationId,
-        $originalAmount,
-        private $currency,
-        private $authCode,
-        $operationAmount,
-        private $user,
-        private $isTest
+        private string $operationType,
+        private string $merchantAlias,
+        private string $macKey,
+        private string $transactionCode,
+        private string $requestType,
+        private string $operationId,
+        float $originalAmount,
+        private string $currency,
+        private string $authCode,
+        float $operationAmount,
+        private string $user,
+        private bool   $isTest
     ) {
         $this->originalAmount = $this->convertAmountToString($originalAmount);
         $this->operationAmount = $this->convertAmountToString($operationAmount);
@@ -56,31 +46,18 @@ class EcRequest
         $this->validate();
     }
 
-    /**
-     * @param string $merchantAlias
-     * @param string $macKey
-     * @param string $transactionCode
-     * @param string $requestType
-     * @param string $operationId
-     * @param float $originalAmount
-     * @param string $currency
-     * @param string $authCode
-     * @param float $operationAmount
-     * @param string $user
-     * @param bool $isTest
-     */
     public static function createVoidRequest(
-        $merchantAlias,
-        $macKey,
-        $transactionCode,
-        $requestType,
-        $operationId,
-        $originalAmount,
-        $currency,
-        $authCode,
-        $operationAmount,
-        $user = '',
-        $isTest = false
+        string $merchantAlias,
+        string $macKey,
+        string $transactionCode,
+        string $requestType,
+        string $operationId,
+        float $originalAmount,
+        string $currency,
+        string $authCode,
+        float $operationAmount,
+        string $user = '',
+        bool $isTest = false
     ): EcRequest {
         return new EcRequest(
             self::OPERATION_TYPE_VOID,
@@ -98,31 +75,18 @@ class EcRequest
         );
     }
 
-    /**
-     * @param string $merchantAlias
-     * @param string $macKey
-     * @param string $transactionCode
-     * @param string $requestType
-     * @param string $operationId
-     * @param float $originalAmount
-     * @param string $currency
-     * @param string $authCode
-     * @param float $operationAmount
-     * @param string $user
-     * @param bool $isTest
-     */
     public static function createCaptureRequest(
-        $merchantAlias,
-        $macKey,
-        $transactionCode,
-        $requestType,
-        $operationId,
-        $originalAmount,
-        $currency,
-        $authCode,
-        $operationAmount,
-        $user = '',
-        $isTest = false
+        string $merchantAlias,
+        string $macKey,
+        string $transactionCode,
+        string $requestType,
+        string $operationId,
+        float $originalAmount,
+        string $currency,
+        string $authCode,
+        float $operationAmount,
+        string $user = '',
+        bool $isTest = false
     ): EcRequest {
         return new EcRequest(
             self::OPERATION_TYPE_CAPTURE,
@@ -140,10 +104,7 @@ class EcRequest
         );
     }
 
-    /**
-     * @return string
-     */
-    public function getMerchantAlias()
+    public function getMerchantAlias(): string
     {
         return $this->merchantAlias;
     }
@@ -151,12 +112,15 @@ class EcRequest
     public function getUrl(): string
     {
         if (!$this->isTest) {
-            return 'https://ecommerce.nexi.it/ecomm/ecomm/XPayBo';
+            return self::PRODUCTION_ENDPOINT;
         }
 
-        return 'https://int-ecommerce.nexi.it/ecomm/ecomm/XPayBo';
+        return self::TEST_ENDPOINT;
     }
 
+    /**
+     * @throws DOMException
+     */
     public function getBody(): string|bool
     {
         $domDocument = new DOMDocument('1.0', 'ISO-8859-15');
@@ -182,6 +146,9 @@ class EcRequest
         return $domDocument->saveXML();
     }
 
+    /**
+     * @throws DOMException
+     */
     public function asPsrRequest(): Request
     {
         return new Request('POST', $this->getUrl(), [], $this->getBody());
@@ -207,15 +174,15 @@ class EcRequest
         return sha1($macString);
     }
 
-    /**
-     * @param float $amount
-     */
-    private function convertAmountToString($amount): string
+    private function convertAmountToString(float $amount): string
     {
         return str_pad((string)round($amount, 2)*100, 9, '0', STR_PAD_LEFT);
     }
 
-    private function validate()
+    /**
+     * @throws ValidationException
+     */
+    private function validate(): void
     {
         try {
             $validator = v::attribute('merchantAlias', v::stringType()->alnum('_')->noWhitespace()->length(1, 30))

@@ -2,6 +2,7 @@
 
 namespace Webgriffe\LibQuiPago\Notification;
 
+use JsonException;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Log\LoggerInterface;
 use Webgriffe\LibQuiPago\Signature\Checker;
@@ -14,9 +15,6 @@ class DefaultHandler implements Handler
 
     private ?LoggerInterface $logger;
 
-    /**
-     * Handler constructor.
-     */
     public function __construct(LoggerInterface $logger = null, Checker $checker = null)
     {
         if (!$checker instanceof Checker) {
@@ -28,14 +26,14 @@ class DefaultHandler implements Handler
     }
 
     /**
-     * Handle notification request
      * @param ServerRequestInterface $serverRequest Notify request coming from Quipago
      * @param string $secretKey Secret key for MAC calculation
      * @param string $macMethod MAC calculation method. It should be 'sha1' or 'md5'
      *
      * @throws InvalidMacException
+     * @throws JsonException
      */
-    public function handle(ServerRequestInterface $serverRequest, $secretKey, $macMethod): Result
+    public function handle(ServerRequestInterface $serverRequest, string $secretKey, string $macMethod): Result
     {
         if ($this->logger instanceof LoggerInterface) {
             $this->logger->debug(sprintf('%s method called', __METHOD__));

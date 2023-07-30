@@ -20,63 +20,45 @@ class DefaultUrlGenerator implements UrlGenerator
         $this->signer = $signer;
     }
 
-    /** @noinspection MoreThanThreeArgumentsInspection */
-    /**
-     * @param string $gatewayUrl
-     * @param string $merchantAlias
-     * @param string $secretKey
-     * @param string $macMethod
-     * @param float $amount
-     * @param string $transactionCode
-     * @param string $cancelUrl
-     * @param string|null $email
-     * @param string|null $successUrl
-     * @param string|null $sessionId
-     * @param string|null $locale
-     * @param string|null $notifyUrl
-     * @param string|null $selectedCard
-     *
-     * @return string
-     */
     public function generate(
-        $gatewayUrl,
-        $merchantAlias,
-        $secretKey,
-        $macMethod,
-        $amount,
-        $transactionCode,
-        $cancelUrl,
-        $email = null,
-        $successUrl = null,
-        $sessionId = null,
-        $locale = null,
-        $notifyUrl = null,
-        $selectedCard = null
-    ) {
+        string $gatewayUrl,
+        string $merchantAlias,
+        string $secretKey,
+        string $macMethod,
+        float $amount,
+        string $transactionCode,
+        string $cancelUrl,
+        ?string $email = null,
+        ?string $successUrl = null,
+        ?string $sessionId = null,
+        ?string $locale = null,
+        ?string $notifyUrl = null,
+        ?string $selectedCard = null
+    ): string {
         if ($this->logger instanceof LoggerInterface) {
             $this->logger->debug(sprintf('%s method called', __METHOD__));
         }
 
         if ($selectedCard &&
-            $selectedCard != self::VISA_SELECTEDCARD &&
-            $selectedCard != self::MASTERCARD_SELECTEDCARD &&
-            $selectedCard != self::AMEX_SELECTEDCARD &&
-            $selectedCard != self::DINERS_SELECTEDCARD &&
-            $selectedCard != self::JCB_SELECTEDCARD &&
-            $selectedCard != self::MAESTRO_SELECTEDCARD &&
-            $selectedCard != self::MYBANK_SELECTEDCARD &&
-            $selectedCard != self::CREDIT_CARD_SELECTEDCARD &&
-            $selectedCard != self::MASTERPASS_SELECTEDCARD &&
-            $selectedCard != self::SOFORT_SELECTEDCARD &&
-            $selectedCard != self::PAYPAL_SELECTEDCARD &&
-            $selectedCard != self::AMAZONPAY_SELECTEDCARD &&
-            $selectedCard != self::GOOGLEPAY_SELECTEDCARD &&
-            $selectedCard != self::APPLEPAY_SELECTEDCARD &&
-            $selectedCard != self::ALIPAY_SELECTEDCARD &&
-            $selectedCard != self::WECHATPAY_SELECTEDCARD
+            $selectedCard !== self::VISA_SELECTEDCARD &&
+            $selectedCard !== self::MASTERCARD_SELECTEDCARD &&
+            $selectedCard !== self::AMEX_SELECTEDCARD &&
+            $selectedCard !== self::DINERS_SELECTEDCARD &&
+            $selectedCard !== self::JCB_SELECTEDCARD &&
+            $selectedCard !== self::MAESTRO_SELECTEDCARD &&
+            $selectedCard !== self::MYBANK_SELECTEDCARD &&
+            $selectedCard !== self::CREDIT_CARD_SELECTEDCARD &&
+            $selectedCard !== self::MASTERPASS_SELECTEDCARD &&
+            $selectedCard !== self::SOFORT_SELECTEDCARD &&
+            $selectedCard !== self::PAYPAL_SELECTEDCARD &&
+            $selectedCard !== self::AMAZONPAY_SELECTEDCARD &&
+            $selectedCard !== self::GOOGLEPAY_SELECTEDCARD &&
+            $selectedCard !== self::APPLEPAY_SELECTEDCARD &&
+            $selectedCard !== self::ALIPAY_SELECTEDCARD &&
+            $selectedCard !== self::WECHATPAY_SELECTEDCARD
         ) {
             throw new RuntimeException(sprintf(
-                "Selected card value '%s' is not one of the allowed values",
+                "Selectedcard value '%s' is not one of the allowed values",
                 $selectedCard
             ));
         }

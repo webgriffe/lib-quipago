@@ -12,75 +12,57 @@ class Request implements Signable
 
     public const OPERATION_TYPE_AUTHORIZE = 'D';
 
-    /**
-     * Signature string
-     * @var string
-     */
-    private $mac;
+    private string $mac;
 
-    /**
-     * @param string $merchantAlias
-     * @param float $amount
-     * @param string $transactionCode
-     * @param string $cancelUrl
-     * @param string $email
-     * @param string $successUrl
-     * @param string $sessionId
-     * @param string $locale
-     * @param string $notifyUrl
-     * @param string $selectedcard
-     * @param string $operationType
-     * @param string|null $description
-     */
     public function __construct(
         /**
          * Merchant alias (aka "alias")
          */
-        private $merchantAlias,
+        private string $merchantAlias,
         /**
          * Transaction amount (aka "importo")
          */
-        private $amount,
+        private float $amount,
         /**
          * Transaction identification code (aka "codTrans")
          */
-        private $transactionCode,
+        private string $transactionCode,
         /**
          * URL where user will be redirected when he cancel the transaction (aka "url_back")
          */
-        private $cancelUrl,
+        private string $cancelUrl,
         /**
          * Email address where transaction result will be sent (aka "email")
          */
-        private $email,
+        private string $email,
         /**
          * URL where user will be redirected when the transaction is successful (aka "url")
          */
-        private $successUrl,
+        private string $successUrl,
         /**
          * Session identifier (aka "sess_id")
          */
-        private $sessionId,
+        private string $sessionId,
         /**
          * Language identifier code (aka "languageId")
          */
-        private $locale,
+        private string $locale,
         /**
          * Server to server transaction feedback notification URL (aka "urlpost")
          */
-        private $notifyUrl,
+        private string $notifyUrl,
         /**
          * Preselected payment method to use
          */
-        private $selectedcard = null,
+        private ?string $selectedcard = null,
         /**
          * Operation type (aka "TCONTAB")
          */
-        private $operationType = null,
+        private ?string $operationType = null,
         /**
          * Payment description (aka "descrizione")
          */
-        private $description = null
+        private ?string $description = null
     ) {
     }
 

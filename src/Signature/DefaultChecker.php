@@ -20,12 +20,9 @@ class DefaultChecker implements Checker
     }
 
     /**
-     * @param $secretKey
-     * @param $macMethod
-     * @return void
      * @throws InvalidMacException
      */
-    public function checkSignature(Signed $signed, $secretKey, $macMethod)
+    public function checkSignature(Signed $signed, $secretKey, $macMethod): void
     {
         $macCalculationString = '';
         foreach ($signed->getSignatureFields() as $fieldName => $signatureField) {

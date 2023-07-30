@@ -29,7 +29,7 @@ interface UrlGenerator
 
     public const CREDIT_CARD_SELECTEDCARD  = 'CC';
 
-             //Any credit card
+    //Any credit card
     public const MASTERPASS_SELECTEDCARD   = 'Masterpass';
 
     public const SOFORT_SELECTEDCARD       = 'SOFORT';
@@ -46,37 +46,19 @@ interface UrlGenerator
 
     public const WECHATPAY_SELECTEDCARD    = 'WECHATPAY';
 
-    /** @noinspection MoreThanThreeArgumentsInspection */
-    /**
-     * @param string $gatewayUrl
-     * @param string $merchantAlias
-     * @param string $secretKey
-     * @param string $macMethod
-     * @param float $amount
-     * @param string $transactionCode
-     * @param string $cancelUrl
-     * @param string|null $email
-     * @param string|null $successUrl
-     * @param string|null $sessionId
-     * @param string|null $locale
-     * @param string|null $notifyUrl
-     * @param string|null $selectedCard
-     *
-     * @return string
-     */
     public function generate(
-        $gatewayUrl,
-        $merchantAlias,
-        $secretKey,
-        $macMethod,
-        $amount,
-        $transactionCode,
-        $cancelUrl,
-        $email = null,
-        $successUrl = null,
-        $sessionId = null,
-        $locale = null,
-        $notifyUrl = null,
-        $selectedCard = null
-    );
+        string $gatewayUrl,
+        string $merchantAlias,
+        string $secretKey,
+        string $macMethod,
+        float $amount,
+        string $transactionCode,
+        string $cancelUrl,
+        ?string $email = null,
+        ?string $successUrl = null,
+        ?string $sessionId = null,
+        ?string $locale = null,
+        ?string $notifyUrl = null,
+        ?string $selectedCard = null
+    ): string;
 }

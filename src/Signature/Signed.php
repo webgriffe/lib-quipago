@@ -4,7 +4,7 @@ namespace Webgriffe\LibQuiPago\Signature;
 
 interface Signed
 {
-    public function getSignatureFields();
+    public function getSignatureFields(): array;
 
-    public function getSignature();
+    public function getSignature(): string;
 }

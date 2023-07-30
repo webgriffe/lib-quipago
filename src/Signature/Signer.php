@@ -4,5 +4,5 @@ namespace Webgriffe\LibQuiPago\Signature;
 
 interface Signer
 {
-    public function sign(Signable $signable, $secretKey, $method);
+    public function sign(Signable $signable, $secretKey, $method): void;
 }

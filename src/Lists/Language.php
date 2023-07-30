@@ -24,9 +24,6 @@ class Language
 
     public const LANGUAGE_POR = 'POR';
 
-    /**
-     * Get options in "key-value" format
-     */
     public function getList(): array
     {
         return [

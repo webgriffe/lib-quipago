@@ -3,6 +3,7 @@
 namespace Webgriffe\LibQuiPago\Notification;
 
 use DateTime;
+use Exception;
 
 class Result
 {
@@ -21,7 +22,7 @@ class Result
 
     private string $merchantAlias;
 
-    private int|float $amount;
+    private float $amount;
 
     private string $currency;
 
@@ -49,10 +50,13 @@ class Result
 
     private ?string $panExpiration;
 
+    /**
+     * @throws Exception
+     */
     public function __construct(Request $request)
     {
         $this->merchantAlias = $request->getAlias();
-        $this->amount = $request->getImporto() / 100;
+        $this->amount = (float)($request->getImporto() / 100);
         $this->currency = $request->getDivisa();
         $this->transactionCode = $request->getCodTrans();
         $this->dateTime = new DateTime($request->getData(). ' ' .$request->getOrario());
@@ -73,10 +77,7 @@ class Result
         return $this->merchantAlias;
     }
 
-    /**
-     * @return float
-     */
-    public function getAmount(): int|float
+    public function getAmount(): float
     {
         return $this->amount;
     }

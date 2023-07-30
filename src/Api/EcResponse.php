@@ -10,10 +10,7 @@ class EcResponse
 {
     public const POSITIVE_RESULT_CODE = '0';
 
-    /**
-     * @var string
-     */
-    private $rawBody;
+    private string $rawBody;
 
     private string $resultCode;
 
@@ -31,12 +28,7 @@ class EcResponse
 
     private string $mac;
 
-    /**
-     * EcResponse constructor.
-     * @param string $rawBody
-     * @param string $macKey
-     */
-    private function __construct($rawBody, $macKey)
+    private function __construct(string $rawBody, string $macKey)
     {
         try {
             $xmlReader = new SimpleXMLElement($rawBody);
@@ -57,18 +49,12 @@ class EcResponse
         $this->mac = $this->validateMac((string)$xmlReader->mac, $macKey);
     }
 
-    /**
-     * @param string $macKey
-     */
-    public static function createFromPsrResponse(ResponseInterface $response, $macKey): self
+    public static function createFromPsrResponse(ResponseInterface $response, string $macKey): self
     {
         return new self($response->getBody()->getContents(), $macKey);
     }
 
-    /**
-     * @return string
-     */
-    public function getRawBody()
+    public function getRawBody(): string
     {
         return $this->rawBody;
     }
@@ -78,10 +64,7 @@ class EcResponse
         return $this->resultCode === self::POSITIVE_RESULT_CODE;
     }
 
-    /**
-     * @return string|null
-     */
-    public function getErrorMessageByResultCode()
+    public function getErrorMessageByResultCode(): ?string
     {
         return match ($this->resultCode) {
             self::POSITIVE_RESULT_CODE => null,
@@ -100,10 +83,7 @@ class EcResponse
         };
     }
 
-    /**
-     * @return string
-     */
-    public function getMac()
+    public function getMac(): string
     {
         return $this->mac;
     }
@@ -143,15 +123,12 @@ class EcResponse
         return $this->operationAmount;
     }
 
-    /**
-     * @return float
-     */
-    public function getOperationAmount()
+    public function getOperationAmount(): float
     {
-        return (int)$this->operationAmount / 100;
+        return (float)((int)$this->operationAmount / 100);
     }
 
-    private function validateMac(string $mac, $macKey): string
+    private function validateMac(string $mac, string $macKey): string
     {
         if ($mac === '') {
             return $mac;

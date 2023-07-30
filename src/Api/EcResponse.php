@@ -159,7 +159,14 @@ class EcResponse
 
         $macString = implode(
             '',
-            [$this->merchantAlias, $this->transactionCode, $this->operationId, $this->operationType, $this->operationAmount, $macKey]
+            [
+                $this->merchantAlias,
+                $this->transactionCode,
+                $this->operationId,
+                $this->operationType,
+                $this->operationAmount,
+                $macKey
+            ]
         );
         $expectedMac = sha1($macString);
         if (strtolower($expectedMac) === strtolower($mac)) {

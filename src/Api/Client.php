@@ -13,8 +13,12 @@ class Client
      * @param string $macKey
      * @param string $user
      */
-    public function __construct(private ClientInterface $httpClient, private $merchantAlias, private $macKey, private $user)
-    {
+    public function __construct(
+        private ClientInterface $httpClient,
+        private $merchantAlias,
+        private $macKey,
+        private $user
+    ) {
     }
 
     public function getMerchantAlias()
@@ -54,8 +58,7 @@ class Client
         $authCode,
         $operationAmount,
         $isTest
-    ): EcResponse
-    {
+    ): EcResponse {
         $ecRequest = EcRequest::createCaptureRequest(
             $this->merchantAlias,
             $this->macKey,
@@ -97,8 +100,7 @@ class Client
         $authCode,
         $operationAmount,
         $isTest
-    ): EcResponse
-    {
+    ): EcResponse {
         $ecRequest = EcRequest::createVoidRequest(
             $this->merchantAlias,
             $this->macKey,

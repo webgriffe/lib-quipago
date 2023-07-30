@@ -40,8 +40,14 @@ class DefaultHandler implements Handler
         if ($this->logger instanceof LoggerInterface) {
             $this->logger->debug(sprintf('%s method called', __METHOD__));
             $this->logger->debug(sprintf('Secret key: "%s"', $secretKey));
-            $this->logger->debug(sprintf('Request body: %s', json_encode($serverRequest->getParsedBody(), JSON_THROW_ON_ERROR)));
-            $this->logger->debug(sprintf('Request query: %s', json_encode($serverRequest->getQueryParams(), JSON_THROW_ON_ERROR)));
+            $this->logger->debug(sprintf(
+                'Request body: %s',
+                json_encode($serverRequest->getParsedBody(), JSON_THROW_ON_ERROR)
+            ));
+            $this->logger->debug(sprintf(
+                'Request query: %s',
+                json_encode($serverRequest->getQueryParams(), JSON_THROW_ON_ERROR)
+            ));
         }
 
         $request = Request::buildFromHttpRequest($serverRequest);

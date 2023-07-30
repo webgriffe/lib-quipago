@@ -4,7 +4,7 @@ namespace Webgriffe\LibQuiPago\Signature;
 
 use Webgriffe\LibQuiPago\Lists\SignatureMethod;
 
-class DefaultSignatureHashingManager implements SignatureHasingManager
+class DefaultSignatureHashingManager implements SignatureHashingManager
 {
     public function hashSignatureString($string, $method)
     {

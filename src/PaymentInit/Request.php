@@ -2,7 +2,11 @@
 
 namespace Webgriffe\LibQuiPago\PaymentInit;
 
-class Request implements \Webgriffe\LibQuiPago\Signature\Signable
+use RuntimeException;
+use Webgriffe\LibQuiPago\Lists\Currency;
+use Webgriffe\LibQuiPago\Signature\Signable;
+
+class Request implements Signable
 {
     public const OPERATION_TYPE_CAPTURE = 'C';
 
@@ -77,8 +81,7 @@ class Request implements \Webgriffe\LibQuiPago\Signature\Signable
          * Payment description (aka "descrizione")
          */
         private $description = null
-    )
-    {
+    ) {
     }
 
     public function getSignatureData()
@@ -102,8 +105,8 @@ class Request implements \Webgriffe\LibQuiPago\Signature\Signable
     public function getParams(): array
     {
         if ($this->mac === '' || $this->mac === '0') {
-            throw new \RuntimeException(
-                'Cannot generate request params without a signature. '.
+            throw new RuntimeException(
+                'Cannot generate request params without a signature. ' .
                 'Please sign this object before calling this method'
             );
         }
@@ -117,12 +120,27 @@ class Request implements \Webgriffe\LibQuiPago\Signature\Signable
 
     private function getMandatoryParameters(): array
     {
-        return ['alias'     => $this->merchantAlias, 'importo'   => $this->getAmountAsNumberOfCents(), 'divisa'    => \Webgriffe\LibQuiPago\Lists\Currency::EURO_CURRENCY_CODE, 'codTrans'  => $this->transactionCode, 'url'       => $this->successUrl, 'url_back'  => $this->cancelUrl];
+        return [
+            'alias' => $this->merchantAlias,
+            'importo' => $this->getAmountAsNumberOfCents(),
+            'divisa' => Currency::EURO_CURRENCY_CODE,
+            'codTrans' => $this->transactionCode,
+            'url' => $this->successUrl,
+            'url_back' => $this->cancelUrl
+        ];
     }
 
     private function getOptionalParameters(): array
     {
-        $optionalMap = ['urlpost'       => $this->notifyUrl, 'mail'          => $this->email, 'languageId'    => $this->locale, 'session_id'    => $this->sessionId, 'selectedcard'  => $this->selectedcard, 'TCONTAB'       => $this->operationType, 'descrizione'   => $this->description];
+        $optionalMap = [
+            'urlpost' => $this->notifyUrl,
+            'mail' => $this->email,
+            'languageId' => $this->locale,
+            'session_id' => $this->sessionId,
+            'selectedcard' => $this->selectedcard,
+            'TCONTAB' => $this->operationType,
+            'descrizione' => $this->description
+        ];
 
         foreach ($optionalMap as $k => $value) {
             if (null === $value) {
@@ -136,8 +154,8 @@ class Request implements \Webgriffe\LibQuiPago\Signature\Signable
     private function getAmountAsNumberOfCents(): float
     {
         if (round($this->amount, 2) !== $this->amount) {
-            throw new \RuntimeException(
-                sprintf('Payment amount %s cannot be represented as a whole number of cents. ', $this->amount).
+            throw new RuntimeException(
+                sprintf('Payment amount %s cannot be represented as a whole number of cents. ', $this->amount) .
                 "Maybe there are more than two decimal digits?"
             );
         }

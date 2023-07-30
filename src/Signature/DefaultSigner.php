@@ -6,15 +6,17 @@ use Psr\Log\LoggerInterface;
 
 class DefaultSigner implements Signer
 {
-    private \Webgriffe\LibQuiPago\Signature\SignatureHasingManager $signatureHasingManager;
+    private SignatureHashingManager $signatureHashingManager;
 
-    public function __construct(private ?\Psr\Log\LoggerInterface $logger = null, SignatureHasingManager $signatureHasingManager = null)
-    {
-        if (!$signatureHasingManager instanceof \Webgriffe\LibQuiPago\Signature\SignatureHasingManager) {
-            $signatureHasingManager = new DefaultSignatureHashingManager();
+    public function __construct(
+        private ?LoggerInterface $logger = null,
+        SignatureHashingManager $signatureHashingManager = null
+    ) {
+        if (!$signatureHashingManager instanceof SignatureHashingManager) {
+            $signatureHashingManager = new DefaultSignatureHashingManager();
         }
 
-        $this->signatureHasingManager = $signatureHasingManager;
+        $this->signatureHashingManager = $signatureHashingManager;
     }
 
     public function sign(Signable $signable, $secretKey, $method): void
@@ -26,14 +28,14 @@ class DefaultSigner implements Signer
 
         $macString .= $secretKey;
 
-        if ($this->logger instanceof \Psr\Log\LoggerInterface) {
+        if ($this->logger instanceof LoggerInterface) {
             $this->logger->debug(sprintf('MAC calculation string is "%s"', $macString));
             $this->logger->debug(sprintf('MAC calculation method is "%s"', $method));
         }
 
-        $mac = $this->signatureHasingManager->hashSignatureString($macString, $method);
+        $mac = $this->signatureHashingManager->hashSignatureString($macString, $method);
 
-        if ($this->logger instanceof \Psr\Log\LoggerInterface) {
+        if ($this->logger instanceof LoggerInterface) {
             $this->logger->debug(sprintf('Calculated MAC is "%s"', $mac));
         }
 

@@ -81,8 +81,7 @@ class EcRequest
         $operationAmount,
         $user = '',
         $isTest = false
-    ): EcRequest
-    {
+    ): EcRequest {
         return new EcRequest(
             self::OPERATION_TYPE_VOID,
             $merchantAlias,
@@ -124,8 +123,7 @@ class EcRequest
         $operationAmount,
         $user = '',
         $isTest = false
-    ): EcRequest
-    {
+    ): EcRequest {
         return new EcRequest(
             self::OPERATION_TYPE_CAPTURE,
             $merchantAlias,
@@ -193,7 +191,18 @@ class EcRequest
     {
         $macString = implode(
             '',
-            [$this->merchantAlias, $this->transactionCode, $this->operationId, $this->operationType, $this->originalAmount, $this->currency, $this->authCode, $this->operationAmount, $this->user, $this->macKey]
+            [
+                $this->merchantAlias,
+                $this->transactionCode,
+                $this->operationId,
+                $this->operationType,
+                $this->originalAmount,
+                $this->currency,
+                $this->authCode,
+                $this->operationAmount,
+                $this->user,
+                $this->macKey
+            ]
         );
         return sha1($macString);
     }

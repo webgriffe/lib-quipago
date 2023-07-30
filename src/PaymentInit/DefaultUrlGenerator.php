@@ -3,16 +3,17 @@
 namespace Webgriffe\LibQuiPago\PaymentInit;
 
 use Psr\Log\LoggerInterface;
+use RuntimeException;
 use Webgriffe\LibQuiPago\Signature\Signer;
 use Webgriffe\LibQuiPago\Signature\DefaultSigner;
 
 class DefaultUrlGenerator implements UrlGenerator
 {
-    private \Webgriffe\LibQuiPago\Signature\Signer $signer;
+    private Signer $signer;
 
-    public function __construct(private ?\Psr\Log\LoggerInterface $logger = null, Signer $signer = null)
+    public function __construct(private ?LoggerInterface $logger = null, Signer $signer = null)
     {
-        if (!$signer instanceof \Webgriffe\LibQuiPago\Signature\Signer) {
+        if (!$signer instanceof Signer) {
             $signer = new DefaultSigner($logger);
         }
 
@@ -52,7 +53,7 @@ class DefaultUrlGenerator implements UrlGenerator
         $notifyUrl = null,
         $selectedCard = null
     ) {
-        if ($this->logger instanceof \Psr\Log\LoggerInterface) {
+        if ($this->logger instanceof LoggerInterface) {
             $this->logger->debug(sprintf('%s method called', __METHOD__));
         }
 
@@ -74,7 +75,10 @@ class DefaultUrlGenerator implements UrlGenerator
             $selectedCard != self::ALIPAY_SELECTEDCARD &&
             $selectedCard != self::WECHATPAY_SELECTEDCARD
         ) {
-            throw new \RuntimeException(sprintf("Selectedcard value '%s' is not one of the allowed values", $selectedCard));
+            throw new RuntimeException(sprintf(
+                "Selected card value '%s' is not one of the allowed values",
+                $selectedCard
+            ));
         }
 
         $request = new Request(
@@ -94,13 +98,13 @@ class DefaultUrlGenerator implements UrlGenerator
 
         $params = $request->getParams();
 
-        if ($this->logger instanceof \Psr\Log\LoggerInterface) {
+        if ($this->logger instanceof LoggerInterface) {
             $this->logger->debug('Request params: '.print_r($params, true));
         }
 
         $url = $gatewayUrl . '?' . http_build_query($params);
 
-        if ($this->logger instanceof \Psr\Log\LoggerInterface) {
+        if ($this->logger instanceof LoggerInterface) {
             $this->logger->debug(sprintf('Generated URL is "%s"', $url));
         }
 

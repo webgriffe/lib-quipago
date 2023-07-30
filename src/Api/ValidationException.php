@@ -1,8 +1,9 @@
 <?php
 
-
 namespace Webgriffe\LibQuiPago\Api;
 
-class ValidationException extends \InvalidArgumentException
+use InvalidArgumentException;
+
+class ValidationException extends InvalidArgumentException
 {
 }

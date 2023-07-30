@@ -1,169 +1,100 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: andrea
- * Date: 16/05/18
- * Time: 15.28
- */
 
 namespace Webgriffe\LibQuiPago\Notification;
 
+use InvalidArgumentException;
 use Psr\Http\Message\ServerRequestInterface;
 use Webgriffe\LibQuiPago\Signature\Signed;
 
 class Request implements Signed
 {
-    /**
-     * @var string
-     */
-    private $alias;
+    private string $alias;
 
-    /**
-     * @var int
-     */
-    private $importo;
+    private int $importo;
 
-    /**
-     * @var string
-     */
-    private $divisa;
+    private string $divisa;
 
-    /**
-     * @var string
-     */
-    private $codTrans;
+    private string $codTrans;
 
-    /**
-     * @var string
-     */
-    private $data;
+    private string $data;
 
-    /**
-     * @var string
-     */
-    private $orario;
+    private string $orario;
 
-    /**
-     * @var string
-     */
-    private $mac;
+    private string $mac;
 
-    /**
-     * @var string
-     */
-    private $codAut;
+    private ?string $codAut;
 
-    /**
-     * @var string
-     */
-    private $esito;
+    private string $esito;
 
-    /**
-     * @var string
-     */
-    private $session_id;
+    private ?string $session_id;
 
-    /**
-     * @var string
-     */
-    private $brand;
+    private ?string $brand;
 
-    /**
-     * @var string
-     */
-    private $nome;
+    private ?string $nome;
 
-    /**
-     * @var string
-     */
-    private $cognome;
+    private ?string $cognome;
 
-    /**
-     * @var string
-     */
-    private $mail;
+    private ?string $mail;
 
-    /**
-     * @var string
-     */
-    private $nazionalita;
+    private ?string $nazionalita;
 
-    /**
-     * @var string
-     */
-    private $pan;
+    private ?string $pan;
 
-    /**
-     * @var string
-     */
-    private $scadenza_pan;
+    private ?string $scadenza_pan;
 
     private function __construct(array $rawParams)
     {
         $this->checkForMissingParameters($rawParams);
         $this->validateParameters($rawParams);
 
-        $this->alias = $rawParams['alias'];
-        $this->importo = $rawParams['importo'];
-        $this->divisa = $rawParams['divisa'];
-        $this->codTrans = $rawParams['codTrans'];
-        $this->brand = isset($rawParams['$BRAND']) ? $rawParams['$BRAND'] : null;
+        $this->alias = (string) $rawParams['alias'];
+        $this->importo = (int) $rawParams['importo'];
+        $this->divisa = (string) $rawParams['divisa'];
+        $this->codTrans = (string) $rawParams['codTrans'];
+        $this->brand = $rawParams['$BRAND'] ?? null;
         $this->mac = urldecode($rawParams['mac']);
-        $this->esito = $rawParams['esito'];
-        $this->data = $rawParams['data'];
-        $this->orario = $rawParams['orario'];
+        $this->esito = (string) $rawParams['esito'];
+        $this->data = (string) $rawParams['data'];
+        $this->orario = (string) $rawParams['orario'];
 
-        $this->codAut = isset($rawParams['codAut']) ? $rawParams['codAut'] : null;
-        $this->pan = isset($rawParams['Pan']) ? $rawParams['Pan'] : null;
-        $this->scadenza_pan = isset($rawParams['Scadenza_pan']) ? $rawParams['Scadenza_pan'] : null;
+        $this->codAut = $rawParams['codAut'] ?? null;
+        $this->pan = $rawParams['Pan'] ?? null;
+        $this->scadenza_pan = $rawParams['Scadenza_pan'] ?? null;
 
-        $this->nazionalita = isset($rawParams['nazionalita']) ? $rawParams['nazionalita'] : null;
+        $this->nazionalita = $rawParams['nazionalita'] ?? null;
 
-        $this->nome = isset($rawParams['nome']) ? $rawParams['nome'] : null;
-        $this->cognome = isset($rawParams['cognome']) ? $rawParams['cognome'] : null;
-        $this->mail = isset($rawParams['mail']) ? $rawParams['mail'] : null;
-        $this->session_id = isset($rawParams['session_id']) ? $rawParams['session_id'] : null;
+        $this->nome = $rawParams['nome'] ?? null;
+        $this->cognome = $rawParams['cognome'] ?? null;
+        $this->mail = $rawParams['mail'] ?? null;
+        $this->session_id = $rawParams['session_id'] ?? null;
     }
 
-    /**
-     * @param ServerRequestInterface $request
-     * @return static
-     */
-    public static function buildFromHttpRequest(ServerRequestInterface $request)
+    public static function buildFromHttpRequest(ServerRequestInterface $serverRequest): static
     {
-        if (strtoupper($request->getMethod()) == 'POST') {
-            $rawParams = $request->getParsedBody();
+        if (strtoupper($serverRequest->getMethod()) === 'POST') {
+            $rawParams = $serverRequest->getParsedBody();
         } else {
-            $rawParams = $request->getQueryParams();
+            $rawParams = $serverRequest->getQueryParams();
         }
 
         return new static($rawParams);
     }
 
     /**
-     * @param array $rawParams
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      */
-    private function checkForMissingParameters(array $rawParams)
+    private function checkForMissingParameters(array $rawParams): void
     {
-        $requiredParams = array(
-            'alias',
-            'importo',
-            'divisa',
-            'codTrans',
-            'mac',
-            'esito',
-            'data',
-            'orario',
-        );
-        $missingParams = array();
-        foreach ($requiredParams as $param) {
-            if (!array_key_exists($param, $rawParams)) {
-                $missingParams[] = $param;
+        $requiredParams = ['alias', 'importo', 'divisa', 'codTrans', 'mac', 'esito', 'data', 'orario'];
+        $missingParams = [];
+        foreach ($requiredParams as $requiredParam) {
+            if (!array_key_exists($requiredParam, $rawParams)) {
+                $missingParams[] = $requiredParam;
             }
         }
-        if (!empty($missingParams)) {
-            throw new \InvalidArgumentException(
+
+        if ($missingParams !== []) {
+            throw new InvalidArgumentException(
                 sprintf(
                     'Invalid payment notification request. Required parameter(s) missing: "%s"',
                     implode(', ', $missingParams)
@@ -172,11 +103,11 @@ class Request implements Signed
         }
     }
 
-    private function validateParameters(array $rawParams)
+    private function validateParameters(array $rawParams): void
     {
         $rawAmount = $rawParams['importo'];
         if (!ctype_digit($rawAmount)) {
-            throw new \InvalidArgumentException(
+            throw new InvalidArgumentException(
                 sprintf(
                     'Invalid payment notification request. Amount parameter (importo) should be an integer number, ' .
                     '"%s" given.',
@@ -186,156 +117,105 @@ class Request implements Signed
         }
     }
 
-    /**
-     * @return string
-     */
-    public function getAlias()
+    public function getAlias(): string
     {
         return $this->alias;
     }
 
-    /**
-     * @return int
-     */
-    public function getImporto()
+    public function getImporto(): int
     {
         return $this->importo;
     }
 
-    /**
-     * @return string
-     */
-    public function getDivisa()
+    public function getDivisa(): string
     {
         return $this->divisa;
     }
 
-    /**
-     * @return string
-     */
-    public function getCodTrans()
+    public function getCodTrans(): string
     {
         return $this->codTrans;
     }
 
-    /**
-     * @return string
-     */
-    public function getData()
+    public function getData(): string
     {
         return $this->data;
     }
 
-    /**
-     * @return string
-     */
-    public function getOrario()
+    public function getOrario(): string
     {
         return $this->orario;
     }
 
-    /**
-     * @return string
-     */
-    public function getMac()
+    public function getMac(): string
     {
         return $this->mac;
     }
 
-    /**
-     * @return string
-     */
-    public function getCodAut()
+    public function getCodAut(): ?string
     {
         return $this->codAut;
     }
 
-    /**
-     * @return string
-     */
-    public function getEsito()
+    public function getEsito(): string
     {
         return $this->esito;
     }
 
-    /**
-     * @return string
-     */
-    public function getSessionId()
+    public function getSessionId(): ?string
     {
         return $this->session_id;
     }
 
-    /**
-     * @return string
-     */
-    public function getBrand()
+    public function getBrand(): ?string
     {
         return $this->brand;
     }
 
-    /**
-     * @return string
-     */
-    public function getNome()
+    public function getNome(): ?string
     {
         return $this->nome;
     }
 
-    /**
-     * @return string
-     */
-    public function getCognome()
+    public function getCognome(): ?string
     {
         return $this->cognome;
     }
 
-    /**
-     * @return string
-     */
-    public function getMail()
+    public function getMail(): ?string
     {
         return $this->mail;
     }
 
-    /**
-     * @return string
-     */
-    public function getNazionalita()
+    public function getNazionalita(): ?string
     {
         return $this->nazionalita;
     }
 
-    /**
-     * @return string
-     */
-    public function getPan()
+    public function getPan(): ?string
     {
         return $this->pan;
     }
 
-    /**
-     * @return string
-     */
-    public function getScadenzaPan()
+    public function getScadenzaPan(): ?string
     {
         return $this->scadenza_pan;
     }
 
-    public function getSignatureFields()
+    public function getSignatureFields(): array
     {
         return [
-            'codTrans' => $this->getCodTrans() ?: '',
-            'esito' => $this->getEsito() ?: '',
-            'importo' => $this->getImporto() ?: '',
-            'divisa' => $this->getDivisa() ?: '',
-            'data' => $this->getData() ?: '',
-            'orario' => $this->getOrario() ?: '',
-            'codAut' => $this->getCodAut() ?: '',
+            'codTrans' => $this->getCodTrans(),
+            'esito' => $this->getEsito(),
+            'importo' => $this->getImporto() !== 0 ? $this->getImporto() : '',
+            'divisa' => $this->getDivisa(),
+            'data' => $this->getData(),
+            'orario' => $this->getOrario(),
+            'codAut' => $this->getCodAut(),
         ];
     }
 
-    public function getSignature()
+    public function getSignature(): string
     {
         return $this->getMac();
     }

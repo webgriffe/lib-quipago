@@ -2,6 +2,8 @@
 
 namespace Webgriffe\LibQuiPago\Signature;
 
-class InvalidMacException extends \Exception
+use Exception;
+
+class InvalidMacException extends Exception
 {
 }

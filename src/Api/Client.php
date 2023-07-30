@@ -44,8 +44,6 @@ class Client
      * @param string $authCode
      * @param float $operationAmount
      * @param bool $isTest
-     *
-     * @return EcResponse
      */
     public function capture(
         $transactionCode,
@@ -56,7 +54,8 @@ class Client
         $authCode,
         $operationAmount,
         $isTest
-    ) {
+    ): EcResponse
+    {
         $ecRequest = EcRequest::createCaptureRequest(
             $this->merchantAlias,
             $this->macKey,
@@ -88,8 +87,6 @@ class Client
      * @param string $authCode
      * @param float $operationAmount
      * @param bool $isTest
-     *
-     * @return EcResponse
      */
     public function void(
         $transactionCode,
@@ -100,7 +97,8 @@ class Client
         $authCode,
         $operationAmount,
         $isTest
-    ) {
+    ): EcResponse
+    {
         $ecRequest = EcRequest::createVoidRequest(
             $this->merchantAlias,
             $this->macKey,

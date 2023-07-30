@@ -8,12 +8,14 @@ use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\StreamInterface;
 use Webgriffe\LibQuiPago\Api\Client;
 use Webgriffe\LibQuiPago\Api\EcRequest;
 use Webgriffe\LibQuiPago\Api\EcResponse;
 
 class ClientSpec extends ObjectBehavior
 {
+    private const MANDATORY_GUZZLE_HTTP_PARAMETER = [];
     private string $merchantAlias = 'ALIAS123123';
 
     private string $macKey = 'KEY123123';
@@ -34,23 +36,30 @@ class ClientSpec extends ObjectBehavior
 
     private int $operationAmount = 200;
 
-    public function it_is_initializable(ClientInterface $client): void
+    public function let(ClientInterface $client): void
     {
         $this->beConstructedWith($client, $this->merchantAlias, $this->macKey, $this->user);
+    }
+
+    public function it_is_initializable(): void
+    {
         $this->shouldHaveType(Client::class);
         $this->getMerchantAlias()->shouldReturn($this->merchantAlias);
         $this->getMacKey()->shouldReturn($this->macKey);
         $this->getUser()->shouldReturn($this->user);
     }
 
-    public function it_should_capture_funds(ClientInterface $client, ResponseInterface $response): void
+    public function it_should_capture_funds(ClientInterface $client, ResponseInterface $response, StreamInterface $stream): void
     {
-        $response->getBody()->willReturn($this->get_positive_capture_response_body());
-        $client->send(Argument::type(RequestInterface::class))->shouldBeCalled()->willReturn($response);
+        $client
+            ->send(Argument::type(RequestInterface::class), self::MANDATORY_GUZZLE_HTTP_PARAMETER)
+            ->shouldBeCalled()
+            ->willReturn($response)
+        ;
+        $response->getBody()->shouldBeCalled()->willReturn($stream);
+        $stream->getContents()->shouldBeCalled()->willReturn($this->get_positive_capture_response_body());
 
-        $this->beConstructedWith($client, $this->merchantAlias, $this->macKey, $this->user);
-
-        $response = $this->capture(
+        $ecResponse = $this->capture(
             $this->transactionCode,
             $this->requestType,
             $this->operationId,
@@ -60,22 +69,22 @@ class ClientSpec extends ObjectBehavior
             $this->operationAmount,
             false // $isTest
         );
-        $response->shouldHaveType(EcResponse::class);
-        $response->isPositive()->shouldReturn(true);
+
+        $ecResponse->shouldHaveType(EcResponse::class);
+        $ecResponse->isPositive()->shouldReturn(true);
     }
 
-    public function it_should_disable_ssl_verify_when_is_test(ClientInterface $client, ResponseInterface $response): void
+    public function it_should_disable_ssl_verify_when_is_test(ClientInterface $client, ResponseInterface $response, StreamInterface $stream): void
     {
-        $response->getBody()->willReturn($this->get_positive_capture_response_body());
         $client
             ->send(Argument::type(RequestInterface::class), [RequestOptions::VERIFY => false])
             ->shouldBeCalled()
             ->willReturn($response)
         ;
+        $response->getBody()->shouldBeCalled()->willReturn($stream);
+        $stream->getContents()->shouldBeCalled()->willReturn($this->get_positive_capture_response_body());
 
-        $this->beConstructedWith($client, $this->merchantAlias, $this->macKey, $this->user);
-
-        $response = $this->capture(
+        $ecResponse = $this->capture(
             $this->transactionCode,
             $this->requestType,
             $this->operationId,
@@ -85,18 +94,22 @@ class ClientSpec extends ObjectBehavior
             $this->operationAmount,
             true // $isTest
         );
-        $response->shouldHaveType(EcResponse::class);
-        $response->isPositive()->shouldReturn(true);
+
+        $ecResponse->shouldHaveType(EcResponse::class);
+        $ecResponse->isPositive()->shouldReturn(true);
     }
 
-    public function it_should_void_transaction(ClientInterface $client, ResponseInterface $response): void
+    public function it_should_void_transaction(ClientInterface $client, ResponseInterface $response, StreamInterface $stream): void
     {
-        $response->getBody()->willReturn($this->get_positive_void_response_body());
-        $client->send(Argument::type(RequestInterface::class))->shouldBeCalled()->willReturn($response);
+        $client
+            ->send(Argument::type(RequestInterface::class), self::MANDATORY_GUZZLE_HTTP_PARAMETER)
+            ->shouldBeCalled()
+            ->willReturn($response)
+        ;
+        $response->getBody()->shouldBeCalled()->willReturn($stream);
+        $stream->getContents()->shouldBeCalled()->willReturn($this->get_positive_void_response_body());
 
-        $this->beConstructedWith($client, $this->merchantAlias, $this->macKey, $this->user);
-
-        $response = $this->void(
+        $ecResponse = $this->void(
             $this->transactionCode,
             $this->requestType,
             $this->operationId,
@@ -106,8 +119,9 @@ class ClientSpec extends ObjectBehavior
             $this->operationAmount,
             false // $isTest
         );
-        $response->shouldHaveType(EcResponse::class);
-        $response->isPositive()->shouldReturn(true);
+
+        $ecResponse->shouldHaveType(EcResponse::class);
+        $ecResponse->isPositive()->shouldReturn(true);
     }
 
     private function get_raw_operation_amount(): string

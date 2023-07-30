@@ -2,7 +2,9 @@
 
 namespace Webgriffe\LibQuiPago\Api;
 
+use Exception;
 use Psr\Http\Message\ResponseInterface;
+use SimpleXMLElement;
 
 class EcResponse
 {
@@ -27,10 +29,7 @@ class EcResponse
 
     private string $operationAmount;
 
-    /**
-     * @var string
-     */
-    private $mac;
+    private string $mac;
 
     /**
      * EcResponse constructor.
@@ -40,8 +39,8 @@ class EcResponse
     private function __construct($rawBody, $macKey)
     {
         try {
-            $xmlReader = new \SimpleXMLElement($rawBody);
-        } catch (\Exception $exception) {
+            $xmlReader = new SimpleXMLElement($rawBody);
+        } catch (Exception $exception) {
             throw new ValidationException(
                 sprintf('The string "%s" is an invalid EcResponse body. %s', $rawBody, $exception->getMessage())
             );
@@ -63,7 +62,7 @@ class EcResponse
      */
     public static function createFromPsrResponse(ResponseInterface $response, $macKey): self
     {
-        return new self($response->getBody(), $macKey);
+        return new self($response->getBody()->getContents(), $macKey);
     }
 
     /**

@@ -2,6 +2,8 @@
 
 namespace Webgriffe\LibQuiPago\Notification;
 
+use DateTime;
+
 class Result
 {
     /**
@@ -25,27 +27,27 @@ class Result
 
     private string $transactionCode;
 
-    private \DateTime $dateTime;
+    private DateTime $dateTime;
 
-    private string $authCode;
+    private ?string $authCode;
 
     private string $outcome;
 
-    private string $sessionId;
+    private ?string $sessionId;
 
-    private string $cardBrand;
+    private ?string $cardBrand;
 
-    private string $firstName;
+    private ?string $firstName;
 
-    private string $lastName;
+    private ?string $lastName;
 
-    private string $email;
+    private ?string $email;
 
-    private string $country;
+    private ?string $country;
 
-    private string $pan;
+    private ?string $pan;
 
-    private string $panExpiration;
+    private ?string $panExpiration;
 
     public function __construct(Request $request)
     {
@@ -53,7 +55,7 @@ class Result
         $this->amount = $request->getImporto() / 100;
         $this->currency = $request->getDivisa();
         $this->transactionCode = $request->getCodTrans();
-        $this->dateTime = new \DateTime($request->getData(). ' ' .$request->getOrario());
+        $this->dateTime = new DateTime($request->getData(). ' ' .$request->getOrario());
         $this->authCode = $request->getCodAut();
         $this->outcome = $request->getEsito();
         $this->sessionId = $request->getSessionId();
@@ -89,15 +91,12 @@ class Result
         return $this->transactionCode;
     }
 
-    /**
-     * @return \DateTime
-     */
-    public function getDate()
+    public function getDate(): DateTime
     {
         return $this->dateTime;
     }
 
-    public function getAuthCode(): string
+    public function getAuthCode(): ?string
     {
         return $this->authCode;
     }
@@ -107,42 +106,42 @@ class Result
         return $this->outcome;
     }
 
-    public function getSessionId(): string
+    public function getSessionId(): ?string
     {
         return $this->sessionId;
     }
 
-    public function getCardBrand(): string
+    public function getCardBrand(): ?string
     {
         return $this->cardBrand;
     }
 
-    public function getFirstName(): string
+    public function getFirstName(): ?string
     {
         return $this->firstName;
     }
 
-    public function getLastName(): string
+    public function getLastName(): ?string
     {
         return $this->lastName;
     }
 
-    public function getEmail(): string
+    public function getEmail(): ?string
     {
         return $this->email;
     }
 
-    public function getCountry(): string
+    public function getCountry(): ?string
     {
         return $this->country;
     }
 
-    public function getPan(): string
+    public function getPan(): ?string
     {
         return $this->pan;
     }
 
-    public function getPanExpiration(): string
+    public function getPanExpiration(): ?string
     {
         return $this->panExpiration;
     }

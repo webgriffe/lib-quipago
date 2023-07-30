@@ -28,6 +28,7 @@ interface UrlGenerator
     public const MYBANK_SELECTEDCARD       = 'SCT';
 
     public const CREDIT_CARD_SELECTEDCARD  = 'CC';
+
              //Any credit card
     public const MASTERPASS_SELECTEDCARD   = 'Masterpass';
 

@@ -10,16 +10,16 @@ use Webgriffe\LibQuiPago\Signature\DefaultChecker;
 
 class DefaultHandler implements Handler
 {
-    private \Webgriffe\LibQuiPago\Signature\Checker $checker;
+    private Checker $checker;
 
-    private ?\Psr\Log\LoggerInterface $logger = null;
+    private ?LoggerInterface $logger;
 
     /**
      * Handler constructor.
      */
     public function __construct(LoggerInterface $logger = null, Checker $checker = null)
     {
-        if (!$checker instanceof \Webgriffe\LibQuiPago\Signature\Checker) {
+        if (!$checker instanceof Checker) {
             $checker = new DefaultChecker($logger);
         }
 
@@ -35,9 +35,9 @@ class DefaultHandler implements Handler
      *
      * @throws InvalidMacException
      */
-    public function handle(ServerRequestInterface $serverRequest, $secretKey, $macMethod): \Webgriffe\LibQuiPago\Notification\Result
+    public function handle(ServerRequestInterface $serverRequest, $secretKey, $macMethod): Result
     {
-        if ($this->logger instanceof \Psr\Log\LoggerInterface) {
+        if ($this->logger instanceof LoggerInterface) {
             $this->logger->debug(sprintf('%s method called', __METHOD__));
             $this->logger->debug(sprintf('Secret key: "%s"', $secretKey));
             $this->logger->debug(sprintf('Request body: %s', json_encode($serverRequest->getParsedBody(), JSON_THROW_ON_ERROR)));

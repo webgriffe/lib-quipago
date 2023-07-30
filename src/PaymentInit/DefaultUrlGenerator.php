@@ -74,7 +74,7 @@ class DefaultUrlGenerator implements UrlGenerator
             $selectedCard != self::ALIPAY_SELECTEDCARD &&
             $selectedCard != self::WECHATPAY_SELECTEDCARD
         ) {
-            throw new \RuntimeException(sprintf('Selectedcard value \'%s\' is not one of the allowed values', $selectedCard));
+            throw new \RuntimeException(sprintf("Selectedcard value '%s' is not one of the allowed values", $selectedCard));
         }
 
         $request = new Request(

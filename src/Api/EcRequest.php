@@ -2,6 +2,7 @@
 
 namespace Webgriffe\LibQuiPago\Api;
 
+use DOMDocument;
 use GuzzleHttp\Psr7\Request;
 use Respect\Validation\Exceptions\NestedValidationException;
 use Respect\Validation\Validator as v;
@@ -80,7 +81,8 @@ class EcRequest
         $operationAmount,
         $user = '',
         $isTest = false
-    ): \Webgriffe\LibQuiPago\Api\EcRequest {
+    ): EcRequest
+    {
         return new EcRequest(
             self::OPERATION_TYPE_VOID,
             $merchantAlias,
@@ -122,7 +124,8 @@ class EcRequest
         $operationAmount,
         $user = '',
         $isTest = false
-    ): \Webgriffe\LibQuiPago\Api\EcRequest {
+    ): EcRequest
+    {
         return new EcRequest(
             self::OPERATION_TYPE_CAPTURE,
             $merchantAlias,
@@ -158,7 +161,7 @@ class EcRequest
 
     public function getBody(): string|bool
     {
-        $domDocument = new \DOMDocument('1.0', 'ISO-8859-15');
+        $domDocument = new DOMDocument('1.0', 'ISO-8859-15');
         $domDocument->formatOutput = true;
         $vposreq = $domDocument->createElement('VPOSREQ');
         $vposreq->appendChild($domDocument->createElement('alias', $this->merchantAlias));
@@ -181,7 +184,7 @@ class EcRequest
         return $domDocument->saveXML();
     }
 
-    public function asPsrRequest(): \GuzzleHttp\Psr7\Request
+    public function asPsrRequest(): Request
     {
         return new Request('POST', $this->getUrl(), [], $this->getBody());
     }
@@ -228,7 +231,7 @@ class EcRequest
                 ->attribute('currency', v::stringType()->alnum()->noWhitespace()->length(3, 3))
                 ->attribute('authCode', v::stringType()->alnum()->noWhitespace()->length(1, 10))
                 ->attribute('operationAmount', v::stringType()->digit()->noWhitespace()->length(9, 9))
-                ->attribute('user', v::optional(v::stringType()->alnum()->length(0, 20)))
+                ->attribute('user', v::optional(v::stringType()->alnum(' ')->length(0, 20)))
                 ->attribute('isTest', v::boolType());
             $validator->assert($this);
         } catch (NestedValidationException $nestedValidationException) {

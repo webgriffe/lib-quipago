@@ -2,6 +2,7 @@
 
 namespace Webgriffe\LibQuiPago\Notification;
 
+use InvalidArgumentException;
 use Psr\Http\Message\ServerRequestInterface;
 use Webgriffe\LibQuiPago\Signature\Signed;
 
@@ -118,7 +119,7 @@ class Request implements Signed
 
     public static function buildFromHttpRequest(ServerRequestInterface $serverRequest): static
     {
-        if (strtoupper($serverRequest->getMethod()) == 'POST') {
+        if (strtoupper($serverRequest->getMethod()) === 'POST') {
             $rawParams = $serverRequest->getParsedBody();
         } else {
             $rawParams = $serverRequest->getQueryParams();
@@ -128,7 +129,7 @@ class Request implements Signed
     }
 
     /**
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     private function checkForMissingParameters(array $rawParams)
     {
@@ -141,7 +142,7 @@ class Request implements Signed
         }
 
         if ($missingParams !== []) {
-            throw new \InvalidArgumentException(
+            throw new InvalidArgumentException(
                 sprintf(
                     'Invalid payment notification request. Required parameter(s) missing: "%s"',
                     implode(', ', $missingParams)
@@ -154,7 +155,7 @@ class Request implements Signed
     {
         $rawAmount = $rawParams['importo'];
         if (!ctype_digit($rawAmount)) {
-            throw new \InvalidArgumentException(
+            throw new InvalidArgumentException(
                 sprintf(
                     'Invalid payment notification request. Amount parameter (importo) should be an integer number, ' .
                     '"%s" given.',
@@ -310,7 +311,7 @@ class Request implements Signed
         ];
     }
 
-    public function getSignature()
+    public function getSignature(): string
     {
         return $this->getMac();
     }

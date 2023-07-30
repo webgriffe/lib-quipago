@@ -5,6 +5,7 @@ namespace spec\Webgriffe\LibQuiPago\Notification;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 use Psr\Log\LoggerInterface;
+use Webgriffe\LibQuiPago\Notification\DefaultHandler;
 use Webgriffe\LibQuiPago\Signature\InvalidMacException;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -12,7 +13,7 @@ class DefaultHandlerSpec extends ObjectBehavior
 {
     public function it_throws_an_exception_if_some_parameter_is_missing(ServerRequestInterface $serverRequest): void
     {
-        $this->shouldHaveType(\Webgriffe\LibQuiPago\Notification\DefaultHandler::class);
+        $this->shouldHaveType(DefaultHandler::class);
 
         $requestRawParams = $this->getRequestRawParams();
         unset($requestRawParams['alias']);
@@ -27,7 +28,7 @@ class DefaultHandlerSpec extends ObjectBehavior
 
     public function it_throws_an_exception_if_amount_is_not_numeric(ServerRequestInterface $serverRequest): void
     {
-        $this->shouldHaveType(\Webgriffe\LibQuiPago\Notification\DefaultHandler::class);
+        $this->shouldHaveType(DefaultHandler::class);
 
         $requestRawParams = $this->getRequestRawParams();
         $requestRawParams['importo'] = 'ABC';
@@ -42,7 +43,7 @@ class DefaultHandlerSpec extends ObjectBehavior
 
     public function it_throws_an_exception_if_amount_is_not_an_integer_number(ServerRequestInterface $serverRequest): void
     {
-        $this->shouldHaveType(\Webgriffe\LibQuiPago\Notification\DefaultHandler::class);
+        $this->shouldHaveType(DefaultHandler::class);
 
         $requestRawParams = $this->getRequestRawParams();
         $requestRawParams['importo'] = '100.10';
@@ -57,7 +58,7 @@ class DefaultHandlerSpec extends ObjectBehavior
 
     public function it_throws_an_exception_if_mac_is_wrong(ServerRequestInterface $serverRequest): void
     {
-        $this->shouldHaveType(\Webgriffe\LibQuiPago\Notification\DefaultHandler::class);
+        $this->shouldHaveType(DefaultHandler::class);
 
         $requestRawParams = $this->getRequestRawParams();
         $requestRawParams['mac'] = 'invalid-mac';
@@ -72,7 +73,7 @@ class DefaultHandlerSpec extends ObjectBehavior
 
     public function it_returns_mapped_params(ServerRequestInterface $serverRequest): void
     {
-        $this->shouldHaveType(\Webgriffe\LibQuiPago\Notification\DefaultHandler::class);
+        $this->shouldHaveType(DefaultHandler::class);
 
         $serverRequest->getMethod()->willReturn('POST');
         $serverRequest->getParsedBody()->willReturn($this->getRequestRawParams());
@@ -95,7 +96,7 @@ class DefaultHandlerSpec extends ObjectBehavior
 
     public function it_returns_mapped_params_from_query_string(ServerRequestInterface $serverRequest): void
     {
-        $this->shouldHaveType(\Webgriffe\LibQuiPago\Notification\DefaultHandler::class);
+        $this->shouldHaveType(DefaultHandler::class);
 
         $serverRequest->getQueryParams()->willReturn($this->getRequestRawParams());
         $serverRequest->getMethod()->willReturn('GET');
@@ -118,7 +119,7 @@ class DefaultHandlerSpec extends ObjectBehavior
 
     public function it_returns_negative_result_if_transaction_result_is_ko(ServerRequestInterface $serverRequest): void
     {
-        $this->shouldHaveType(\Webgriffe\LibQuiPago\Notification\DefaultHandler::class);
+        $this->shouldHaveType(DefaultHandler::class);
 
         $requestRawParams = $this->getRequestRawParams();
         $requestRawParams['esito'] = 'KO';
@@ -133,9 +134,9 @@ class DefaultHandlerSpec extends ObjectBehavior
     public function it_should_log_if_logger_is_passed(ServerRequestInterface $serverRequest, LoggerInterface $logger): void
     {
         $this->beConstructedWith($logger);
-        $this->shouldHaveType(\Webgriffe\LibQuiPago\Notification\DefaultHandler::class);
+        $this->shouldHaveType(DefaultHandler::class);
 
-        $logger->debug(\Webgriffe\LibQuiPago\Notification\DefaultHandler::class . '::handle method called')->shouldBeCalled();
+        $logger->debug(DefaultHandler::class . '::handle method called')->shouldBeCalled();
         $logger->debug('Secret key: "secret_key"')->shouldBeCalled();
         $logger->debug(sprintf('Request body: %s', json_encode($this->getRequestRawParams(), JSON_THROW_ON_ERROR)))->shouldBeCalled();
         $logger->debug('Request query: []')->shouldBeCalled();
@@ -157,7 +158,7 @@ class DefaultHandlerSpec extends ObjectBehavior
 
     public function it_should_use_md5_as_mac_calculation_method_if_specified(ServerRequestInterface $serverRequest): void
     {
-        $this->shouldHaveType(\Webgriffe\LibQuiPago\Notification\DefaultHandler::class);
+        $this->shouldHaveType(DefaultHandler::class);
 
         $requestRawParams = $this->getRequestRawParams();
         $requestRawParams['mac'] = 'ZjM0OWQzN2MwOTMzYTk3Y2Y5MjIyOTBiM2FmYTM0ZjI%3D';

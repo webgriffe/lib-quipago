@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: andrea
- * Date: 16/05/18
- * Time: 15.28
- */
 
 namespace Webgriffe\LibQuiPago\Notification;
 
@@ -13,90 +7,39 @@ use Webgriffe\LibQuiPago\Signature\Signed;
 
 class Request implements Signed
 {
-    /**
-     * @var string
-     */
-    private $alias;
+    private string $alias;
 
-    /**
-     * @var int
-     */
-    private $importo;
+    private int $importo;
 
-    /**
-     * @var string
-     */
-    private $divisa;
+    private string $divisa;
 
-    /**
-     * @var string
-     */
-    private $codTrans;
+    private string $codTrans;
 
-    /**
-     * @var string
-     */
-    private $data;
+    private string $data;
 
-    /**
-     * @var string
-     */
-    private $orario;
+    private string $orario;
 
-    /**
-     * @var string
-     */
-    private $mac;
+    private string $mac;
 
-    /**
-     * @var string
-     */
-    private $codAut;
+    private ?string $codAut;
 
-    /**
-     * @var string
-     */
-    private $esito;
+    private string $esito;
 
-    /**
-     * @var string
-     */
-    private $session_id;
+    private ?string $session_id;
 
-    /**
-     * @var string
-     */
-    private $brand;
+    private ?string $brand;
 
-    /**
-     * @var string
-     */
-    private $nome;
+    private ?string $nome;
 
-    /**
-     * @var string
-     */
-    private $cognome;
+    private ?string $cognome;
 
-    /**
-     * @var string
-     */
-    private $mail;
+    private ?string $mail;
 
-    /**
-     * @var string
-     */
-    private $nazionalita;
+    private ?string $nazionalita;
 
-    /**
-     * @var string
-     */
-    private $pan;
+    private ?string $pan;
 
-    /**
-     * @var string
-     */
-    private $scadenza_pan;
+    private ?string $scadenza_pan;
 
     private function __construct(array $rawParams)
     {
@@ -107,31 +50,27 @@ class Request implements Signed
         $this->importo = $rawParams['importo'];
         $this->divisa = $rawParams['divisa'];
         $this->codTrans = $rawParams['codTrans'];
-        $this->brand = isset($rawParams['$BRAND']) ? $rawParams['$BRAND'] : null;
+        $this->brand = $rawParams['$BRAND'] ?? null;
         $this->mac = urldecode($rawParams['mac']);
         $this->esito = $rawParams['esito'];
         $this->data = $rawParams['data'];
         $this->orario = $rawParams['orario'];
 
-        $this->codAut = isset($rawParams['codAut']) ? $rawParams['codAut'] : null;
-        $this->pan = isset($rawParams['Pan']) ? $rawParams['Pan'] : null;
-        $this->scadenza_pan = isset($rawParams['Scadenza_pan']) ? $rawParams['Scadenza_pan'] : null;
+        $this->codAut = $rawParams['codAut'] ?? null;
+        $this->pan = $rawParams['Pan'] ?? null;
+        $this->scadenza_pan = $rawParams['Scadenza_pan'] ?? null;
 
-        $this->nazionalita = isset($rawParams['nazionalita']) ? $rawParams['nazionalita'] : null;
+        $this->nazionalita = $rawParams['nazionalita'] ?? null;
 
-        $this->nome = isset($rawParams['nome']) ? $rawParams['nome'] : null;
-        $this->cognome = isset($rawParams['cognome']) ? $rawParams['cognome'] : null;
-        $this->mail = isset($rawParams['mail']) ? $rawParams['mail'] : null;
-        $this->session_id = isset($rawParams['session_id']) ? $rawParams['session_id'] : null;
+        $this->nome = $rawParams['nome'] ?? null;
+        $this->cognome = $rawParams['cognome'] ?? null;
+        $this->mail = $rawParams['mail'] ?? null;
+        $this->session_id = $rawParams['session_id'] ?? null;
     }
 
-    /**
-     * @param ServerRequestInterface $request
-     * @return static
-     */
-    public static function buildFromHttpRequest(ServerRequestInterface $request)
+    public static function buildFromHttpRequest(ServerRequestInterface $request): static
     {
-        if (strtoupper($request->getMethod()) == 'POST') {
+        if (strtoupper($request->getMethod()) === 'POST') {
             $rawParams = $request->getParsedBody();
         } else {
             $rawParams = $request->getQueryParams();
@@ -140,11 +79,115 @@ class Request implements Signed
         return new static($rawParams);
     }
 
+    public function getAlias(): string
+    {
+        return $this->alias;
+    }
+
+    public function getImporto(): int
+    {
+        return $this->importo;
+    }
+
+    public function getDivisa(): string
+    {
+        return $this->divisa;
+    }
+
+    public function getCodTrans(): string
+    {
+        return $this->codTrans;
+    }
+
+    public function getData(): string
+    {
+        return $this->data;
+    }
+
+    public function getOrario(): string
+    {
+        return $this->orario;
+    }
+
+    public function getMac(): string
+    {
+        return $this->mac;
+    }
+
+    public function getCodAut(): ?string
+    {
+        return $this->codAut;
+    }
+
+    public function getEsito(): string
+    {
+        return $this->esito;
+    }
+
+    public function getSessionId(): ?string
+    {
+        return $this->session_id;
+    }
+
+    public function getBrand(): ?string
+    {
+        return $this->brand;
+    }
+
+    public function getNome(): ?string
+    {
+        return $this->nome;
+    }
+
+    public function getCognome(): ?string
+    {
+        return $this->cognome;
+    }
+
+    public function getMail(): ?string
+    {
+        return $this->mail;
+    }
+
+    public function getNazionalita(): ?string
+    {
+        return $this->nazionalita;
+    }
+
+    public function getPan(): ?string
+    {
+        return $this->pan;
+    }
+
+    public function getScadenzaPan(): ?string
+    {
+        return $this->scadenza_pan;
+    }
+
+    public function getSignatureFields(): array
+    {
+        return [
+            'codTrans' => $this->getCodTrans() ?: '',
+            'esito' => $this->getEsito() ?: '',
+            'importo' => $this->getImporto() ?: '',
+            'divisa' => $this->getDivisa() ?: '',
+            'data' => $this->getData() ?: '',
+            'orario' => $this->getOrario() ?: '',
+            'codAut' => $this->getCodAut() ?: '',
+        ];
+    }
+
+    public function getSignature(): string
+    {
+        return $this->getMac();
+    }
+
     /**
-     * @param array $rawParams
+     * @param array<string, string> $rawParams
+     *
      * @throws \InvalidArgumentException
      */
-    private function checkForMissingParameters(array $rawParams)
+    private function checkForMissingParameters(array $rawParams): void
     {
         $requiredParams = array(
             'alias',
@@ -172,7 +215,7 @@ class Request implements Signed
         }
     }
 
-    private function validateParameters(array $rawParams)
+    private function validateParameters(array $rawParams): void
     {
         $rawAmount = $rawParams['importo'];
         if (!ctype_digit($rawAmount)) {
@@ -184,159 +227,5 @@ class Request implements Signed
                 )
             );
         }
-    }
-
-    /**
-     * @return string
-     */
-    public function getAlias()
-    {
-        return $this->alias;
-    }
-
-    /**
-     * @return int
-     */
-    public function getImporto()
-    {
-        return $this->importo;
-    }
-
-    /**
-     * @return string
-     */
-    public function getDivisa()
-    {
-        return $this->divisa;
-    }
-
-    /**
-     * @return string
-     */
-    public function getCodTrans()
-    {
-        return $this->codTrans;
-    }
-
-    /**
-     * @return string
-     */
-    public function getData()
-    {
-        return $this->data;
-    }
-
-    /**
-     * @return string
-     */
-    public function getOrario()
-    {
-        return $this->orario;
-    }
-
-    /**
-     * @return string
-     */
-    public function getMac()
-    {
-        return $this->mac;
-    }
-
-    /**
-     * @return string
-     */
-    public function getCodAut()
-    {
-        return $this->codAut;
-    }
-
-    /**
-     * @return string
-     */
-    public function getEsito()
-    {
-        return $this->esito;
-    }
-
-    /**
-     * @return string
-     */
-    public function getSessionId()
-    {
-        return $this->session_id;
-    }
-
-    /**
-     * @return string
-     */
-    public function getBrand()
-    {
-        return $this->brand;
-    }
-
-    /**
-     * @return string
-     */
-    public function getNome()
-    {
-        return $this->nome;
-    }
-
-    /**
-     * @return string
-     */
-    public function getCognome()
-    {
-        return $this->cognome;
-    }
-
-    /**
-     * @return string
-     */
-    public function getMail()
-    {
-        return $this->mail;
-    }
-
-    /**
-     * @return string
-     */
-    public function getNazionalita()
-    {
-        return $this->nazionalita;
-    }
-
-    /**
-     * @return string
-     */
-    public function getPan()
-    {
-        return $this->pan;
-    }
-
-    /**
-     * @return string
-     */
-    public function getScadenzaPan()
-    {
-        return $this->scadenza_pan;
-    }
-
-    public function getSignatureFields()
-    {
-        return [
-            'codTrans' => $this->getCodTrans() ?: '',
-            'esito' => $this->getEsito() ?: '',
-            'importo' => $this->getImporto() ?: '',
-            'divisa' => $this->getDivisa() ?: '',
-            'data' => $this->getData() ?: '',
-            'orario' => $this->getOrario() ?: '',
-            'codAut' => $this->getCodAut() ?: '',
-        ];
-    }
-
-    public function getSignature()
-    {
-        return $this->getMac();
     }
 }

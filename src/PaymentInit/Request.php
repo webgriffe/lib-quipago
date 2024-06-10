@@ -1,146 +1,73 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: andrea
- * Date: 09/05/18
- * Time: 17.29
- */
 
 namespace Webgriffe\LibQuiPago\PaymentInit;
 
-class Request implements \Webgriffe\LibQuiPago\Signature\Signable
+use Webgriffe\LibQuiPago\Lists\Currency;
+use Webgriffe\LibQuiPago\Signature\Signable;
+
+class Request implements Signable
 {
-    const OPERATION_TYPE_CAPTURE = 'C';
-    const OPERATION_TYPE_AUTHORIZE = 'D';
-
-    /**
-     * Merchant alias (aka "alias")
-     * @var string
-     */
-    private $merchantAlias;
-
-    /**
-     * Transaction amount (aka "importo")
-     * @var float
-     */
-    private $amount;
-
-    /**
-     * Transaction identification code (aka "codTrans")
-     * @var string
-     */
-    private $transactionCode;
-
-    /**
-     * URL where user will be redirected when he cancel the transaction (aka "url_back")
-     * @var string
-     */
-    private $cancelUrl;
-
-    /**
-     * Email address where transaction result will be sent (aka "email")
-     * @var string
-     */
-    private $email;
-
-    /**
-     * URL where user will be redirected when the transaction is successful (aka "url")
-     * @var string
-     */
-    private $successUrl;
-
-    /**
-     * Session identifier (aka "sess_id")
-     * @var string
-     */
-    private $sessionId;
-
-    /**
-     * Language identifier code (aka "languageId")
-     * @var string
-     */
-    private $locale;
-
-    /**
-     * Server to server transaction feedback notification URL (aka "urlpost")
-     * @var string
-     */
-    private $notifyUrl;
-
-    /**
-     * Preselected payment method to use
-     * @var string
-     */
-    private $selectedcard;
+    public const OPERATION_TYPE_CAPTURE = 'C';
+    public const OPERATION_TYPE_AUTHORIZE = 'D';
 
     /**
      * Signature string
-     * @var string
      */
-    private $mac;
+    private ?string $mac = null;
 
     /**
-     * Operation type (aka "TCONTAB")
-     * @var string
+     * @param string $merchantAlias Merchant alias (aka "alias")
+     * @param float $amount Transaction amount (aka "importo")
+     * @param string $transactionCode Transaction identification code (aka "codTrans")
+     * @param string $cancelUrl URL where user will be redirected when he cancel the transaction (aka "url_back")
+     * @param string|null $email Email address where transaction result will be sent (aka "email")
+     * @param string|null $successUrl URL where user will be redirected when the transaction is successful (aka "url")
+     * @param string|null $sessionId Session identifier (aka "sess_id")
+     * @param string|null $locale Language identifier code (aka "languageId")
+     * @param string|null $notifyUrl Server to server transaction feedback notification URL (aka "urlpost")
+     * @param string|null $selectedcard Preselected payment method to use
+     * @param string|null $operationType Operation type (aka "TCONTAB")
+     * @param string|null $description Payment description (aka "descrizione")
      */
-    private $operationType;
-
-    /**
-     * Payment description (aka "descrizione")
-     * @var string|null
-     */
-    private $description;
-
     public function __construct(
-        $merchantAlias,
-        $amount,
-        $transactionCode,
-        $cancelUrl,
-        $email,
-        $successUrl,
-        $sessionId,
-        $locale,
-        $notifyUrl,
-        $selectedcard = null,
-        $operationType = null,
-        $description = null
+        private string $merchantAlias,
+        private float $amount,
+        private string $transactionCode,
+        private string $cancelUrl,
+        private ?string $email,
+        private ?string $successUrl,
+        private ?string $sessionId,
+        private ?string $locale,
+        private ?string $notifyUrl,
+        private ?string $selectedcard = null,
+        private ?string $operationType = null,
+        private ?string $description = null
     ) {
-        $this->merchantAlias = $merchantAlias;
-        $this->amount = $amount;
-        $this->transactionCode = $transactionCode;
-        $this->cancelUrl = $cancelUrl;
-        $this->email = $email;
-        $this->successUrl = $successUrl;
-        $this->sessionId = $sessionId;
-        $this->locale = $locale;
-        $this->notifyUrl = $notifyUrl;
-        $this->selectedcard = $selectedcard;
-        $this->operationType = $operationType;
-        $this->description = $description;
     }
 
-    public function getSignatureData()
+    public function getSignatureData(): array
     {
         $paramValues = $this->getMandatoryParameters();
 
-        $result = array();
-        foreach (array('codTrans', 'divisa', 'importo') as $paramName) {
+        $result = [];
+        foreach (['codTrans', 'divisa', 'importo'] as $paramName) {
             $result[$paramName] = $paramValues[$paramName];
         }
 
         return $result;
     }
 
-    public function setSignature($signature)
+    public function setSignature(string $signature): static
     {
         $this->mac = $signature;
+
         return $this;
     }
 
     /**
-     * @return array
+     * @return array<string, string|int>
      */
-    public function getParams()
+    public function getParams(): array
     {
         if (!$this->mac) {
             throw new \RuntimeException(
@@ -152,25 +79,31 @@ class Request implements \Webgriffe\LibQuiPago\Signature\Signable
         return array_merge(
             $this->getMandatoryParameters(),
             $this->getOptionalParameters(),
-            array('mac' => $this->mac)
+            ['mac' => $this->mac],
         );
     }
 
-    private function getMandatoryParameters()
+    /**
+     * @return array<string, string|int>
+     */
+    private function getMandatoryParameters(): array
     {
-        return array(
+        return [
             'alias'     => $this->merchantAlias,
             'importo'   => $this->getAmountAsNumberOfCents(),
-            'divisa'    => \Webgriffe\LibQuiPago\Lists\Currency::EURO_CURRENCY_CODE,
+            'divisa'    => Currency::EURO_CURRENCY_CODE,
             'codTrans'  => $this->transactionCode,
             'url'       => $this->successUrl,
             'url_back'  => $this->cancelUrl,
-        );
+        ];
     }
 
-    private function getOptionalParameters()
+    /**
+     * @return array<string, string>
+     */
+    private function getOptionalParameters(): array
     {
-        $optionalMap = array(
+        $optionalMap = [
             'urlpost'       => $this->notifyUrl,
             'mail'          => $this->email,
             'languageId'    => $this->locale,
@@ -178,7 +111,7 @@ class Request implements \Webgriffe\LibQuiPago\Signature\Signable
             'selectedcard'  => $this->selectedcard,
             'TCONTAB'       => $this->operationType,
             'descrizione'   => $this->description
-        );
+        ];
 
         foreach ($optionalMap as $k => $value) {
             if (null === $value) {
@@ -189,18 +122,15 @@ class Request implements \Webgriffe\LibQuiPago\Signature\Signable
         return $optionalMap;
     }
 
-    /**
-     * @return int
-     */
-    private function getAmountAsNumberOfCents()
+    private function getAmountAsNumberOfCents(): int
     {
-        if (round($this->amount, 2) != $this->amount) {
+        if (round($this->amount, 2) !== $this->amount) {
             throw new \RuntimeException(
                 "Payment amount {$this->amount} cannot be represented as a whole number of cents. ".
                 "Maybe there are more than two decimal digits?"
             );
         }
 
-        return round($this->amount * 100);
+        return (int) round($this->amount * 100);
     }
 }

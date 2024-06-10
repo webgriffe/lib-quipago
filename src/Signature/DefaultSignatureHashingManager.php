@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: andrea
- * Date: 16/05/18
- * Time: 15.14
- */
 
 namespace Webgriffe\LibQuiPago\Signature;
 
@@ -12,18 +6,13 @@ use Webgriffe\LibQuiPago\Lists\SignatureMethod;
 
 class DefaultSignatureHashingManager implements SignatureHasingManager
 {
-    public function hashSignatureString($string, $method)
+    public function hashSignatureString(string $string, string $method): string
     {
-        switch ($method) {
-            case SignatureMethod::MD5_METHOD:
-                $encodedString = md5($string);
-                break;
-            case SignatureMethod::SHA1_METHOD:
-                $encodedString = sha1($string);
-                break;
-            default:
-                throw new \InvalidArgumentException("Unknown hash method {$method} requested");
-        }
+        $encodedString = match ($method) {
+            SignatureMethod::MD5_METHOD => md5($string),
+            SignatureMethod::SHA1_METHOD => sha1($string),
+            default => throw new \InvalidArgumentException("Unknown hash method {$method} requested"),
+        };
 
         if ($this->mustEncodeHashResultAsUrlencodedBase64($method)) {
             $encodedString = base64_encode($encodedString);
@@ -32,8 +21,8 @@ class DefaultSignatureHashingManager implements SignatureHasingManager
         return $encodedString;
     }
 
-    private function mustEncodeHashResultAsUrlencodedBase64($method)
+    private function mustEncodeHashResultAsUrlencodedBase64($method): bool
     {
-        return $method == SignatureMethod::MD5_METHOD;
+        return $method === SignatureMethod::MD5_METHOD;
     }
 }

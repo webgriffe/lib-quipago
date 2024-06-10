@@ -10,9 +10,11 @@
     "require": {
         "ext-ctype": "*",
         "ext-json": "*",
+        "ext-dom": "*",
+        "ext-simplexml": "*",
         "psr/log": "^2.0",
-        "guzzlehttp/guzzle": "^6.2",
-        "respect/validation": "^1.1",
+        "guzzlehttp/guzzle": "^7.0",
+        "respect/validation": "^2.3",
         "php": "^8.0"
     },
     "require-dev": {

@@ -13,7 +13,7 @@
         "ext-dom": "*",
         "ext-simplexml": "*",
         "psr/log": "^2.0",
-        "guzzlehttp/guzzle": "^7.0",
+        "guzzlehttp/guzzle": "^6.5 || ^7.5",
         "respect/validation": "^2.2",
         "php": "^8.0"
     },

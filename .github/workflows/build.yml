@@ -19,7 +19,7 @@ jobs:
             fail-fast: false
             matrix:
                 php: ["8.0", "8.1", "8.2", "8.3"]
-                guzzle: ["6.5.8", "7.8.1"]
+                guzzle: ["6.5.8", "7.5.2"]
 
         steps:
             -

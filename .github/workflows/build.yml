@@ -46,5 +46,9 @@ jobs:
                 run: vendor/bin/phpcs --standard=PSR2 src/
 
             -
+                name: Run PHPStan
+                run: vendor/bin/phpstan analyse
+
+            -
                 name: Run PHPSpec
                 run: vendor/bin/phpspec run

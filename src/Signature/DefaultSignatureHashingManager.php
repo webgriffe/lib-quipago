@@ -21,7 +21,7 @@ class DefaultSignatureHashingManager implements SignatureHasingManager
         return $encodedString;
     }
 
-    private function mustEncodeHashResultAsUrlencodedBase64($method): bool
+    private function mustEncodeHashResultAsUrlencodedBase64(string $method): bool
     {
         return $method === SignatureMethod::MD5_METHOD;
     }

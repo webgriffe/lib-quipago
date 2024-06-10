@@ -165,7 +165,7 @@ class EcRequest
 
     private function convertAmountToString(float $amount): string
     {
-        return str_pad((string)round($amount, 2)*100, 9, '0', STR_PAD_LEFT);
+        return str_pad((string) (round($amount, 2)*100), 9, '0', STR_PAD_LEFT);
     }
 
     private function validate(): void

@@ -41,6 +41,9 @@ class Request implements Signed
 
     private ?string $scadenza_pan;
 
+    /**
+     * @param array<string, string|int> $rawParams
+     */
     private function __construct(array $rawParams)
     {
         $this->checkForMissingParameters($rawParams);
@@ -68,7 +71,7 @@ class Request implements Signed
         $this->session_id = $rawParams['session_id'] ?? null;
     }
 
-    public static function buildFromHttpRequest(ServerRequestInterface $request): static
+    public static function buildFromHttpRequest(ServerRequestInterface $request): self
     {
         if (strtoupper($request->getMethod()) === 'POST') {
             $rawParams = $request->getParsedBody();
@@ -76,7 +79,7 @@ class Request implements Signed
             $rawParams = $request->getQueryParams();
         }
 
-        return new static($rawParams);
+        return new self($rawParams);
     }
 
     public function getAlias(): string
@@ -215,6 +218,9 @@ class Request implements Signed
         }
     }
 
+    /**
+     * @param array<string, string|int> $rawParams
+     */
     private function validateParameters(array $rawParams): void
     {
         $rawAmount = $rawParams['importo'];

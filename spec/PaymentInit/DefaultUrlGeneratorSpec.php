@@ -3,12 +3,11 @@
 namespace spec\Webgriffe\LibQuiPago\PaymentInit;
 
 use PhpSpec\ObjectBehavior;
-use Prophecy\Argument;
 use Psr\Log\LoggerInterface;
 
 class DefaultUrlGeneratorSpec extends ObjectBehavior
 {
-    function it_is_initializable_and_generates_correct_url()
+    public function it_is_initializable_and_generates_correct_url(): void
     {
         $this->shouldHaveType('Webgriffe\\LibQuiPago\\PaymentInit\\DefaultUrlGenerator');
         $this
@@ -35,7 +34,7 @@ class DefaultUrlGeneratorSpec extends ObjectBehavior
         ;
     }
 
-    function it_should_log_url_generation_process_if_a_logger_is_given(LoggerInterface $logger)
+    public function it_should_log_url_generation_process_if_a_logger_is_given(LoggerInterface $logger): void
     {
         $this->beConstructedWith($logger);
         $logger->debug('Webgriffe\\LibQuiPago\\PaymentInit\\DefaultUrlGenerator::generate method called')->shouldBeCalled();
@@ -87,7 +86,7 @@ STR;
         ;
     }
 
-    function it_should_use_md5_method_if_specified()
+    public function it_should_use_md5_method_if_specified(): void
     {
         $this->shouldHaveType('Webgriffe\\LibQuiPago\\PaymentInit\\DefaultUrlGenerator');
         $this
@@ -114,7 +113,7 @@ STR;
         ;
     }
 
-    function it_should_throw_an_invalid_argument_exception_if_mac_method_is_not_sha1_or_md5()
+    public function it_should_throw_an_invalid_argument_exception_if_mac_method_is_not_sha1_or_md5(): void
     {
         $this
             ->shouldThrow(\InvalidArgumentException::class)
@@ -138,7 +137,7 @@ STR;
         ;
     }
 
-    function it_should_throw_an_invalid_argument_exception_if_amount_has_more_than_two_decimal()
+    public function it_should_throw_an_invalid_argument_exception_if_amount_has_more_than_two_decimal(): void
     {
         $this
             ->shouldThrow(\RuntimeException::class)
@@ -162,7 +161,7 @@ STR;
         ;
     }
 
-    function it_is_initializable_and_generates_correct_url_with_selectedcard_value()
+    public function it_is_initializable_and_generates_correct_url_with_selectedcard_value(): void
     {
         $this->shouldHaveType('Webgriffe\\LibQuiPago\\PaymentInit\\DefaultUrlGenerator');
         $this
@@ -190,7 +189,7 @@ STR;
         ;
     }
 
-    function it_throws_error_if_an_unexpected_selectedcard_value_is_received()
+    public function it_throws_error_if_an_unexpected_selectedcard_value_is_received(): void
     {
         $this->shouldHaveType('Webgriffe\\LibQuiPago\\PaymentInit\\DefaultUrlGenerator');
         $this

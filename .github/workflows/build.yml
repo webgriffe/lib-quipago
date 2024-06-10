@@ -13,16 +13,17 @@ jobs:
     tests:
         runs-on: ubuntu-latest
 
-        name: "Sylius ${{ matrix.sylius }}, PHP ${{ matrix.php }}, Symfony ${{ matrix.symfony }}, MySQL ${{ matrix.mysql }}"
+        name: "PHP ${{ matrix.php }} - Guzzle ${{ matrix.guzzle }}"
 
         strategy:
             fail-fast: false
             matrix:
-                php: ["8.0", "8.1", "8.2"]
+                php: ["8.0", "8.1", "8.2", "8.3"]
+                guzzle: ["6.5.8", "7.8.1"]
 
         steps:
             -
-                uses: actions/checkout@v2
+                uses: actions/checkout@v4
 
             -
                 name: Setup PHP
@@ -30,6 +31,11 @@ jobs:
                 with:
                     php-version: "${{ matrix.php }}"
                     coverage: none
+
+            -
+                name: Restrict Guzzle version
+                if: matrix.guzzle != ''
+                run: composer require "guzzlehttp/guzzle:${{ matrix.guzzle }}" --no-update --no-scripts --no-interaction
 
             -
                 name: Run Composer install

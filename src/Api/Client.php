@@ -7,81 +7,39 @@ use GuzzleHttp\RequestOptions;
 
 class Client
 {
-    /**
-     * @var ClientInterface
-     */
-    private $httpClient;
-
-    /**
-     * @var string
-     */
-    private $merchantAlias;
-
-    /**
-     * @var string
-     */
-    private $macKey;
-
-    /**
-     * @var string
-     */
-    private $user;
-
-    /**
-     * Client constructor.
-     * @param ClientInterface $httpClient
-     * @param string $merchantAlias
-     * @param string $macKey
-     * @param string $user
-     */
-    public function __construct(ClientInterface $httpClient, $merchantAlias, $macKey, $user)
-    {
-        $this->httpClient = $httpClient;
-        $this->merchantAlias = $merchantAlias;
-        $this->macKey = $macKey;
-        $this->user = $user;
+    public function __construct(
+        private ClientInterface $httpClient,
+        private string $merchantAlias,
+        private string $macKey,
+        private string $user,
+    ) {
     }
 
-    public function getMerchantAlias()
+    public function getMerchantAlias(): string
     {
         return $this->merchantAlias;
     }
 
-    public function getMacKey()
+    public function getMacKey(): string
     {
         return $this->macKey;
     }
 
-    /**
-     * @return string
-     */
-    public function getUser()
+    public function getUser(): string
     {
         return $this->user;
     }
 
-    /**
-     * @param string $transactionCode
-     * @param string $requestType
-     * @param string $operationId
-     * @param float $originalAmount
-     * @param string $currency
-     * @param string $authCode
-     * @param float $operationAmount
-     * @param bool $isTest
-     *
-     * @return EcResponse
-     */
     public function capture(
-        $transactionCode,
-        $requestType,
-        $operationId,
-        $originalAmount,
-        $currency,
-        $authCode,
-        $operationAmount,
-        $isTest
-    ) {
+        string $transactionCode,
+        string $requestType,
+        string $operationId,
+        float $originalAmount,
+        string $currency,
+        string $authCode,
+        float $operationAmount,
+        bool $isTest,
+    ): EcResponse {
         $ecRequest = EcRequest::createCaptureRequest(
             $this->merchantAlias,
             $this->macKey,
@@ -103,28 +61,16 @@ class Client
         return EcResponse::createFromPsrResponse($response, $this->macKey);
     }
 
-    /**
-     * @param string $transactionCode
-     * @param string $requestType
-     * @param string $operationId
-     * @param float $originalAmount
-     * @param string $currency
-     * @param string $authCode
-     * @param float $operationAmount
-     * @param bool $isTest
-     *
-     * @return EcResponse
-     */
     public function void(
-        $transactionCode,
-        $requestType,
-        $operationId,
-        $originalAmount,
-        $currency,
-        $authCode,
-        $operationAmount,
-        $isTest
-    ) {
+        string $transactionCode,
+        string $requestType,
+        string $operationId,
+        float $originalAmount,
+        string $currency,
+        string $authCode,
+        float $operationAmount,
+        bool $isTest,
+    ): EcResponse {
         $ecRequest = EcRequest::createVoidRequest(
             $this->merchantAlias,
             $this->macKey,
@@ -143,6 +89,7 @@ class Client
             $options = [RequestOptions::VERIFY => false];
         }
         $response = $this->httpClient->send($ecRequest->asPsrRequest(), $options);
+
         return EcResponse::createFromPsrResponse($response, $this->macKey);
     }
 }

@@ -10,7 +10,7 @@ use Psr\Http\Message\ServerRequestInterface;
 
 class DefaultHandlerSpec extends ObjectBehavior
 {
-    function it_throws_an_exception_if_some_parameter_is_missing(ServerRequestInterface $request)
+    public function it_throws_an_exception_if_some_parameter_is_missing(ServerRequestInterface $request): void
     {
         $this->shouldHaveType('Webgriffe\\LibQuiPago\\Notification\\DefaultHandler');
 
@@ -25,7 +25,7 @@ class DefaultHandlerSpec extends ObjectBehavior
         );
     }
 
-    function it_throws_an_exception_if_amount_is_not_numeric(ServerRequestInterface $request)
+    public function it_throws_an_exception_if_amount_is_not_numeric(ServerRequestInterface $request): void
     {
         $this->shouldHaveType('Webgriffe\\LibQuiPago\\Notification\\DefaultHandler');
 
@@ -40,7 +40,7 @@ class DefaultHandlerSpec extends ObjectBehavior
         );
     }
 
-    function it_throws_an_exception_if_amount_is_not_an_integer_number(ServerRequestInterface $request)
+    public function it_throws_an_exception_if_amount_is_not_an_integer_number(ServerRequestInterface $request): void
     {
         $this->shouldHaveType('Webgriffe\\LibQuiPago\\Notification\\DefaultHandler');
 
@@ -55,7 +55,7 @@ class DefaultHandlerSpec extends ObjectBehavior
         );
     }
 
-    function it_throws_an_exception_if_mac_is_wrong(ServerRequestInterface $request)
+    public function it_throws_an_exception_if_mac_is_wrong(ServerRequestInterface $request): void
     {
         $this->shouldHaveType('Webgriffe\\LibQuiPago\\Notification\\DefaultHandler');
 
@@ -70,7 +70,7 @@ class DefaultHandlerSpec extends ObjectBehavior
         );
     }
 
-    function it_returns_mapped_params(ServerRequestInterface $request)
+    public function it_returns_mapped_params(ServerRequestInterface $request): void
     {
         $this->shouldHaveType('Webgriffe\\LibQuiPago\\Notification\\DefaultHandler');
 
@@ -93,7 +93,7 @@ class DefaultHandlerSpec extends ObjectBehavior
         $result->getEmail()->shouldReturn('jd@mail.com');
     }
 
-    function it_returns_mapped_params_from_query_string(ServerRequestInterface $request)
+    public function it_returns_mapped_params_from_query_string(ServerRequestInterface $request): void
     {
         $this->shouldHaveType('Webgriffe\\LibQuiPago\\Notification\\DefaultHandler');
 
@@ -116,7 +116,7 @@ class DefaultHandlerSpec extends ObjectBehavior
         $result->getEmail()->shouldReturn('jd@mail.com');
     }
 
-    function it_returns_negative_result_if_transaction_result_is_ko(ServerRequestInterface $request)
+    public function it_returns_negative_result_if_transaction_result_is_ko(ServerRequestInterface $request): void
     {
         $this->shouldHaveType('Webgriffe\\LibQuiPago\\Notification\\DefaultHandler');
 
@@ -130,7 +130,7 @@ class DefaultHandlerSpec extends ObjectBehavior
         $result->isTransactionResultPositive()->shouldReturn(false);
     }
 
-    function it_should_log_if_logger_is_passed(ServerRequestInterface $request, LoggerInterface $logger)
+    public function it_should_log_if_logger_is_passed(ServerRequestInterface $request, LoggerInterface $logger): void
     {
         $this->beConstructedWith($logger);
         $this->shouldHaveType('Webgriffe\\LibQuiPago\\Notification\\DefaultHandler');
@@ -155,7 +155,7 @@ class DefaultHandlerSpec extends ObjectBehavior
         $this->handle($request,'secret_key', 'sha1');
     }
 
-    function it_should_use_md5_as_mac_calculation_method_if_specified(ServerRequestInterface $request)
+    public function it_should_use_md5_as_mac_calculation_method_if_specified(ServerRequestInterface $request): void
     {
         $this->shouldHaveType('Webgriffe\\LibQuiPago\\Notification\\DefaultHandler');
 
@@ -181,10 +181,7 @@ class DefaultHandlerSpec extends ObjectBehavior
         $result->getEmail()->shouldReturn('jd@mail.com');
     }
 
-    /**
-     * @return array
-     */
-    private function getRequestRawParams()
+    private function getRequestRawParams(): array
     {
         return array(
             'codTrans'      => '1200123',

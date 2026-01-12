@@ -10,7 +10,7 @@ class DefaultChecker implements Checker
 
     private SignatureHasingManager $hashingManager;
 
-    public function __construct(LoggerInterface $logger = null, SignatureHasingManager $hashingManager = null)
+    public function __construct(?LoggerInterface $logger = null, ?SignatureHasingManager $hashingManager = null)
     {
         $this->logger = $logger;
         if (!$hashingManager) {

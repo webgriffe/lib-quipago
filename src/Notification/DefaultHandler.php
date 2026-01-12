@@ -12,9 +12,9 @@ class DefaultHandler implements Handler
 {
     private Checker $checker;
 
-    private ?LoggerInterface $logger;
+    private ?LoggerInterface $logger = null;
 
-    public function __construct(LoggerInterface $logger = null, Checker $checker = null)
+    public function __construct(?LoggerInterface $logger = null, ?Checker $checker = null)
     {
         if (!$checker) {
             $checker = new DefaultChecker($logger);

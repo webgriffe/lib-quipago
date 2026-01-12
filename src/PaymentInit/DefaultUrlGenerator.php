@@ -12,7 +12,7 @@ class DefaultUrlGenerator implements UrlGenerator
 
     private ?LoggerInterface $logger;
 
-    public function __construct(LoggerInterface $logger = null, Signer $signer = null)
+    public function __construct(?LoggerInterface $logger = null, ?Signer $signer = null)
     {
         $this->logger = $logger;
         if (!$signer) {

@@ -13,7 +13,7 @@ jobs:
     tests:
         runs-on: ubuntu-latest
 
-        name: "PHP ${{ matrix.php }} - Guzzle ${{ matrix.guzzle }}"
+        name: "PHP ${{ matrix.php }}"
 
         strategy:
             fail-fast: false

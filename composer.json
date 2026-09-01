@@ -8,18 +8,18 @@
         }
     ],
     "require": {
+        "php": "^8.2",
         "ext-ctype": "*",
         "ext-json": "*",
         "ext-dom": "*",
         "ext-simplexml": "*",
-        "psr/log": "^3.0",
-        "guzzlehttp/guzzle": "^7.5",
-        "respect/validation": "^2.2",
-        "php": "^8.2"
+        "psr/log": "^3.0.0",
+        "guzzlehttp/guzzle": "^8.0",
+        "respect/validation": "^2.5"
     },
     "require-dev": {
         "squizlabs/php_codesniffer": "^4.0",
-        "phpspec/phpspec": "^8.1",
+        "phpspec/phpspec": "^8.3.1",
         "phpstan/phpstan": "^2.1"
     },
     "autoload": {
